@@ -4,7 +4,7 @@
   "description": "Javascript object instantiation from Joi schema",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/.bin/lab -a code -L"
   },
   "repository": "git://github.com/xogroup/felicity",
   "keywords": [
@@ -22,5 +22,9 @@
     "hoek": "4.1.0",
     "joi": "9.0.4",
     "uuid": "2.0.3"
+  },
+  "devDependencies": {
+    "code": "^4.0.0",
+    "lab": "^11.0.1"
   }
 }
