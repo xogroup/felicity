@@ -1,0 +1,26 @@
+{
+  "name": "felicity",
+  "version": "0.0.1",
+  "description": "Javascript object instantiation from Joi schema",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git://github.com/xogroup/felicity",
+  "keywords": [
+    "joi",
+    "validation",
+    "schema",
+    "constructor"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/xogroup/felicity/issues"
+  },
+  "homepage": "https://github.com/xogroup/felicity#readme",
+  "dependencies": {
+    "hoek": "4.1.0",
+    "joi": "9.0.4",
+    "uuid": "2.0.3"
+  }
+}
