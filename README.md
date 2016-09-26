@@ -8,18 +8,24 @@ Given a [joi](www.github.com/hapijs/joi) schema, instantiate a skeleton object:
 const Joi      = require('joi'),
       Felicity = require('felicity');
 
-let joiSchema = Joi.object().keys({
+const joiSchema = Joi.object().keys({
     key1: Joi.string().required(),
-    key2: Joi.array().items(Joi.string().guid()).min(3).required()
+    key2: Joi.array().items(Joi.string().guid()).min(3).required(),
+    key3: Joi.object().keys({
+        innerKey: Joi.number()
+    })
 });
 
-let felicityInstance = new Felicity.skeleton(joiSchema);
+const felicityInstance = new Felicity.skeleton(joiSchema);
 
 console.log(felicityInstance);
 /*
 {
     key1: null,
-    key2: []
+    key2: [],
+    key3: {
+        innerKey: 0
+    }
 }
 */
 ```
@@ -36,7 +42,10 @@ console.log(felicityExample);
         '14fd2e5a-71c9-4079-9a96-ab3afd232cb2',
         '701ac87c-6c55-44f7-b1db-65a628ed9f4e',
         'aeaeff69-dc67-4cba-b3f6-f407358c2e52'
-    ]
+    ],
+    key3: {
+        innerKey: 12
+    }
 }
 */
 ```
@@ -53,10 +62,14 @@ console.log(validInstance);
     success: false,
     errors : [
         {
-            message: '"key2" is required',
-            path   : 'key2',
-            type   : 'any.required',
-            context: { key: 'key2' }
+            "message": "\"key2\" must contain at least 3 items",
+            "path": "key2",
+            "type": "array.min",
+            "context": {
+                "limit": 3,
+                "value": [],
+                "key": "key2"
+            }
         }
     ]
 }

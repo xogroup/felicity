@@ -203,8 +203,9 @@ describe('Felicity Skeleton', () => {
 
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
-                    innerArray: Joi.array().items(Joi.number()).min(3).max(6).required()
-                }).required(),
+                    innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
+                    number    : Joi.number()
+                }),
                 string     : Joi.string().email().required(),
                 date       : Joi.date().raw().required(),
                 bool       : Joi.boolean().required(),
@@ -218,6 +219,7 @@ describe('Felicity Skeleton', () => {
 
             expect(felicityInstance.innerObject).to.be.an.object();
             expect(felicityInstance.innerObject.innerArray).to.equal([]);
+            expect(felicityInstance.innerObject.number).to.equal(0);
             expect(felicityInstance.string).to.equal(null);
             expect(felicityInstance.date).to.equal(null);
             expect(felicityInstance.bool).to.equal(false);
@@ -256,8 +258,24 @@ describe('Felicity Skeleton', () => {
             const instanceValidity = felicityInstance.validate();
 
             expect(instanceValidity).to.be.an.object();
-            expect(instanceValidity.errors).to.exist();
+            expect(instanceValidity.errors).to.be.an.array();
             expect(instanceValidity.success).to.equal(false);
+            done();
+        });
+
+        it('should set properties when validation is successful', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string()
+            });
+            const felicityInstance = new Felicity.skeleton(schema);
+
+            felicityInstance.key1 = 'A string';
+
+            const instanceValidity = felicityInstance.validate();
+
+            expect(instanceValidity.errors).to.equal(null);
+            expect(instanceValidity.success).to.equal(true);
             done();
         });
 
@@ -275,6 +293,40 @@ describe('Felicity Skeleton', () => {
             };
 
             felicityInstance.validate(validationCallback);
+        });
+
+        it('should pass (err, success) to callback when validation is successful', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string()
+            });
+            const felicityInstance = new Felicity.skeleton(schema);
+
+            felicityInstance.key1 = 'A string.';
+
+            const validationCallback = function (err, result) {
+
+                expect(err).to.equal(null);
+                expect(result.success).to.equal(true);
+                done();
+            };
+
+            felicityInstance.validate(validationCallback);
+        });
+    });
+
+    describe('Example', () => {
+
+        it('should return an a hydrated valid instance', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string()
+            });
+            const felicityInstance = new Felicity.skeleton(schema);
+            const felicityExample = felicityInstance.example();
+
+            expect(felicityExample.key1).to.be.a.string();
+            done();
         });
     });
 });
