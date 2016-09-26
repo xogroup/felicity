@@ -25,7 +25,7 @@ describe('Felicity Skeleton', () => {
         const schema = {};
         const felicitySkeleton = new Felicity.skeleton(schema);
 
-        expect(felicitySkeleton).to.equal({});
+        expect(felicitySkeleton).to.be.an.object();
         done();
     });
 
@@ -48,6 +48,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
 
@@ -59,6 +60,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
 
@@ -70,6 +72,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
     });
@@ -93,6 +96,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal(false);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
     });
@@ -116,6 +120,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
     });
@@ -130,6 +135,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal(0);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
     });
@@ -149,6 +155,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.myConditional).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
     });
@@ -163,6 +170,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal([]);
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
     });
@@ -174,7 +182,8 @@ describe('Felicity Skeleton', () => {
             const schema = Joi.object().keys();
             const felicityInstance = new Felicity.skeleton(schema);
 
-            expect(felicityInstance).to.equal({});
+            expect(felicityInstance).to.be.an.object();
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
 
@@ -186,6 +195,7 @@ describe('Felicity Skeleton', () => {
             const felicityInstance = new Felicity.skeleton(schema);
 
             expect(felicityInstance.key1).to.equal({});
+            expect(felicityInstance.validate).to.be.a.function();
             done();
         });
 
@@ -212,7 +222,59 @@ describe('Felicity Skeleton', () => {
             expect(felicityInstance.date).to.equal(null);
             expect(felicityInstance.bool).to.equal(false);
             expect(felicityInstance.conditional).to.equal({});
+            expect(felicityInstance.validate).to.be.a.function();
             done();
+        });
+
+        it('should not include keys with "optional" flag', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string().required(),
+                key2: Joi.string(),
+                key3: Joi.string().optional()
+            });
+            const felicityInstance = new Felicity.skeleton(schema);
+
+            expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.key2).to.equal(null);
+            expect(felicityInstance.key3).to.not.exist();
+            expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+    });
+
+    describe('Validate', () => {
+
+        it('should return an object when no callback is provided', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string(),
+                key2: Joi.number(),
+                key3: Joi.array().min(4)
+            });
+            const felicityInstance = new Felicity.skeleton(schema);
+            const instanceValidity = felicityInstance.validate();
+
+            expect(instanceValidity).to.be.an.object();
+            expect(instanceValidity.errors).to.exist();
+            expect(instanceValidity.success).to.equal(false);
+            done();
+        });
+
+        it('should accept a callback', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string()
+            });
+            const felicityInstance = new Felicity.skeleton(schema);
+            const validationCallback = function (err, result) {
+
+                expect(err).to.be.an.array();
+                expect(result).to.not.exist();
+                done();
+            };
+
+            felicityInstance.validate(validationCallback);
         });
     });
 });
