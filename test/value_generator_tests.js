@@ -122,3 +122,97 @@ describe('String', () => {
         done();
     });
 });
+
+describe('Number', () => {
+
+    it('should return a number', (done) => {
+
+        const schema = Joi.number();
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.a.number();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a negative number', (done) => {
+
+        const schema = Joi.number().negative();
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.below(0);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an integer', (done) => {
+
+        const schema = Joi.number().integer();
+        const example = ValueGenerator.number(schema);
+
+        expect(example % 1).to.equal(0);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a number which adheres to .min requirement', (done) => {
+
+        const schema = Joi.number().min(20);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.at.least(20);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a number which adheres to .max requirement', (done) => {
+
+        const schema = Joi.number().max(2);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.at.most(2);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a number which adheres to .greater requirement', (done) => {
+
+        const schema = Joi.number().greater(20);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.at.least(20);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a number which adheres to .less requirement', (done) => {
+
+        const schema = Joi.number().less(2);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.at.most(2);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a number which adheres to .precision requirement', (done) => {
+
+        const schema = Joi.number().precision(2);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.be.a.number();
+        expect(example.toString().split('.')[1].length).to.be.at.most(2);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a number which adheres to .multiple requirement', (done) => {
+
+        const schema = Joi.number().multiple(4);
+        const example = ValueGenerator.number(schema);
+
+        expect(example % 4).to.equal(0);
+        expectValidation(example, schema);
+        done();
+    });
+});
