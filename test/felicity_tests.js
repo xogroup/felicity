@@ -320,12 +320,14 @@ describe('Felicity Skeleton', () => {
         it('should return an a hydrated valid instance', (done) => {
 
             const schema = Joi.object().keys({
-                key1: Joi.string()
+                key1: Joi.string(),
+                key2: Joi.number().integer()
             });
             const felicityInstance = new Felicity.skeleton(schema);
             const felicityExample = felicityInstance.example();
 
             expect(felicityExample.key1).to.be.a.string();
+            expect(felicityExample.key2).to.be.a.number();
             done();
         });
     });

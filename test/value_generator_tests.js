@@ -1,9 +1,11 @@
 'use strict';
 
 const Code = require('code');
-const ValueGenerator = require('../lib/valueGenerator');
+const Hoek = require('hoek');
 const Joi = require('joi');
 const Lab = require('lab');
+const Permutations = require('./permutations');
+const ValueGenerator = require('../lib/valueGenerator');
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
@@ -213,6 +215,92 @@ describe('Number', () => {
 
         expect(example % 4).to.equal(0);
         expectValidation(example, schema);
+        done();
+    });
+
+    it('should return numbers which adhere to any valid combination of requirements', (done) => {
+
+        const requirements = [
+            'positive',
+            'negative',
+            'integer',
+            'min',
+            'max',
+            'greater',
+            'less',
+            'precision',
+            'multiple'
+        ];
+        const requirementExclusions = {
+            positive : ['positive','negative'],
+            negative : ['negative','positive'],
+            precision: ['precision','integer', 'multiple'],
+            integer  : ['integer','precision'],
+            multiple : ['multiple','precision'],
+            max      : ['max','less'],
+            less     : ['less','max'],
+            min      : ['min','greater'],
+            greater  : ['greater','min']
+        };
+        const optionArguments = {
+            min      : 16,
+            max      : 56,
+            greater  : 35,
+            less     : 45,
+            precision: 3,
+            multiple : 8
+        };
+
+        const numberOptions = Permutations(requirements, requirementExclusions);
+
+        numberOptions.forEach((optionSet) => {
+
+            let schema = Joi.number();
+            const setContainsNegative = optionSet.indexOf('negative') !== -1;
+            const setContainsMinAndMax = Hoek.intersect(optionSet, ['min', 'greater']).length > 0 && Hoek.intersect(optionSet, ['max', 'less']).length > 0;
+
+            optionSet.forEach((option) => {
+
+                let optionArgument = setContainsNegative ? 0 - optionArguments[option] : optionArguments[option];
+
+                if (option === 'multiple' || option === 'precision') {
+                    optionArgument = Math.abs(optionArgument);
+                }
+                else if (setContainsNegative && setContainsMinAndMax && (option === 'min' || option === 'greater') ) {
+                    optionArgument = 0 - optionArguments.max;
+                }
+                else if (setContainsNegative && setContainsMinAndMax && (option === 'max' || option === 'less')) {
+                    optionArgument = 0 - optionArguments.min;
+                }
+
+                schema = schema[option](optionArgument);
+            });
+
+            const example = ValueGenerator.number(schema);
+
+            expectValidation(example, schema);
+        });
+        done();
+    });
+
+    it('should return NaN for impossible combinations', (done) => {
+
+        const impossibleMinSchema = Joi.number().negative().min(1);
+        let example = ValueGenerator.number(impossibleMinSchema);
+
+        expect(example).to.equal(NaN);
+
+        example = 0;
+        const impossibleMultipleSchema = Joi.number().max(10).multiple(12);
+        example = ValueGenerator.number(impossibleMultipleSchema);
+
+        expect(example).to.equal(NaN);
+
+        example = 0;
+        const impossibleMinMultipleSchema = Joi.number().negative().min(-10).multiple(12);
+        example = ValueGenerator.number(impossibleMinMultipleSchema);
+
+        expect(example).to.equal(NaN);
         done();
     });
 });
