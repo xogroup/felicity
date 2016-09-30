@@ -20,10 +20,7 @@ const permutations = function (requirements, exclusionSet) {
             }
 
             if (requirementSet.slice(index + 1).length > 0) {
-                requirementSet.slice(index + 1).forEach((requirement, position, set) => {
-
-                    return recursivePermutations(set.slice(position), newCumulativeSet);
-                });
+                return recursivePermutations(requirementSet.slice(index + 1), newCumulativeSet);
             }
         });
     };

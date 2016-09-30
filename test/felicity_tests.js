@@ -321,13 +321,15 @@ describe('Felicity Skeleton', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string(),
-                key2: Joi.number().integer()
+                key2: Joi.number().integer(),
+                key3: Joi.boolean()
             });
             const felicityInstance = new Felicity.skeleton(schema);
             const felicityExample = felicityInstance.example();
 
             expect(felicityExample.key1).to.be.a.string();
             expect(felicityExample.key2).to.be.a.number();
+            expect(felicityExample.key3).to.be.a.boolean();
             done();
         });
     });

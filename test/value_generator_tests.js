@@ -304,3 +304,38 @@ describe('Number', () => {
         done();
     });
 });
+
+describe('Boolean', () => {
+
+    it('should return a boolean', (done) => {
+
+        const schema = Joi.boolean();
+        const example = ValueGenerator.boolean(schema);
+
+        expect(example).to.be.a.boolean();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return default "true" value', (done) => {
+
+        for (let i = 0; i < 10; ++i) {
+            const schema = Joi.boolean().default(true);
+            const example = ValueGenerator.boolean(schema);
+
+            expect(example).to.equal(true);
+        }
+        done();
+    });
+
+    it('should return default "false" value', (done) => {
+
+        for (let i = 0; i < 10; ++i) {
+            const schema = Joi.boolean().default(false);
+            const example = ValueGenerator.boolean(schema);
+
+            expect(example).to.equal(false);
+        }
+        done();
+    });
+});
