@@ -51,6 +51,16 @@ describe('String', () => {
         done();
     });
 
+    it('should return default value', (done) => {
+
+        const schema = Joi.string().default('fallback');
+        const example = ValueGenerator.string(schema);
+
+        expect(example).to.equal('fallback');
+        expectValidation(example, schema);
+        done();
+    });
+
     it('should return a string which adheres to .min requirement', (done) => {
 
         for (let i = 0; i <= 5; ++i) {
@@ -96,6 +106,14 @@ describe('String', () => {
             expectValidation(example, schema);
         }
 
+        const largeMax = 750;
+        const largeMin = 500;
+        const largeSchema = Joi.string().min(largeMin).max(largeMax);
+        const largeExample = ValueGenerator.string(largeSchema);
+
+        expect(largeExample.length).to.be.at.most(largeMax);
+        expect(largeExample.length).to.be.at.least(largeMin);
+        expectValidation(largeExample, largeSchema);
         done();
     });
 
@@ -133,6 +151,26 @@ describe('Number', () => {
         const example = ValueGenerator.number(schema);
 
         expect(example).to.be.a.number();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a default value > 0', (done) => {
+
+        const schema = Joi.number().default(9);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.equal(9);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a default value === 0', (done) => {
+
+        const schema = Joi.number().default(0);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.equal(0);
         expectValidation(example, schema);
         done();
     });
