@@ -377,3 +377,111 @@ describe('Boolean', () => {
         done();
     });
 });
+
+describe('Date', () => {
+
+    it('should return a date', (done) => {
+
+        const schema = Joi.date();
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.a.date();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a Date more recent than .min value', (done) => {
+
+        const schema = Joi.date().min('1/01/3016');
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.above(new Date('1/01/3016'));
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a Date more recent than "now"', (done) => {
+
+        const schema = Joi.date().min('now');
+        const now = new Date();
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.above(now);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a Date less recent than .max value', (done) => {
+
+        const schema = Joi.date().max('1/01/1968');
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.below(new Date(0));
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a Date less recent than "now"', (done) => {
+
+        const schema = Joi.date().max('now');
+        const now = new Date();
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.below(now);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a Date between .min and .max values', (done) => {
+
+        for (let i = 1; i <= 10; ++i) {
+            const minYear = Math.ceil((Math.random() * 4000));
+            const maxYear = minYear + Math.ceil((Math.random()) * 10);
+            const min = '1/01/' + minYear.toString();
+            const max = '1/01/' + maxYear.toString();
+            const schema = Joi.date().min(min).max(max);
+            const example = ValueGenerator.date(schema);
+
+            expect(example).to.be.above(new Date(min)).and.below(new Date(max));
+            expectValidation(example, schema);
+        }
+
+        const smallMin = '1/01/2016';
+        const smallMax = '3/01/2016';
+        const smallSchema = Joi.date().min(smallMin).max(smallMax);
+        const smallExample = ValueGenerator.date(smallSchema);
+
+        expectValidation(smallExample, smallSchema);
+        done();
+    });
+
+    it('should return a Date in ISO format', (done) => {
+
+        const schema = Joi.date().iso();
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.a.string();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a timestamp', (done) => {
+
+        const schema = Joi.date().timestamp();
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.a.number();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a unix timestamp', (done) => {
+
+        const schema = Joi.date().timestamp('unix');
+        const example = ValueGenerator.date(schema);
+
+        expect(example).to.be.a.number();
+        expectValidation(example, schema);
+        done();
+    });
+});
