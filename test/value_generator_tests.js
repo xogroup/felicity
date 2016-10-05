@@ -485,3 +485,26 @@ describe('Date', () => {
         done();
     });
 });
+
+describe('Function', () => {
+
+    it('should return a function', (done) => {
+
+        const schema = Joi.func();
+        const example = ValueGenerator.func(schema);
+
+        expect(example).to.be.a.function();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a function with arity(1)', (done) => {
+
+        const schema = Joi.func().arity(1);
+        const example = ValueGenerator.func(schema);
+
+        expect(example).to.be.a.function();
+        expectValidation(example, schema);
+        done();
+    });
+});
