@@ -508,3 +508,36 @@ describe('Function', () => {
         done();
     });
 });
+
+describe('Array', () => {
+
+    it('should return an array', (done) => {
+
+        const schema = Joi.array();
+        const example = ValueGenerator.array(schema);
+
+        expect(example).to.be.an.array();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with valid items', (done) => {
+
+        const schema = Joi.array().items(Joi.number());
+        const example = ValueGenerator.array(schema);
+
+        expect(example[0]).to.be.a.number();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an empty array with "sparse"', (done) => {
+
+        const schema = Joi.array().items(Joi.number()).sparse();
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(0);
+        expectValidation(example, schema);
+        done();
+    });
+});
