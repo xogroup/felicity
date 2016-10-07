@@ -508,3 +508,171 @@ describe('Function', () => {
         done();
     });
 });
+
+describe('Array', () => {
+
+    it('should return an array', (done) => {
+
+        const schema = Joi.array();
+        const example = ValueGenerator.array(schema);
+
+        expect(example).to.be.an.array();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with valid items', (done) => {
+
+        const schema = Joi.array().items(Joi.number().required(), Joi.string().guid().required(), Joi.array().items(Joi.number().integer().min(43).required()).required());
+        const example = ValueGenerator.array(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with valid items and without forbidden items', (done) => {
+
+        const schema = Joi.array().items(Joi.string().forbidden(), Joi.number().multiple(3));
+        const example = ValueGenerator.array(schema);
+
+        const stringItems = example.filter((item) => {
+
+            return typeof item === 'string';
+        });
+
+        expect(stringItems.length).to.equal(0);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an empty array with "sparse"', (done) => {
+
+        const schema = Joi.array()
+            .items(Joi.number())
+            .sparse();
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(0);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an ordered array', (done) => {
+
+        const schema = Joi.array().ordered(Joi.string().max(3).required(), Joi.number().negative().integer().required(), Joi.boolean().required());
+        const example = ValueGenerator.array(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "length" random items', (done) => {
+
+        const schema = Joi.array().length(4);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(4);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "length" specified items', (done) => {
+
+        const schema = Joi.array()
+            .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
+            .length(10);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(10);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "min" random items', (done) => {
+
+        const schema = Joi.array().min(4);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(4);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "min" specified items', (done) => {
+
+        const schema = Joi.array()
+            .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
+            .min(10);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(10);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "max" random items', (done) => {
+
+        const schema = Joi.array().max(4);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.be.at.least(1);
+        expect(example.length).to.be.at.most(4);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "max" specified items', (done) => {
+
+        const schema = Joi.array()
+            .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
+            .max(10);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.be.at.least(1);
+        expect(example.length).to.be.at.most(10);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "min" and "max" random items', (done) => {
+
+        const schema = Joi.array()
+            .min(4)
+            .max(5);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.be.at.least(4);
+        expect(example.length).to.be.at.most(5);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an array with "min" and "max" specified items', (done) => {
+
+        const schema = Joi.array()
+            .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
+            .min(10)
+            .max(15);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.be.at.least(10);
+        expect(example.length).to.be.at.most(15);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a semi-ordered array with "min" specified items', (done) => {
+
+        const schema = Joi.array()
+            .ordered(Joi.string(), Joi.number())
+            .items(Joi.boolean().required(), Joi.array().items(Joi.boolean().required()).required())
+            .min(6);
+        const example = ValueGenerator.array(schema);
+
+        expect(example[0]).to.be.a.string();
+        expect(example[1]).to.be.a.number();
+        expect(example.length).to.be.at.least(6);
+        expectValidation(example, schema);
+        done();
+    });
+});
