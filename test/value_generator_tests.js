@@ -101,8 +101,7 @@ describe('String', () => {
             const schema = Joi.string().min(min).max(max);
             const example = ValueGenerator.string(schema);
 
-            expect(example.length).to.be.at.most(max);
-            expect(example.length).to.be.at.least(min);
+            expect(example.length).to.be.at.most(max).and.at.least(min);
             expectValidation(example, schema);
         }
 
@@ -111,8 +110,7 @@ describe('String', () => {
         const largeSchema = Joi.string().min(largeMin).max(largeMax);
         const largeExample = ValueGenerator.string(largeSchema);
 
-        expect(largeExample.length).to.be.at.most(largeMax);
-        expect(largeExample.length).to.be.at.least(largeMin);
+        expect(largeExample.length).to.be.at.most(largeMax).and.at.least(largeMin);
         expectValidation(largeExample, largeSchema);
         done();
     });
@@ -376,6 +374,81 @@ describe('Boolean', () => {
         }
         done();
     });
+});
+
+describe('Binary', () => {
+
+    it('should return a buffer', (done) => {
+
+        const schema = Joi.binary();
+        const example = ValueGenerator.binary(schema);
+
+        expect(example).to.be.a.buffer();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a string with specified encoding', (done) => {
+
+        const supportedEncodings = [
+            'base64',
+            'utf8',
+            'ascii',
+            'utf16le',
+            'ucs2',
+            'hex'
+        ];
+
+        supportedEncodings.forEach((encoding) => {
+
+            const schema = Joi.binary().encoding(encoding);
+            const example = ValueGenerator.binary(schema);
+
+            expect(example).to.be.a.string();
+            expectValidation(example, schema);
+        });
+
+        done();
+    });
+
+    it('should return a buffer of minimum size', (done) => {
+
+        const schema = Joi.binary().min(100);
+        const example = ValueGenerator.binary(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a buffer of maximum size', (done) => {
+
+        const schema = Joi.binary().max(100);
+        const example = ValueGenerator.binary(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a buffer of specified size', (done) => {
+
+        const schema = Joi.binary().length(75);
+        const example = ValueGenerator.binary(schema);
+
+        expect(example.length).to.equal(75);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return a buffer of size between min and max', (done) => {
+
+        const schema = Joi.binary().min(27).max(35);
+        const example = ValueGenerator.binary(schema);
+
+        expect(example.length).to.be.at.least(27).and.at.most(35);
+        expectValidation(example, schema);
+        done();
+    });
+
 });
 
 describe('Date', () => {
