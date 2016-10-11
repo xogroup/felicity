@@ -749,3 +749,104 @@ describe('Array', () => {
         done();
     });
 });
+
+describe('Object', () => {
+
+    it('should return an object', (done) => {
+
+        const schema = Joi.object();
+        const example = ValueGenerator.object(schema);
+
+        expect(example).to.be.an.object();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with specified keys', (done) => {
+
+        const schema = Joi.object().keys({
+            string : Joi.string().required(),
+            number : Joi.number().required(),
+            boolean: Joi.bool().required(),
+            time   : Joi.date().required(),
+            buffer : Joi.binary().required(),
+            array  : Joi.array().items(Joi.string().required()).required(),
+            innerObj: Joi.object().keys({
+                innerString: Joi.string().required()
+            }).required()
+        });
+        const example = ValueGenerator.object(schema);
+
+        expect(example).to.be.an.object();
+        expect(example.string).to.be.a.string();
+        expect(example.number).to.be.a.number();
+        expect(example.boolean).to.be.a.boolean();
+        expect(example.time).to.be.a.date();
+        expect(example.buffer).to.be.a.buffer();
+        expect(example.array).to.be.an.array();
+        expect(example.innerObj).to.be.an.object();
+        expect(example.innerObj.innerString).to.be.a.string();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with min number of keys', (done) => {
+
+        const schema = Joi.object().min(5);
+        const example = ValueGenerator.object(schema);
+
+        expect(Object.keys(example).length).to.be.at.least(5);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with max number of keys', (done) => {
+
+        const schema = Joi.object().max(5);
+        const example = ValueGenerator.object(schema);
+
+        expect(Object.keys(example).length).to.be.at.most(5).and.at.least(1);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with exact number of keys', (done) => {
+
+        const schema = Joi.object().length(5);
+        const example = ValueGenerator.object(schema);
+
+        expect(Object.keys(example).length).to.equal(5);
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with one of two "nand" keys', (done) => {
+
+        const schema = Joi.object()
+            .keys({
+                a: Joi.string(),
+                b: Joi.string(),
+                c: Joi.string()
+            })
+            .nand('a', 'b');
+        const example = ValueGenerator.object(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with one of two "xor" keys', (done) => {
+
+        const schema = Joi.object()
+            .keys({
+                a: Joi.string(),
+                b: Joi.string(),
+                c: Joi.string()
+            })
+            .xor('a', 'b');
+        const example = ValueGenerator.object(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+});
