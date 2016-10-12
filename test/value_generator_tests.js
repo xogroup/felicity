@@ -337,6 +337,12 @@ describe('Number', () => {
         example = ValueGenerator.number(impossibleMinMultipleSchema);
 
         expect(example).to.equal(NaN);
+
+        example = 0;
+        const impossibleMaxSchema = Joi.number().negative().max(10);
+        example = ValueGenerator.number(impossibleMaxSchema);
+
+        expect(example).to.equal(NaN);
         done();
     });
 });
@@ -661,6 +667,18 @@ describe('Array', () => {
         done();
     });
 
+    it('should return an array with no more than "length" specified items', (done) => {
+
+        const schema = Joi.array()
+            .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
+            .length(2);
+        const example = ValueGenerator.array(schema);
+
+        expect(example.length).to.equal(2);
+        expectValidation(example, schema);
+        done();
+    });
+
     it('should return an array with "min" random items', (done) => {
 
         const schema = Joi.array().min(4);
@@ -745,6 +763,68 @@ describe('Array', () => {
         expect(example[0]).to.be.a.string();
         expect(example[1]).to.be.a.number();
         expect(example.length).to.be.at.least(6);
+        expectValidation(example, schema);
+        done();
+    });
+});
+
+describe('Alternatives', () => {
+
+    it('should return one of the "try" schemas', (done) => {
+
+        const schema = Joi.alternatives()
+            .try(Joi.string(), Joi.number());
+        const example = ValueGenerator.alternatives(schema);
+
+        expect(example).to.not.be.undefined();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return the single "try" schema', (done) => {
+
+        const schema = Joi.alternatives()
+            .try(Joi.string());
+        const example = ValueGenerator.alternatives(schema);
+
+        expect(example).to.be.a.string();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return "when" alternative', (done) => {
+
+        const schema = Joi.object().keys({
+            dependent: Joi.alternatives().when('sibling.driver', {
+                is  : Joi.string(),
+                then: Joi.string()
+            }),
+            sibling  : Joi.object().keys({
+                driver: Joi.string()
+            })
+        });
+        const example = ValueGenerator.object(schema);
+
+        expect(example.dependent).to.be.a.string();
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return "when.otherwise" alternative', (done) => {
+
+        const schema = Joi.object().keys({
+            dependent: Joi.alternatives().when('sibling.driver', {
+                is       : Joi.string(),
+                then     : Joi.string(),
+                otherwise: Joi.number()
+            }),
+            sibling  : Joi.object().keys({
+                driver: Joi.boolean()
+            })
+        });
+        const example = ValueGenerator.object(schema);
+
+        expect(example.dependent).to.be.a.number();
         expectValidation(example, schema);
         done();
     });
@@ -844,6 +924,39 @@ describe('Object', () => {
                 c: Joi.string()
             })
             .xor('a', 'b');
+        const example = ValueGenerator.object(schema);
+
+        expectValidation(example, schema);
+        done();
+    });
+
+    it('should return an object with alternatives', (done) => {
+
+        for (let i = 0; i < 10; ++i) {
+            const schema = Joi.object().keys({
+                dependent: Joi.alternatives().when('sibling.driver', {
+                    is       : true,
+                    then     : Joi.string().guid(),
+                    otherwise: Joi.number().multiple(4).min(16)
+                }),
+                unrelated: Joi.number(),
+                sibling  : Joi.object().keys({
+                    driver   : Joi.boolean()
+                })
+            });
+            const example = ValueGenerator.object(schema);
+
+            expectValidation(example, schema);
+        }
+        done();
+    });
+
+    it('should return an object with array-syntax alternatives', (done) => {
+
+        const schema = Joi.object().keys({
+            access_token: [Joi.string(), Joi.number()],
+            birthyear   : Joi.number().integer().min(1900).max(2013)
+        });
         const example = ValueGenerator.object(schema);
 
         expectValidation(example, schema);
