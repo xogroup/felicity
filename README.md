@@ -1,9 +1,21 @@
 # felicity
-Javascript object constructors based on Joi schema.
+Felicity provides object constructors capable of validation along with example structures using the [Joi](//www.github.com/hapijs/joi) schema description language and validator.
 
+<!--
+Badges go here once we're public and pushed to npm
++ https://badge.fury.io/
++ https://nodesecurity.io/
++ https://snyk.io
++ gitter? CI?
+-->
+
+Lead Maintainer: [Wes Tyler](https://github.com/WesTyler)
+
+## Introduction
+Felicity extends Joi by allowing validation to be contained cleanly and nicely in constructors while also allowing easy example generation for documentation, tests and more.
 
 ## Usage
-Given a [joi](www.github.com/hapijs/joi) schema, instantiate a skeleton object:
+Given a [joi](//www.github.com/hapijs/joi) schema, instantiate a skeleton object:
 ```JavaScript
 const Joi      = require('joi'),
       Felicity = require('felicity');
@@ -75,3 +87,15 @@ console.log(validInstance);
 }
 */
 ```
+<!--
+## API
+
+See the [API Reference]().
+-->
+
+## Joi features not yet implemented
+
++ with/without
++ email
++ regex
++ alternatives
