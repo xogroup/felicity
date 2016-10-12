@@ -14,7 +14,7 @@
     "schema",
     "constructor"
   ],
-  "license": "BSD-3-Clause",
+  "license": "BSD-3-Clause-Clear",
   "bugs": {
     "url": "https://github.com/xogroup/felicity/issues"
   },
