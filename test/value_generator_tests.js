@@ -235,12 +235,14 @@ describe('Number', () => {
 
     it('should return a number which adheres to .precision requirement', (done) => {
 
-        const schema = Joi.number().precision(2);
-        const example = ValueGenerator.number(schema);
+        for (let i = 0; i < 500; ++i) {
+            const schema = Joi.number().precision(2);
+            const example = ValueGenerator.number(schema);
 
-        expect(example).to.be.a.number();
-        expect(example.toString().split('.')[1].length).to.be.at.most(2);
-        expectValidation(example, schema);
+            expect(example).to.be.a.number();
+            expect(example.toString().split('.')[1].length).to.be.at.most(2);
+            expectValidation(example, schema);
+        }
         done();
     });
 
