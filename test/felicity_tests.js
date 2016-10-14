@@ -5,6 +5,7 @@ const Felicity = require('../lib');
 const Joi = require('joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
+const ExpectValidation = require('./test_helpers').expectValidation;
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
@@ -31,15 +32,6 @@ describe('Felicity Skeleton', () => {
     });
 
     describe('String', () => {
-
-        /*it('should return null', (done) => {
-
-            const schema = Joi.string();
-            const felicityInstance = new Felicity.skeleton(schema);
-
-            expect(felicityInstance).to.equal(null);
-            done();
-        });*/
 
         it('should return an object with string property set to null', (done) => {
 
@@ -80,15 +72,6 @@ describe('Felicity Skeleton', () => {
 
     describe('Boolean', () => {
 
-        /*it('should return false', (done) => {
-
-            const schema = Joi.boolean();
-            const felicityInstance = new Felicity.skeleton(schema);
-
-            expect(felicityInstance).to.equal(false);
-            done();
-        });*/
-
         it('should return an object with boolean property set to false', (done) => {
 
             const schema = Joi.object().keys({
@@ -103,15 +86,6 @@ describe('Felicity Skeleton', () => {
     });
 
     describe('Date', () => {
-
-        /*it('should return null', (done) => {
-
-            const schema = Joi.date();
-            const felicityInstance = new Felicity.skeleton(schema);
-
-            expect(felicityInstance).to.equal(null);
-            done();
-        });*/
 
         it('should return an object with date property set to null', (done) => {
 
@@ -403,7 +377,7 @@ describe('Felicity Skeleton', () => {
         });
     });
 
-    describe('Validate', () => {
+    describe('Skeleton Validate', () => {
 
         it('should return an object when no callback is provided', (done) => {
 
@@ -473,7 +447,7 @@ describe('Felicity Skeleton', () => {
         });
     });
 
-    describe('Example', () => {
+    describe('Skeleton Example', () => {
 
         it('should return an empty instance', (done) => {
 
@@ -501,5 +475,114 @@ describe('Felicity Skeleton', () => {
             expect(felicityExample.key3).to.be.a.boolean();
             done();
         });
+    });
+});
+
+describe('Felicity Example', () => {
+
+    it('should return a string', (done) => {
+
+        const schema = Joi.string();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a number', (done) => {
+
+        const schema = Joi.number();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a boolean', (done) => {
+
+        const schema = Joi.boolean();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.a.boolean();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a buffer', (done) => {
+
+        const schema = Joi.binary();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.a.buffer();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a date', (done) => {
+
+        const schema = Joi.date();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.a.date();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a function', (done) => {
+
+        const schema = Joi.func();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an array', (done) => {
+
+        const schema = Joi.array();
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.an.array();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object without optional keys', (done) => {
+
+        const schema = Joi.object().keys({
+            required: Joi.string().required(),
+            present : Joi.string(),
+            optional: Joi.string().optional()
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.required).to.be.a.string();
+        expect(example.present).to.be.a.string();
+        expect(example.optional).to.be.undefined();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return the Joi facebook example', (done) => {
+
+        const schema = Joi.object().keys({
+            username: Joi.string().alphanum().min(3).max(30).required(),
+            password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+            access_token: [Joi.string(), Joi.number()],
+            birthyear: Joi.number().integer().min(1900).max(2013),
+            email: Joi.string().email()
+        }).with('username', 'birthyear').without('password', 'access_token');
+        const example = Felicity.example(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return the Joi facebook example with an optional key', (done) => {
+
+        const schema = Joi.object().keys({
+            username: Joi.string().alphanum().min(3).max(30).required(),
+            password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+            access_token: [Joi.string(), Joi.number()],
+            birthyear: Joi.number().integer().min(1900).max(2013).optional(),
+            email: Joi.string().email()
+        }).with('username', 'birthyear').without('password', 'access_token');
+        const example = Felicity.example(schema);
+
+        ExpectValidation(example, schema, done);
     });
 });
