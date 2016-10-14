@@ -30,4 +30,30 @@ describe('String', () => {
         });
         done();
     });
+
+    it('should return the compiled object schema', (done) => {
+
+        const invalidExample = {
+            string: '1243'
+        };
+        const validExample = {
+            string: '1234567890'
+        };
+        const originSchema = Joi.object().keys({
+            string: Joi.string().min(5).required()
+        });
+        const description = originSchema.describe();
+        const schema = DescriptionCompiler(description);
+
+        Joi.validate(validExample, schema, (err) => {
+
+            expect(err).to.equal(null);
+        });
+        Joi.validate(invalidExample, schema, (err) => {
+
+            expect(err).to.not.equal(null);
+            expect(err.details[0].message).to.equal('"string" length must be at least 5 characters long');
+        });
+        done();
+    });
 });
