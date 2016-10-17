@@ -560,29 +560,33 @@ describe('Felicity Example', () => {
 
     it('should return the Joi facebook example', (done) => {
 
+        const passwordPattern = /^[a-zA-Z0-9]{3,30}$/;
         const schema = Joi.object().keys({
             username: Joi.string().alphanum().min(3).max(30).required(),
-            password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+            password: Joi.string().regex(passwordPattern),
             access_token: [Joi.string(), Joi.number()],
             birthyear: Joi.number().integer().min(1900).max(2013),
             email: Joi.string().email()
         }).with('username', 'birthyear').without('password', 'access_token');
         const example = Felicity.example(schema);
 
+        expect(example.password.match(passwordPattern)).to.not.equal(null);
         ExpectValidation(example, schema, done);
     });
 
     it('should return the Joi facebook example with an optional key', (done) => {
 
+        const passwordPattern = /^[a-zA-Z0-9]{3,30}$/;
         const schema = Joi.object().keys({
             username: Joi.string().alphanum().min(3).max(30).required(),
-            password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+            password: Joi.string().regex(passwordPattern),
             access_token: [Joi.string(), Joi.number()],
             birthyear: Joi.number().integer().min(1900).max(2013).optional(),
             email: Joi.string().email()
         }).with('username', 'birthyear').without('password', 'access_token');
         const example = Felicity.example(schema);
 
+        expect(example.password.match(passwordPattern)).to.not.equal(null);
         ExpectValidation(example, schema, done);
     });
 });
