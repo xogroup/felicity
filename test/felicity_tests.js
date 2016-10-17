@@ -473,7 +473,7 @@ describe('Felicity Skeleton', () => {
             expect(felicityExample.key1).to.be.a.string();
             expect(felicityExample.key2).to.be.a.number();
             expect(felicityExample.key3).to.be.a.boolean();
-            done();
+            ExpectValidation(felicityExample, felicityInstance.schema, done);
         });
     });
 });
@@ -562,7 +562,7 @@ describe('Felicity Example', () => {
 
         const passwordPattern = /^[a-zA-Z0-9]{3,30}$/;
         const schema = Joi.object().keys({
-            username: Joi.string().alphanum().min(3).max(30).required(),
+            username: Joi.string().alphanum().min(3).max(30).insensitive().required(),
             password: Joi.string().regex(passwordPattern),
             access_token: [Joi.string(), Joi.number()],
             birthyear: Joi.number().integer().min(1900).max(2013),

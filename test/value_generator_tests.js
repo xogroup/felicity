@@ -24,6 +24,14 @@ describe('String', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a string with valid value', (done) => {
+
+        const schema = Joi.string().valid('a');
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return a GUID', (done) => {
 
         const schema = Joi.string().guid();
@@ -136,6 +144,14 @@ describe('String', () => {
         const example = ValueGenerator.string(schema);
 
         expect(example.match(regex)).to.not.equal(null);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a case-insensitive string', (done) => {
+
+        const schema = Joi.string().valid('A').insensitive();
+        const example = ValueGenerator.string(schema);
+
         ExpectValidation(example, schema, done);
     });
 });
