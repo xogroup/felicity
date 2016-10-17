@@ -185,6 +185,15 @@ describe('Number', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a valid value instead of default', (done) => {
+
+        const schema = Joi.number().valid(2).default(1);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.equal(2);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return a negative number', (done) => {
 
         const schema = Joi.number().negative();
