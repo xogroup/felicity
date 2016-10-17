@@ -128,6 +128,16 @@ describe('String', () => {
         expect((new Date(example)).toISOString()).to.equal(example);
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a string that matches the given regexp', (done) => {
+
+        const regex = new RegExp(/a{3}b{3}[0-9]{4}/);
+        const schema = Joi.string().regex(regex);
+        const example = ValueGenerator.string(schema);
+
+        expect(example.match(regex)).to.not.equal(null);
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {

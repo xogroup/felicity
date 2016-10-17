@@ -22,6 +22,7 @@
   "dependencies": {
     "hoek": "4.1.0",
     "joi": "9.0.4",
+    "randexp": "0.4.3",
     "uuid": "2.0.3"
   },
   "devDependencies": {
