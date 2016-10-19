@@ -194,6 +194,14 @@ describe('String', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a hostname', (done) => {
+
+        const schema = Joi.string().hostname();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {
