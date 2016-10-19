@@ -463,7 +463,7 @@ describe('Felicity Skeleton', () => {
         it('should return an a hydrated valid instance', (done) => {
 
             const schema = Joi.object().keys({
-                key1: Joi.string(),
+                key1: Joi.string().creditCard(),
                 key2: Joi.number().integer(),
                 key3: Joi.boolean()
             });

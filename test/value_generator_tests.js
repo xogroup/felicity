@@ -41,6 +41,14 @@ describe('String', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a GUID with UUID syntax', (done) => {
+
+        const schema = Joi.string().uuid();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an email', (done) => {
 
         const schema = Joi.string().email();
