@@ -178,6 +178,14 @@ describe('String', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a token', (done) => {
+
+        const schema = Joi.string().token();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {
