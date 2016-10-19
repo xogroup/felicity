@@ -186,6 +186,14 @@ describe('String', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return an alphanumeric string', (done) => {
+
+        const schema = Joi.string().alphanum();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {
