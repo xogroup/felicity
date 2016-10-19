@@ -41,6 +41,14 @@ describe('String', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a GUID with UUID syntax', (done) => {
+
+        const schema = Joi.string().uuid();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an email', (done) => {
 
         const schema = Joi.string().email();
@@ -150,6 +158,46 @@ describe('String', () => {
     it('should return a case-insensitive string', (done) => {
 
         const schema = Joi.string().valid('A').insensitive();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a Luhn-valid credit card number', (done) => {
+
+        const schema = Joi.string().creditCard();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a hexadecimal string', (done) => {
+
+        const schema = Joi.string().hex();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a token', (done) => {
+
+        const schema = Joi.string().token();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an alphanumeric string', (done) => {
+
+        const schema = Joi.string().alphanum();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a hostname', (done) => {
+
+        const schema = Joi.string().hostname();
         const example = ValueGenerator.string(schema);
 
         ExpectValidation(example, schema, done);
@@ -517,8 +565,8 @@ describe('Date', () => {
 
     it('should return a Date between .min and .max values', (done) => {
 
-        for (let i = 1; i <= 10; ++i) {
-            const minYear = Math.ceil((Math.random() * 4000));
+        for (let i = 1; i <= 20; ++i) {
+            const minYear = 2000 + Math.ceil((Math.random() * 100));
             const maxYear = minYear + Math.ceil((Math.random()) * 10);
             const min = '1/01/' + minYear.toString();
             const max = '1/01/' + maxYear.toString();
