@@ -533,8 +533,8 @@ describe('Date', () => {
 
     it('should return a Date between .min and .max values', (done) => {
 
-        for (let i = 1; i <= 10; ++i) {
-            const minYear = Math.ceil((Math.random() * 4000));
+        for (let i = 1; i <= 20; ++i) {
+            const minYear = 2000 + Math.ceil((Math.random() * 100));
             const maxYear = minYear + Math.ceil((Math.random()) * 10);
             const min = '1/01/' + minYear.toString();
             const max = '1/01/' + maxYear.toString();
