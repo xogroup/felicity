@@ -154,6 +154,14 @@ describe('String', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a Luhn-valid credit card number', (done) => {
+
+        const schema = Joi.string().creditCard();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {
