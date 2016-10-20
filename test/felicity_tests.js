@@ -256,6 +256,27 @@ describe('Felicity Skeleton', () => {
             done();
         });
 
+        it('should include keys with "optional" flag if provided includeOptional config', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string().required(),
+                key2: Joi.string(),
+                key3: Joi.string().optional()
+            });
+            const configurations = {
+                config: {
+                    includeOptional: true
+                }
+            };
+            const felicityInstance = new Felicity.skeleton(schema, configurations);
+
+            expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.key2).to.equal(null);
+            expect(felicityInstance.key3).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+
         it('should utilize default values', (done) => {
 
             const schema = Joi.object().keys({
@@ -323,7 +344,10 @@ describe('Felicity Skeleton', () => {
                     code: 200
                 }
             };
-            const felicityInstance = new Felicity.skeleton(schema, hydratedInput);
+            const options = {
+                input: hydratedInput
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
 
             expect(felicityInstance.string).to.equal(hydratedInput.string);
             expect(felicityInstance.number).to.equal(hydratedInput.number);
@@ -360,7 +384,10 @@ describe('Felicity Skeleton', () => {
                 bool  : false,
                 conditional: true
             };
-            const felicityInstance = new Felicity.skeleton(schema, hydrationData);
+            const options = {
+                input: hydrationData
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
 
             expect(felicityInstance.innerObject).to.be.an.object();
             expect(felicityInstance.innerObject.innerArray).to.equal([]);
@@ -558,6 +585,26 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object with optional keys when given includeOptional config', (done) => {
+
+        const schema = Joi.object().keys({
+            required: Joi.string().required(),
+            present : Joi.string(),
+            optional: Joi.string().optional()
+        });
+        const options = {
+            config: {
+                includeOptional: true
+            }
+        };
+        const example = Felicity.example(schema, options);
+
+        expect(example.required).to.be.a.string();
+        expect(example.present).to.be.a.string();
+        expect(example.optional).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return the Joi facebook example', (done) => {
 
         const passwordPattern = /^[a-zA-Z0-9]{3,30}$/;
@@ -587,6 +634,7 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example.password.match(passwordPattern)).to.not.equal(null);
+        expect(example.birthyear).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
 });
