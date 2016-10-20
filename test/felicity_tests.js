@@ -300,6 +300,34 @@ describe('Felicity Skeleton', () => {
             done();
         });
 
+        it('should not utilize default values when provided ignoreDefaults config', (done) => {
+
+            const schema = Joi.object().keys({
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().default('abcdefg')
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            });
+            const options = {
+                config: {
+                    ignoreDefaults: true
+                }
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
+
+            expect(felicityInstance.version).to.equal(null);
+            expect(felicityInstance.number).to.equal(0);
+            expect(felicityInstance.identity.id).to.equal(null);
+            expect(felicityInstance.condition).to.equal(null);
+            done();
+        });
+
         it('should utilize default values for non-compiled schema', (done) => {
 
             const schema = {
@@ -320,6 +348,34 @@ describe('Felicity Skeleton', () => {
             expect(felicityInstance.number).to.equal(10);
             expect(felicityInstance.identity.id).to.equal('abcdefg');
             expect(felicityInstance.condition).to.equal('defaultValue');
+            done();
+        });
+
+        it('should not utilize default values for non-compiled schema when provided ignoreDefaults config', (done) => {
+
+            const schema = {
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().default('abcdefg')
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            };
+            const options = {
+                config: {
+                    ignoreDefaults: true
+                }
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
+
+            expect(felicityInstance.version).to.equal(null);
+            expect(felicityInstance.number).to.equal(0);
+            expect(felicityInstance.identity.id).to.equal(null);
+            expect(felicityInstance.condition).to.equal(null);
             done();
         });
     });
@@ -567,6 +623,37 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example).to.be.an.array();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object with default values', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().required().default('-----'),
+            number: Joi.number().default(4)
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.string).to.equal('-----');
+        expect(example.number).to.equal(4);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should not return an object with default values when provided ignoreDefaults config', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().alphanum().required().default('-----'),
+            number: Joi.number().default(4)
+        });
+        const options = {
+            config: {
+                ignoreDefaults: true
+            }
+        };
+        const example = Felicity.example(schema, options);
+
+        expect(example.string).to.not.equal('-----');
+        expect(example.number).to.not.equal(4);
         ExpectValidation(example, schema, done);
     });
 
