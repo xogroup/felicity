@@ -572,6 +572,47 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a string that ignores regex lookarounds', (done) => {
+
+        const lookAheadPattern = /abcd(?=efg)/;
+        const schema = Joi.string().regex(lookAheadPattern);
+        const example = Felicity.example(schema);
+
+        expect(example).to.equal('abcd');
+        expect(example.match(lookAheadPattern)).to.equal(null);
+        done();
+    });
+
+    it('should throw validation error on regex lookarounds when provided strictExample config', (done) => {
+
+        const schema = Joi.string().regex(/abcd(?=efg)/);
+        const options = {
+            strictExample: true
+        };
+        const callExample = function () {
+
+            return Felicity.example(schema, options);
+        };
+
+        expect(callExample).to.throw('\"value\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/');
+        done();
+    });
+
+    it('should not throw validation error on supported regex when provided strictExample config', (done) => {
+
+        const schema = Joi.string().regex(/abcd/);
+        const options = {
+            strictExample: true
+        };
+        const callExample = function () {
+
+            return Felicity.example(schema, options);
+        };
+
+        expect(callExample).to.not.throw();
+        ExpectValidation(callExample(), schema, done);
+    });
+
     it('should return a number', (done) => {
 
         const schema = Joi.number();
