@@ -256,6 +256,27 @@ describe('Felicity Skeleton', () => {
             done();
         });
 
+        it('should include keys with "optional" flag if provided includeOptional config', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string().required(),
+                key2: Joi.string(),
+                key3: Joi.string().optional()
+            });
+            const configurations = {
+                config: {
+                    includeOptional: true
+                }
+            };
+            const felicityInstance = new Felicity.skeleton(schema, configurations);
+
+            expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.key2).to.equal(null);
+            expect(felicityInstance.key3).to.equal(null);
+            expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+
         it('should utilize default values', (done) => {
 
             const schema = Joi.object().keys({
@@ -276,6 +297,34 @@ describe('Felicity Skeleton', () => {
             expect(felicityInstance.number).to.equal(10);
             expect(felicityInstance.identity.id).to.equal('abcdefg');
             expect(felicityInstance.condition).to.equal('defaultValue');
+            done();
+        });
+
+        it('should not utilize default values when provided ignoreDefaults config', (done) => {
+
+            const schema = Joi.object().keys({
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().default('abcdefg')
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            });
+            const options = {
+                config: {
+                    ignoreDefaults: true
+                }
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
+
+            expect(felicityInstance.version).to.equal(null);
+            expect(felicityInstance.number).to.equal(0);
+            expect(felicityInstance.identity.id).to.equal(null);
+            expect(felicityInstance.condition).to.equal(null);
             done();
         });
 
@@ -301,6 +350,34 @@ describe('Felicity Skeleton', () => {
             expect(felicityInstance.condition).to.equal('defaultValue');
             done();
         });
+
+        it('should not utilize default values for non-compiled schema when provided ignoreDefaults config', (done) => {
+
+            const schema = {
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().default('abcdefg')
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            };
+            const options = {
+                config: {
+                    ignoreDefaults: true
+                }
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
+
+            expect(felicityInstance.version).to.equal(null);
+            expect(felicityInstance.number).to.equal(0);
+            expect(felicityInstance.identity.id).to.equal(null);
+            expect(felicityInstance.condition).to.equal(null);
+            done();
+        });
     });
 
     describe('Input', () => {
@@ -323,7 +400,10 @@ describe('Felicity Skeleton', () => {
                     code: 200
                 }
             };
-            const felicityInstance = new Felicity.skeleton(schema, hydratedInput);
+            const options = {
+                input: hydratedInput
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
 
             expect(felicityInstance.string).to.equal(hydratedInput.string);
             expect(felicityInstance.number).to.equal(hydratedInput.number);
@@ -360,7 +440,10 @@ describe('Felicity Skeleton', () => {
                 bool  : false,
                 conditional: true
             };
-            const felicityInstance = new Felicity.skeleton(schema, hydrationData);
+            const options = {
+                input: hydrationData
+            };
+            const felicityInstance = new Felicity.skeleton(schema, options);
 
             expect(felicityInstance.innerObject).to.be.an.object();
             expect(felicityInstance.innerObject.innerArray).to.equal([]);
@@ -489,6 +572,51 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a string that ignores regex lookarounds', (done) => {
+
+        const lookAheadPattern = /abcd(?=efg)/;
+        const schema = Joi.string().regex(lookAheadPattern);
+        const example = Felicity.example(schema);
+
+        expect(example).to.equal('abcd');
+        expect(example.match(lookAheadPattern)).to.equal(null);
+        done();
+    });
+
+    it('should throw validation error on regex lookarounds when provided strictExample config', (done) => {
+
+        const schema = Joi.string().regex(/abcd(?=efg)/);
+        const options = {
+            config: {
+                strictExample: true
+            }
+        };
+        const callExample = function () {
+
+            return Felicity.example(schema, options);
+        };
+
+        expect(callExample).to.throw('\"value\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/');
+        done();
+    });
+
+    it('should not throw validation error on supported regex when provided strictExample config', (done) => {
+
+        const schema = Joi.string().regex(/abcd/);
+        const options = {
+            config: {
+                strictExample: true
+            }
+        };
+        const callExample = function () {
+
+            return Felicity.example(schema, options);
+        };
+
+        expect(callExample).to.not.throw();
+        ExpectValidation(callExample(), schema, done);
+    });
+
     it('should return a number', (done) => {
 
         const schema = Joi.number();
@@ -543,6 +671,37 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object with default values', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().required().default('-----'),
+            number: Joi.number().default(4)
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.string).to.equal('-----');
+        expect(example.number).to.equal(4);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should not return an object with default values when provided ignoreDefaults config', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().alphanum().required().default('-----'),
+            number: Joi.number().default(4)
+        });
+        const options = {
+            config: {
+                ignoreDefaults: true
+            }
+        };
+        const example = Felicity.example(schema, options);
+
+        expect(example.string).to.not.equal('-----');
+        expect(example.number).to.not.equal(4);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an object without optional keys', (done) => {
 
         const schema = Joi.object().keys({
@@ -555,6 +714,26 @@ describe('Felicity Example', () => {
         expect(example.required).to.be.a.string();
         expect(example.present).to.be.a.string();
         expect(example.optional).to.be.undefined();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object with optional keys when given includeOptional config', (done) => {
+
+        const schema = Joi.object().keys({
+            required: Joi.string().required(),
+            present : Joi.string(),
+            optional: Joi.string().optional()
+        });
+        const options = {
+            config: {
+                includeOptional: true
+            }
+        };
+        const example = Felicity.example(schema, options);
+
+        expect(example.required).to.be.a.string();
+        expect(example.present).to.be.a.string();
+        expect(example.optional).to.be.a.string();
         ExpectValidation(example, schema, done);
     });
 
@@ -587,6 +766,7 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example.password.match(passwordPattern)).to.not.equal(null);
+        expect(example.birthyear).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
 });
