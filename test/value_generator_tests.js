@@ -6,7 +6,7 @@ const Joi = require('joi');
 const Lab = require('lab');
 const Permutations = require('./test_helpers').permutations;
 const ExpectValidation = require('./test_helpers').expectValidation;
-const ValueGenerator = require('../lib/valueGenerator');
+const ValueGenerator = require('../lib/helpers').valueGenerator;
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
