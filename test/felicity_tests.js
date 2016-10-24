@@ -587,7 +587,9 @@ describe('Felicity Example', () => {
 
         const schema = Joi.string().regex(/abcd(?=efg)/);
         const options = {
-            strictExample: true
+            config: {
+                strictExample: true
+            }
         };
         const callExample = function () {
 
@@ -602,7 +604,9 @@ describe('Felicity Example', () => {
 
         const schema = Joi.string().regex(/abcd/);
         const options = {
-            strictExample: true
+            config: {
+                strictExample: true
+            }
         };
         const callExample = function () {
 
