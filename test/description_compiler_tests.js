@@ -4,7 +4,7 @@ const Code = require('code');
 const Joi = require('joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
-const DescriptionCompiler = require('../lib/descriptionCompiler');
+const DescriptionCompiler = require('../lib/helpers').descriptionCompiler;
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
