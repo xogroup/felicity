@@ -8,7 +8,6 @@
   - [Options](#options)
     - [EntityFor](#entityfor-options)
     - [Example](#example-options)
-    - [Validate](#validate-options)
   
 ## Felicity
 
