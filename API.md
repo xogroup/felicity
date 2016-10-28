@@ -149,6 +149,24 @@ All options parameters must be an object with property `config`. Properties on t
 
 ####`entityFor` Options
 
+- `strictExample` - default `false`. Default behavior is to not run examples through Joi validation before returning.
+
+If set to `true`, example will be validated prior to returning. 
+
+Note: in most cases, there is no difference. The only known cases where this may result in ValidationErrors are with regex patterns containing lookarounds.
+
+```Javascript
+    const schema = Joi.object().keys({
+        name    : Joi.string().regex(/abcd(?=efg)/)
+    });
+
+    const instance = new (Felicity.entityFor(schema)); // instance === { name: null }
+    const mockInstance = instance.example(); // mockInstance === { name: 'abcd' }
+
+    const strictInstance = new (Felicity.entityFor(schema, { config: { strictExample: true } })); strictInstance === { name: null }
+    const mockStrict = strictInstance.example(); // ValidationError
+```
+
 - `ignoreDefaults` - Default `false`. Default behavior is to stamp instances with defaults.
 
 If set to `true`, then default values of Joi properties with `.default('value')` set will not be stamped into instances.
@@ -156,10 +174,10 @@ If set to `true`, then default values of Joi properties with `.default('value')`
     const schema = Joi.object().keys({
         name: Joi.string().required().default('felicity')
     });
-    
+
     const Constructor = Felicity.entityFor(schema);
     const instance = new Constructor(); // instance === { name: 'felicity' }
-    
+
     const NoDefaults = Felicity.entityFor(schema, { config: { ignoreDefaults: true } });
     const noDefaultInstance = new NoDefaults(); // noDefaultInstance === { name: null }
 ```
@@ -172,10 +190,10 @@ If set to `true`, then Joi properties with `.optional()` set will be included on
         name    : Joi.string().required(),
         nickname: Joi.string().optional()
     });
-    
+
     const Constructor = Felicity.entityFor(schema);
     const instance = new Constructor(); // instance === { name: null }
-    
+
     const WithOptional = Felicity.entityFor(schema, { config: { includeOptional: true } });
     const withOptionalInstance = new WithOptional(); // withOptionalInstance === { name: null, nickname: null }
 ```
@@ -189,11 +207,38 @@ If set to `true`, example will be validated prior to returning.
 Note: in most cases, there is no difference. The only known cases where this may result in no example coming back are with regex patterns containing lookarounds.
 
 ```Javascript
-const schema = Joi.object().keys({
-    name    : Joi.string().regex(/abcd(?=efg)/)
-});
+    const schema = Joi.object().keys({
+        name    : Joi.string().regex(/abcd(?=efg)/)
+    });
 
-const instance = Felicity.example(schema); // instance === { name: 'abcd' }
+    const instance = Felicity.example(schema); // instance === { name: 'abcd' }
 
-const strictInstance = Felicity.example(schema, { config: { strictExample: true } }); // throws ValidationError
+    const strictInstance = Felicity.example(schema, { config: { strictExample: true } }); // throws ValidationError
+```
+
+- `ignoreDefaults` - Default `false`. Default behavior is to stamp instances with default values.
+
+If set to `true`, then default values of Joi properties with `.default('value')` set will not be stamped into instances but will be generated according to the Joi property rules.
+```Javascript
+    const schema = Joi.object().keys({
+        name: Joi.string().required().default('felicity')
+    });
+
+    const example = Felicity.example(schema); // example === { name: 'felicity' }
+
+    const noDefaultsExample = Felicity.example(schema, { config: { ignoreDefaults: true } }); // noDefaultsExample === { name: 'nq5yhu4ttq33di' }
+```
+
+- `includeOptional` - Default `false`. Default behavior is to ignore optional properties entirely.
+
+If set to `true`, then Joi properties with `.optional()` set will be included on examples.
+```Javascript
+    const schema = Joi.object().keys({
+        name    : Joi.string().required(),
+        nickname: Joi.string().optional()
+    });
+
+    const instance = Felicity.example(schema); // instance === { name: 'ml9mmn0r8m7snhfr' }
+
+    const withOptional = Felicity.example(schema, { config: { includeOptional: true } }); // withOptional === { name: '3cpffhgccgsw0zfr', nickname: '7pfjuxfa4gxk1emi' }
 ```

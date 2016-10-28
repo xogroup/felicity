@@ -665,5 +665,46 @@ describe('Felicity EntityFor', () => {
             expect(felicityExample.key3).to.be.a.boolean();
             ExpectValidation(felicityExample, felicityInstance.schema, done);
         });
+
+        it('should respect "strictExample" config at Constructor declaration', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().regex(/abcd(?=efg)/)
+            });
+            const options = {
+                config: {
+                    strictExample: true
+                }
+            };
+            const Constructor = Felicity.entityFor(schema, options);
+            const instance = new Constructor();
+
+            expect(() => {
+
+                return instance.example();
+            }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
+            done();
+        });
+
+        it('should respect "strictExample" config at instance example call', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().regex(/abcd(?=efg)/)
+            });
+            const options = {
+                config: {
+                    strictExample: true
+                }
+            };
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor();
+
+            expect(instance.example().name).to.equal('abcd');
+            expect(() => {
+
+                return instance.example(options);
+            }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
+            done();
+        });
     });
 });
