@@ -13,6 +13,68 @@ const describe = lab.describe;
 const it = lab.it;
 const expect = Code.expect;
 
+describe('Any', () => {
+
+    it('should default to string', (done) => {
+
+        const schema = Joi.any();
+        const example = ValueGenerator.any(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an "allow"ed value', (done) => {
+
+        let schema = Joi.any().allow('allowed');
+        let example = ValueGenerator.any(schema);
+
+        expect(example).to.equal('allowed');
+        ExpectValidation(example, schema);
+
+        schema =  Joi.any().allow('allowed1', 'allowed2');
+        example = ValueGenerator.any(schema);
+
+        expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
+        ExpectValidation(example, schema);
+
+        schema = Joi.any().allow(['first', 'second', true, 10]);
+        example = ValueGenerator.any(schema);
+
+        expect(['first', 'second', true, 10].indexOf(example)).to.not.equal(-1);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a "valid" value', (done) => {
+
+        let schema = Joi.any().valid('allowed');
+        let example = ValueGenerator.any(schema);
+
+        expect(example).to.equal('allowed');
+        ExpectValidation(example, schema);
+
+        schema =  Joi.any().valid('allowed1', 'allowed2');
+        example = ValueGenerator.any(schema);
+
+        expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
+        ExpectValidation(example, schema);
+
+        schema = Joi.any().valid([true, 10]);
+        example = ValueGenerator.any(schema);
+
+        expect([true, 10].indexOf(example)).to.not.equal(-1);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an "example" value', (done) => {
+
+        const schema = Joi.any().example(123);
+        const example = ValueGenerator.any(schema);
+
+        expect(example).to.equal(123);
+        ExpectValidation(example, schema, done);
+    });
+});
+
 describe('String', () => {
 
     it('should return a basic string', (done) => {
@@ -980,6 +1042,38 @@ describe('Object', () => {
         });
         const example = ValueGenerator.object(schema);
 
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object without key set as Any.forbidden()', (done) => {
+
+        const schema = Joi.object().keys({
+            allowed  : Joi.any(),
+            forbidden: Joi.any().forbidden(),
+            forbidStr: Joi.string().forbidden(),
+            forbidNum: Joi.number().forbidden()
+        });
+        const example = ValueGenerator.object(schema);
+
+        expect(example.forbidden).to.be.undefined();
+        expect(example.forbidStr).to.be.undefined();
+        expect(example.forbidNum).to.be.undefined();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object without key set as Any.strip()', (done) => {
+
+        const schema = Joi.object().keys({
+            allowed   : Joi.any(),
+            private   : Joi.any().strip(),
+            privateStr: Joi.string().strip(),
+            privateNum: Joi.number().strip()
+        });
+        const example = ValueGenerator.object(schema);
+
+        expect(example.private).to.be.undefined();
+        expect(example.privateStr).to.be.undefined();
+        expect(example.privateNum).to.be.undefined();
         ExpectValidation(example, schema, done);
     });
 });
