@@ -582,6 +582,7 @@ describe('Felicity EntityFor', () => {
             expect(instanceValidity).to.be.an.object();
             expect(instanceValidity.errors).to.be.an.array();
             expect(instanceValidity.success).to.equal(false);
+            expect(instanceValidity.value).to.be.an.object();
             done();
         });
 
@@ -598,6 +599,8 @@ describe('Felicity EntityFor', () => {
 
             expect(instanceValidity.errors).to.equal(null);
             expect(instanceValidity.success).to.equal(true);
+            expect(instanceValidity.value).to.be.an.object();
+
             done();
         });
 
@@ -630,6 +633,7 @@ describe('Felicity EntityFor', () => {
 
                 expect(err).to.equal(null);
                 expect(result.success).to.equal(true);
+                expect(result.value).to.be.an.object();
                 done();
             };
 
