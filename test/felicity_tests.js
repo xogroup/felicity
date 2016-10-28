@@ -315,7 +315,10 @@ describe('Felicity EntityFor', () => {
                     is       : true,
                     then     : Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
-                })
+                }),
+                any        : Joi.any(),
+                anyStrip   : Joi.any().strip(),
+                anyForbid  : Joi.any().forbidden()
             });
             const felicityInstance = new (Felicity.entityFor(schema));
 
@@ -326,8 +329,14 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.date).to.equal(null);
             expect(felicityInstance.bool).to.equal(false);
             expect(felicityInstance.conditional).to.equal({});
+            expect(felicityInstance.any).to.equal(null);
+            expect(felicityInstance.anyStrip).to.equal(null);
+            expect(felicityInstance.anyForbid).to.be.undefined();
             expect(felicityInstance.validate).to.be.a.function();
-            done();
+
+            const mockInstance = felicityInstance.example();
+
+            ExpectValidation(mockInstance, schema, done);
         });
 
         it('should return an object with mixed-type keys for non-compiled schema', (done) => {
