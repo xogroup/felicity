@@ -147,7 +147,7 @@ describe('String', () => {
 
     it('should return a string that matches the given regexp', (done) => {
 
-        const regex = new RegExp(/a{3}b{3}[0-9]{4}/);
+        const regex = new RegExp(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
         const schema = Joi.string().regex(regex);
         const example = ValueGenerator.string(schema);
 
