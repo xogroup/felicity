@@ -243,6 +243,20 @@ describe('Felicity EntityFor', () => {
         done();
     });
 
+    it('should enforce "new" instantiation on returned Contructor', (done) => {
+
+        const schema = {};
+        const Constructor = Felicity.entityFor(schema);
+
+        expect(Constructor).to.be.a.function();
+
+        expect(() => {
+
+            return Constructor();
+        }).to.throw('Objects must be instantiated using new');
+        done();
+    });
+
     describe('Conditional', () => {
 
         it('should default to the "true" driver', (done) => {

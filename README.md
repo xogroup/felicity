@@ -84,7 +84,7 @@ console.log(validInstance);
                 "key": "key2"
             }
         },
-        /*...*/
+        // ...
     ]
 }
 */
@@ -114,6 +114,10 @@ sampleObject
 ## API
 
 See the [API Reference](http://github.com/xogroup/felicity/blob/master/API.md).
+
+## Contributing
+
+We love community and contributions! Please check out our [guidelines](http://github.com/xogroup/felicity/blob/master/CONTRIBUTING.md) before making any PRs.
 
 ## Joi features not yet supported
 
