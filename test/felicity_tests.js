@@ -310,6 +310,7 @@ describe('Felicity EntityFor', () => {
                 }),
                 string     : Joi.string().email().required(),
                 date       : Joi.date().raw().required(),
+                dateFormat : Joi.date().format('YYYY/MM/DD'),
                 bool       : Joi.boolean().required(),
                 conditional: Joi.when('bool', {
                     is       : true,
