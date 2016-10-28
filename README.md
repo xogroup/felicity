@@ -15,7 +15,7 @@ Lead Maintainer: [Wes Tyler](https://github.com/WesTyler)
 Felicity extends Joi by allowing validation to be contained cleanly and nicely in constructors while also allowing easy example generation for documentation, tests and more.
 
 ## Usage
-Given a [joi](//www.github.com/hapijs/joi) schema, instantiate a skeleton object:
+Given a [joi](//www.github.com/hapijs/joi) schema, create an object Constructor and instantiate skeleton objects:
 ```JavaScript
 const Joi      = require('joi'),
       Felicity = require('felicity');
@@ -28,7 +28,8 @@ const joiSchema = Joi.object().keys({
     })
 });
 
-const felicityInstance = new Felicity.skeleton(joiSchema);
+const FelicityConstructor = Felicity.entityFor(joiSchema);
+const felicityInstance = new FelicityConstructor();
 
 console.log(felicityInstance);
 /*
@@ -42,7 +43,7 @@ console.log(felicityInstance);
 */
 ```
 
-the skeleton can then be used to generate a randomized example of valid values:
+the instance can then be used to generate a randomized example of valid values:
 ```JavaScript
 let felicityExample = felicityInstance.example();
 
@@ -62,11 +63,11 @@ console.log(felicityExample);
 */
 ```
 
-if the skeleton is hydrated with data, it can self-validate against the schema it was built upon:
+if the instance is hydrated with data, it can self-validate against the schema it was built upon:
 ```JavaScript
 felicityInstance.key1 = 'A valid string';
 
-let validInstance = felicityInstance.validate();
+const validInstance = felicityInstance.validate();
 
 console.log(validInstance);
 /*
@@ -82,20 +83,66 @@ console.log(validInstance);
                 "value": [],
                 "key": "key2"
             }
-        }
+        },
+        /*...*/
     ]
 }
 */
 ```
-<!--
+
+Alternatively, Felicity can be used to pseudo-randomly generate valid examples directly from a Joi schema:
+```Javascript
+const stringSchema = Joi.string().regex(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
+const sampleString = Felicity.example(stringSchema); // sampleString === 'caa-eff-5144'
+
+const objectSchema = Joi.object().keys({
+    id      : Joi.string().guid(),
+    username: Joi.string().min(6).alphanum(),
+    numbers : Joi.array().items(Joi.number().min(1))
+});
+const sampleObject = Felicity.example(objectSchema);
+/*
+sampleObject
+{
+    id: '0e740417-1708-4035-a495-6bccce560583',
+    username: '4dKp2lHj',
+    numbers: [ 1.0849635479971766 ]
+}
+*/
+```
+
 ## API
 
-See the [API Reference]().
--->
+See the [API Reference](http://github.com/xogroup/felicity/blob/master/API.md).
 
-## Joi features not yet implemented
+## Joi features not yet supported
 
-+ with/without
-+ email
-+ regex
-+ alternatives
+Some Joi schema options are not yet fully supported. Most unsupported features should not cause errors, but may be disregarded by Felicity or may result in behavior other than that documented in the Joi api.
+
+A feature is considered Felicity-supported when it is explicitly covered in tests on both `entityFor` (and associated instance methods) and `example`.
+
+- String
+  - `truncate`
+  - `replace`
+  - `ip`
+  - `uri`
+  - `lowercase/uppercase`
+  - `trim`
+- Date
+  - `format`
+- Function
+  - `arity/minArity/maxArity`
+  - `ref`
+- Array
+  - `single`
+  - `unique`
+- Object
+  - `pattern`
+  - `and`
+  - `or`
+  - `rename`
+  - `unknown`
+  - `type`
+  - `schema`
+  - `requiredKeys`
+  - `optionalKeys`
