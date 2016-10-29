@@ -120,6 +120,14 @@ sampleObject
 
 See the [API Reference](http://github.com/xogroup/felicity/blob/master/API.md).
 
+## Node Dependency
+Node versions to use to avoid polyfill of `Buffer.alloc`.
+
+- v4.5.x+
+- v5.10.x+
+- v6.0.x+
+- v7.0.x+
+
 ## Contributing
 
 We love community and contributions! Please check out our [guidelines](http://github.com/xogroup/felicity/blob/master/CONTRIBUTING.md) before making any PRs.
