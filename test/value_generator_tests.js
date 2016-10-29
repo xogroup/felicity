@@ -708,6 +708,42 @@ describe('Function', () => {
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a function with arity(10)', (done) => {
+
+        const schema = Joi.func().arity(10);
+        const example = ValueGenerator.func(schema);
+
+        expect(example).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a function with minArity(3)', (done) => {
+
+        const schema = Joi.func().minArity(3);
+        const example = ValueGenerator.func(schema);
+
+        expect(example).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a function with maxArity(4)', (done) => {
+
+        const schema = Joi.func().maxArity(4);
+        const example = ValueGenerator.func(schema);
+
+        expect(example).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a function with minArity(3) and maxArity(4)', (done) => {
+
+        const schema = Joi.func().minArity(3).maxArity(4);
+        const example = ValueGenerator.func(schema);
+
+        expect(example).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Array', () => {
