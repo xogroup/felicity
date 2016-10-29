@@ -909,6 +909,22 @@ describe('Array', () => {
         expect(example.length).to.be.at.least(6);
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a single item array with a number', (done) => {
+
+        const schema = Joi.array().items(Joi.number().required()).single();
+        const example = ValueGenerator.array(schema);
+        expect(example).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a single item with a number', (done) => {
+
+        const schema = Joi.array().items(Joi.number().required()).single(false);
+        const example = ValueGenerator.array(schema);
+        expect(example[0]).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Alternatives', () => {
