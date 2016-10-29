@@ -124,6 +124,14 @@ See the [API Reference](http://github.com/xogroup/felicity/blob/master/API.md).
 
 We love community and contributions! Please check out our [guidelines](http://github.com/xogroup/felicity/blob/master/CONTRIBUTING.md) before making any PRs.
 
+## Setting up for development
+
+Getting yourself setup and bootstrapped is easy.  Use the following commands after you clone down.
+
+```
+npm install && npm test
+```
+
 ## Joi features not yet supported
 
 Some Joi schema options are not yet fully supported. Most unsupported features should not cause errors, but may be disregarded by Felicity or may result in behavior other than that documented in the Joi api.
