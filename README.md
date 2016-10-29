@@ -14,6 +14,11 @@ Lead Maintainer: [Wes Tyler](https://github.com/WesTyler)
 ## Introduction
 Felicity extends Joi by allowing validation to be contained cleanly and nicely in constructors while also allowing easy example generation for documentation, tests and more.
 
+## Installation
+```
+npm install felicity
+```
+
 ## Usage
 Given a [joi](//www.github.com/hapijs/joi) schema, create an object Constructor and instantiate skeleton objects:
 ```JavaScript
@@ -118,6 +123,14 @@ See the [API Reference](http://github.com/xogroup/felicity/blob/master/API.md).
 ## Contributing
 
 We love community and contributions! Please check out our [guidelines](http://github.com/xogroup/felicity/blob/master/CONTRIBUTING.md) before making any PRs.
+
+## Setting up for development
+
+Getting yourself setup and bootstrapped is easy.  Use the following commands after you clone down.
+
+```
+npm install && npm test
+```
 
 ## Joi features not yet supported
 
