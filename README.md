@@ -146,7 +146,6 @@ A feature is considered Felicity-supported when it is explicitly covered in test
   - `lowercase/uppercase`
   - `trim`
 - Function
-  - `arity/minArity/maxArity`
   - `ref`
 - Array
   - `single`
