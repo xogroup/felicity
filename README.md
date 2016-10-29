@@ -132,14 +132,6 @@ Getting yourself setup and bootstrapped is easy.  Use the following commands aft
 npm install && npm test
 ```
 
-Felicity makes use of the Node.js `Buffer.alloc` function instead of the unsafe and deprecated `Buffer` constructor.
-As a result, one of the following minimum versions of [Node.js](//nodejs.org/en/download/releases/) is required:
-
-- v4.5.0+
-- v5.10.0+
-- v6.0.0+
-- v7.0.0+
-
 ## Joi features not yet supported
 
 Some Joi schema options are not yet fully supported. Most unsupported features should not cause errors, but may be disregarded by Felicity or may result in behavior other than that documented in the Joi api.
