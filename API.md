@@ -50,7 +50,7 @@ partialInstance
 
 The Constructor function returned by `entityFor` has the following properties/methods available for use without instantiation of `new` objects.
 - `prototype.schema` - The Joi validation schema provided to `entityFor`.
-- `example([options])` - Returns a valid pseudo-randomly generated example based on the Constructor's `prototype.schema`. Accepts an optional [`[options]`](#example-options) parameter.
+- `example([options])` - Returns a valid pseudo-randomly generated example Javascript Object based on the Constructor's `prototype.schema`. Accepts an optional [`[options]`](#example-options) parameter.
     ```Javascript
     // using schema and Conversation constructor from "entityFor" code example:
     const exampleConversation = Conversation.example();
@@ -99,7 +99,10 @@ The Constructor function returned by `entityFor` has the following properties/me
 
 The `new` instances of the Constructor function returned by `entityFor` have the following properties/methods available.
 - `schema` - The Joi schema provided to `entityFor`. Non-enumerable, inherited from the Constructor.
-- `example([options])` - Returns a valid pseudo-randomly generated example based on the instance's `schema` property. Accepts an optional [`[options]`](#example-options) parameter.
+- `example([options])` - Returns a new valid pseudo-randomly generated example Javascript Object based on the instance's `schema` property.
+  Accepts an optional [`[options]`](#example-options) parameter.
+
+  Does not modify the instance.
 - `validate([callback])` - Joi-validates the instance against the instance's `schema` property.
   Returns the same validationObject as the [`Constructor.validate`](#constructor-methods) method unless `callback` is provided, in which case `callback(validationObject)` is called.
 
@@ -121,7 +124,7 @@ const retryValidation = instance.validate(); // retryValidation === { success: t
 
 ###`example(schema, [options])`
 
-Returns a valid pseudo-randomly generated example based on the provided Joi schema.
+Returns a valid pseudo-randomly generated example Javascript Object based on the provided Joi schema.
 
 Accepts an optional [`[options]`](#example-options) parameter.
 
