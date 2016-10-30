@@ -1,6 +1,7 @@
 language: node_js
 
 node_js:
+  - "4.4.x"
   - "4"
   - "6"
   - "node"
