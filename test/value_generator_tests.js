@@ -264,6 +264,71 @@ describe('String', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a IPv4 when given no options', (done) => {
+
+        const schema = Joi.string().ip();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a IPv4 when given options and cidr is forbidden', (done) => {
+
+        const schema = Joi.string().ip(
+            {
+                cidr : 'forbidden'
+            });
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a IPv4 when given options', (done) => {
+
+        const schema = Joi.string().ip(
+            {
+                version : ['ipv4']
+            });
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a IPv4 when given options and cidr is forbidden', (done) => {
+
+        const schema = Joi.string().ip(
+            {
+                version : ['ipv4'],
+                cidr : 'forbidden'
+            });
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a IPv6 when given options', (done) => {
+
+        const schema = Joi.string().ip(
+            {
+                version : ['ipv6']
+            });
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a IPv6 when given options and cidr is forbidden', (done) => {
+
+        const schema = Joi.string().ip(
+            {
+                version : ['ipv6'],
+                cidr : 'forbidden'
+            });
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {
