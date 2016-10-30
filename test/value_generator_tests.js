@@ -329,6 +329,30 @@ describe('String', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return uppercase value', (done) => {
+
+        const schema = Joi.string().uppercase();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return uppercase value for guid to test chaining', (done) => {
+
+        const schema = Joi.string().guid().uppercase();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return lowercase value', (done) => {
+
+        const schema = Joi.string().lowercase();
+        const example = ValueGenerator.string(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Number', () => {

@@ -142,7 +142,6 @@ A feature is considered Felicity-supported when it is explicitly covered in test
   - `truncate`
   - `replace`
   - `uri`
-  - `lowercase/uppercase`
   - `trim`
 - Function
   - `ref`
