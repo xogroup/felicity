@@ -141,7 +141,6 @@ A feature is considered Felicity-supported when it is explicitly covered in test
 - String
   - `truncate`
   - `replace`
-  - `ip`
   - `uri`
   - `lowercase/uppercase`
   - `trim`
