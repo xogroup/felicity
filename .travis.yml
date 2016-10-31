@@ -1,9 +1,15 @@
 language: node_js
-
 node_js:
-  - "4.4"
-  - "4"
-  - "6"
-  - "node"
-
+- '4.4'
+- '4'
+- '6'
+- node
 sudo: false
+deploy:
+  provider: npm
+  email: xo-npmjs.group@xogrp.com
+  api_key:
+    secure: oLQX3BeUTMu/DXsaqI4ElVhPvc77dCyyacieNRFE7KpFy73xPQh3vh9BK5gB0qwDegbJS5GL2bYM+ArX9Z/TkfyXGyJSSUFL2ZRsBzhSHFl8/L2x6M1K1cZS+vNXQ2oIgF2aiY9bWjvXeZ+p0xL+QyLGWcj20zOKbmLUh39d2WwtmRwEv3qe/QbK9U4s98lki63O6EuxwkWRuyTECRTUkK8VnkWJ34EkaUVT2jWWF/mJQ7Yw62fHuzeyn7Ltqt+KuzZpwGKTm3qF3fsthpR8Qrp46Cq8wvruAjHy4AmqKK6HAX1gnX9eQn25cnUX4xln47CNNZVDfdgmPimvAcp78jsaRsez7H2GAoPZAzwi4VkInAjBWecRhiVnwXW2DJeaQn4PXtVAPF0LG/tYBrgAN3mjmWyC6/3hYqqX1RE117o8IMQ7DzS2N+SpWX9Tqq9X97jf/U0PpYZICNywkdtgWhLGSqFCNaZ7pJNiBqhCWwmtcSHpfAUAw8euKrp9s7b6O4NmgOP23fgeNTqMC0mcpOeVUkW3zzj+Gz3WTfYhpuBjbVBvK0HmoF7VSxPGXEPM7sjDqshhWLDnnQjkiW7jqRuFkV2GafumDEQsA7wO6fzx2E/w5JfHjzDXI/RTckKPPbnwf4MOR6uzPo5W0fl3flip8ayc/LlD4USuZa9u80I=
+  on:
+    tags: true
+    repo: xogroup/felicity
