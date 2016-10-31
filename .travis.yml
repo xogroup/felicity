@@ -13,3 +13,5 @@ deploy:
   on:
     tags: true
     repo: xogroup/felicity
+before_install:
+  npm install -g npm@'>=2.13.5'
