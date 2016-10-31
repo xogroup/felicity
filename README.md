@@ -139,10 +139,7 @@ Some Joi schema options are not yet fully supported. Most unsupported features s
 A feature is considered Felicity-supported when it is explicitly covered in tests on both `entityFor` (and associated instance methods) and `example`.
 
 - String
-  - `truncate`
-  - `replace`
   - `uri`
-  - `trim`
 - Function
   - `ref`
 - Array
