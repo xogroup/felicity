@@ -243,7 +243,7 @@ describe('Felicity EntityFor', () => {
         done();
     });
 
-    it('should enforce "new" instantiation on returned Contructor', (done) => {
+    it('should enforce "new" instantiation on returned Constructor', (done) => {
 
         const schema = {};
         const Constructor = Felicity.entityFor(schema);
@@ -255,6 +255,60 @@ describe('Felicity EntityFor', () => {
             return Constructor();
         }).to.throw('Objects must be instantiated using new');
         done();
+    });
+
+    describe('"Action" schema options', () => {
+
+        it('should not interfere with String.truncate', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().max(5).truncate()
+            });
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor();
+            const example = instance.example();
+            const validation = Constructor.validate({
+                name: 'longer than 5 chars'
+            });
+
+            expect(instance.name).to.equal(null);
+            expect(example.name.length).to.be.at.most(5);
+            expect(validation.errors).to.equal(null);
+            expect(validation.value).to.equal({ name: 'longe' });
+            ExpectValidation(example, schema, done);
+        });
+
+        it('should not interfere with String.replace', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().replace(/b/gi, 'a')
+            });
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor();
+            const example = instance.example();
+            const validation = Constructor.validate({ name: 'abbabba' });
+
+            expect(instance.name).to.equal(null);
+            expect(validation.errors).to.equal(null);
+            expect(validation.value).to.equal({ name: 'aaaaaaa' });
+            ExpectValidation(example, schema, done);
+        });
+
+        it('should not interfere with String.trim', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().trim()
+            });
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor({ name: '   abbabba   ' });
+            const example = instance.example();
+            const validation = instance.validate();
+
+            expect(instance.name).to.equal('abbabba');
+            expect(validation.errors).to.equal(null);
+            expect(validation.value).to.equal({ name: 'abbabba' });
+            ExpectValidation(example, schema, done);
+        });
     });
 
     describe('Conditional', () => {
