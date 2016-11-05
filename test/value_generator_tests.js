@@ -1230,4 +1230,26 @@ describe('Object', () => {
         expect(example.privateNum).to.be.undefined();
         ExpectValidation(example, schema, done);
     });
+
+    it('should return an object with single rename() invocation', (done) => {
+
+        const schema = Joi.object().keys({
+            b : Joi.number()
+        }).rename('a','b');
+        const example = ValueGenerator.object(schema);
+
+        expect(example.a).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object with double rename() invocation', (done) => {
+
+        const schema = Joi.object().keys({
+            b : Joi.number()
+        }).rename('a','b').rename('c','b', { multiple: true });
+        const example = ValueGenerator.object(schema);
+
+        expect(example.a).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
 });
