@@ -12,7 +12,11 @@ Badges go here once we're public and pushed to npm
 Lead Maintainer: [Wes Tyler](https://github.com/WesTyler)
 
 ## Introduction
-Felicity extends Joi by allowing validation to be contained cleanly and nicely in constructors while also allowing easy example generation for documentation, tests and more.
+> **fe·lic·i·ty** *noun* intense happiness; the ability to find appropriate expression for one's thoughts or intentions.
+
+Felicity provides object instances, or expressions, of the data intentions represented by Joi schema.
+
+Felicity builds upon Joi by allowing validation to be contained cleanly and nicely in constructors while also allowing easy example generation for documentation, tests and more.
 
 ## Installation
 ```
