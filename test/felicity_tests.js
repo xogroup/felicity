@@ -311,6 +311,35 @@ describe('Felicity EntityFor', () => {
         });
     });
 
+    describe('"Presence" object binary schema options', () => {
+
+        it('should not interfere with and', (done) => {
+
+            const schema = Joi.object().keys({
+                a: Joi.string(),
+                b: Joi.string()
+            }).and('a', 'b');
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const example = instance.example();
+
+            ExpectValidation(example, schema, done);
+        });
+
+        it('should not interfere with or', (done) => {
+
+            const schema = Joi.object().keys({
+                a: Joi.string(),
+                b: Joi.string()
+            }).or('a', 'b');
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const example = instance.example();
+
+            ExpectValidation(example, schema, done);
+        });
+    });
+
     describe('Conditional', () => {
 
         it('should default to the "true" driver', (done) => {
