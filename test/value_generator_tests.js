@@ -1252,4 +1252,12 @@ describe('Object', () => {
         expect(example.a).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a schema object with schema() invocation', (done) => {
+
+        const schema = Joi.object().schema();
+        const example = ValueGenerator.object(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
