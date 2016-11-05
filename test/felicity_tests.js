@@ -340,6 +340,35 @@ describe('Felicity EntityFor', () => {
         });
     });
 
+    describe('"Presence" object property check schema options', () => {
+
+        it('should not interfere with unknown when set to true', (done) => {
+
+            const schema = Joi.object().keys({
+                a: Joi.string(),
+                b: Joi.string()
+            }).unknown(true);
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const example = instance.example();
+
+            ExpectValidation(example, schema, done);
+        });
+
+        it('should not interfere with unknown when set to false', (done) => {
+
+            const schema = Joi.object().keys({
+                a: Joi.string(),
+                b: Joi.string()
+            }).unknown(false);
+            const Constructor = Felicity.entityFor(schema);
+            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const example = instance.example();
+
+            ExpectValidation(example, schema, done);
+        });
+    });
+
     describe('Conditional', () => {
 
         it('should default to the "true" driver', (done) => {
