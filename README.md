@@ -152,7 +152,6 @@ A feature is considered Felicity-supported when it is explicitly covered in test
   - `pattern`
   - `and`
   - `or`
-  - `rename`
   - `unknown`
   - `type`
   - `schema`
