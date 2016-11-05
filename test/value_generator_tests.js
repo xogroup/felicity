@@ -1230,4 +1230,12 @@ describe('Object', () => {
         expect(example.privateNum).to.be.undefined();
         ExpectValidation(example, schema, done);
     });
+
+    it('should return an object with Joi schema', (done) => {
+
+        const schema = Joi.object().schema();
+        const example = ValueGenerator.object(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
