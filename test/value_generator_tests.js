@@ -1232,6 +1232,7 @@ describe('Object', () => {
     });
 
     it('should return an object with Joi schema', (done) => {
+
         const schema = Joi.object().schema();
         const example = ValueGenerator.object(schema);
 
