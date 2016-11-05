@@ -1,3 +1,11 @@
+# Welcome to Felicity - PLEASE TAKE NOTE
+As of 11/05/16, Felicity v1.0.0 is not released to NPM yet. The deployed version 0.0.4 is not stable or up to date with our master branch.
+
+Thank you for checking us out, and please take a look again in the coming week to stay tuned for the official release of v1.0.0!
+
+In the meantime, feel free to poke around and explore Felicity!
+
+
 # felicity
 Felicity provides object constructors capable of validation along with example structures using the [Joi](//www.github.com/hapijs/joi) schema description language and validator.
 
