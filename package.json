@@ -4,8 +4,8 @@
   "description": "Javascript object instantiation from Joi schema",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node ./node_modules/.bin/lab -t 100 -a code -L",
-    "test-cover": "node ./node_modules/.bin/lab -a code -L -r html > test/test.html && open test/test.html"
+    "test": "lab -t 100 -a code -L",
+    "test-cover": "lab -a code -L -r html > test/test.html && open test/test.html"
   },
   "repository": "git://github.com/xogroup/felicity",
   "keywords": [
