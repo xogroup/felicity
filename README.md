@@ -12,10 +12,10 @@ Felicity provides object constructors capable of validation along with example s
 [![Build Status](https://travis-ci.org/xogroup/felicity.svg?branch=master)](https://travis-ci.org/xogroup/felicity)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/xogroup/felicity/badge.svg)](https://snyk.io/test/github/xogroup/felicity)
+[![NSP Status](https://nodesecurity.io/orgs/xo-group/projects/0e507cfa-6ee8-4226-9613-9a4208fa2e63/badge)](https://nodesecurity.io/orgs/xo-group/projects/0e507cfa-6ee8-4226-9613-9a4208fa2e63)
 <!--
 Badges go here once we're public and pushed to npm
 + https://badge.fury.io/
-+ https://nodesecurity.io/
 -->
 
 Lead Maintainer: [Wes Tyler](https://github.com/WesTyler)
