@@ -9,6 +9,7 @@ In the meantime, feel free to poke around and explore Felicity!
 # felicity
 Felicity provides object constructors capable of validation along with example structures using the [Joi](//www.github.com/hapijs/joi) schema description language and validator.
 
+[![npm version](https://badge.fury.io/js/felicity.svg)](https://badge.fury.io/js/felicity)
 [![Build Status](https://travis-ci.org/xogroup/felicity.svg?branch=master)](https://travis-ci.org/xogroup/felicity)
 
 [![Known Vulnerabilities](https://snyk.io/test/github/xogroup/felicity/badge.svg)](https://snyk.io/test/github/xogroup/felicity)
