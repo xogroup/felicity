@@ -8,7 +8,7 @@
 
 #### What are you trying to achieve or the steps to reproduce ?
 
-Describe your issue here, include any schemas and inputs if needed.
+<!--- Describe your issue here, include any schemas and inputs if needed. -->
 
 #### What result did you expect ?
 
