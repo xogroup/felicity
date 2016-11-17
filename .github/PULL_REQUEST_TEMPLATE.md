@@ -13,6 +13,7 @@
 
 ## Types of changes
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+- [ ] Documentation only (no changes to either `lib/` or `test/` files)
 - [ ] Bug fix (non-breaking change which fixes an issue. you didn't modify existing tests)
 - [ ] New feature (non-breaking change which adds functionality. you added at least one new test)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change. you had to modify existing tests.)
