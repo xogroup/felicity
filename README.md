@@ -136,7 +136,7 @@ See the [API Reference](http://github.com/xogroup/felicity/blob/master/API.md).
 
 ## Contributing
 
-We love community and contributions! Please check out our [guidelines](http://github.com/xogroup/felicity/blob/master/CONTRIBUTING.md) before making any PRs.
+We love community and contributions! Please check out our [guidelines](http://github.com/xogroup/felicity/blob/master/.github/CONTRIBUTING.md) before making any PRs.
 
 ## Setting up for development
 
