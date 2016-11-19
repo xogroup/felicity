@@ -217,7 +217,7 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example.password.match(passwordPattern)).to.not.equal(null);
-        // expect(example.birthyear).to.be.a.number();
+        expect(example.birthyear).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
 });
