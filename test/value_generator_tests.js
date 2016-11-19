@@ -763,19 +763,6 @@ describe('Date', () => {
         expect(example).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
-
-    it('should return a date in the given format', (done) => {
-
-        let schema = Joi.date().format('DD/MM/YYYY');
-        let example = ValueGenerator.date(schema);
-
-        ExpectValidation(example, schema);
-
-        schema = Joi.date('YYYY/MM/DD');
-        example = ValueGenerator.date(schema);
-
-        ExpectValidation(example, schema, done);
-    });
 });
 
 describe('Function', () => {

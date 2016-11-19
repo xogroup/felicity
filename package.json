@@ -22,10 +22,12 @@
   "dependencies": {
     "buffer-alloc": "^0.1.1",
     "hoek": "4.1.0",
-    "joi": "9.2.0",
-    "moment": "2.15.2",
+    "joi": "10.x",
     "randexp": "0.4.3",
     "uuid": "2.0.3"
+  },
+  "peerDependencies": {
+    "joi": "10.x"
   },
   "devDependencies": {
     "code": "4.0.0",
