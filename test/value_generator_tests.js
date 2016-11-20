@@ -649,6 +649,14 @@ describe('Boolean', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should validate when a mix of truthy and falsy is set', (done) => {
+
+        const schema = Joi.boolean().truthy([1, 'y']).falsy([0, 'n']);
+        const example = ValueGenerator.boolean(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Binary', () => {
