@@ -593,6 +593,70 @@ describe('Boolean', () => {
         }
         done();
     });
+
+    it('should return a truthy value when singlar number', (done) => {
+
+        const schema = Joi.boolean().truthy(1);
+        const example = ValueGenerator.boolean(schema);
+
+        expect(example).to.be.a.number();
+        expect(example).to.equal(1);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a truthy value when singlar string', (done) => {
+
+        const schema = Joi.boolean().truthy('y');
+        const example = ValueGenerator.boolean(schema);
+
+        expect(example).to.be.a.string();
+        expect(example).to.equal('y');
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a truthy value when pluralized', (done) => {
+
+        const schema = Joi.boolean().truthy([1, 'y']);
+        const example = ValueGenerator.boolean(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a falsy value when singlar number', (done) => {
+
+        const schema = Joi.boolean().falsy(0);
+        const example = ValueGenerator.boolean(schema);
+
+        expect(example).to.be.a.number();
+        expect(example).to.equal(0);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a falsy value when singlar string', (done) => {
+
+        const schema = Joi.boolean().falsy('n');
+        const example = ValueGenerator.boolean(schema);
+
+        expect(example).to.be.a.string();
+        expect(example).to.equal('n');
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a falsy value when pluralized', (done) => {
+
+        const schema = Joi.boolean().falsy([0, 'n']);
+        const example = ValueGenerator.boolean(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should validate when a mix of truthy and falsy is set', (done) => {
+
+        const schema = Joi.boolean().truthy([1, 'y']).falsy([0, 'n']);
+        const example = ValueGenerator.boolean(schema);
+
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Binary', () => {
