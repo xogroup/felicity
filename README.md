@@ -160,6 +160,5 @@ A feature is considered Felicity-supported when it is explicitly covered in test
   - `unique`
 - Object
   - `pattern`
-  - `type`
   - `requiredKeys`
   - `optionalKeys`

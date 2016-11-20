@@ -1311,4 +1311,32 @@ describe('Object', () => {
 
         ExpectValidation(example, schema, done);
     });
+
+    it('should return an object of type Regex', (done) => {
+
+        const schema = Joi.object().type(RegExp);
+        const example = ValueGenerator.object(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object of type Error', (done) => {
+
+        const schema = Joi.object().type(Error);
+        const example = ValueGenerator.object(schema);
+
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object of custom type', (done) => {
+
+        const Class1 = function () {};
+        Class1.prototype.testFunc = function () {};
+
+        const schema = Joi.object().type(Class1);
+        const example = ValueGenerator.object(schema);
+
+        expect(example.testFunc).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
 });

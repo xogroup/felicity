@@ -135,6 +135,19 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object with custom type', (done) => {
+
+        const Class1 = function () {};
+        Class1.prototype.testFunc = function () {};
+
+        const schema = Joi.object().type(Class1);
+        const example = Felicity.example(schema);
+
+        expect(example).to.be.an.instanceof(Class1);
+        expect(example.testFunc).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+
     it('should not return an object with default values when provided ignoreDefaults config', (done) => {
 
         const schema = Joi.object().keys({
