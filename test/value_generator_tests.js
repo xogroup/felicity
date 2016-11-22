@@ -217,6 +217,16 @@ describe('String', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a string that does not match the inverted regexp', (done) => {
+
+        const regex = new RegExp(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
+        const schema = Joi.string().regex(regex, { invert: true });
+        const example = ValueGenerator.string(schema);
+
+        expect(example.match(regex)).to.equal(null);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return a case-insensitive string', (done) => {
 
         const schema = Joi.string().valid('A').insensitive();
