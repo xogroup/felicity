@@ -23,6 +23,8 @@
     "buffer-alloc": "^0.1.1",
     "hoek": "4.1.0",
     "joi": "10.x",
+    "joi-date-extensions": "^1.0.1",
+    "moment": "^2.17.1",
     "randexp": "0.4.3",
     "uuid": "2.0.3"
   },
