@@ -2,10 +2,11 @@
 
 const Code = require('code');
 const Felicity = require('../lib');
-const Joi = require('joi');
+const Joi = require('../lib/Joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
 const ExpectValidation = require('./test_helpers').expectValidation;
+const Moment = require('moment');
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
@@ -101,6 +102,18 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.date();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a moment formatted date', (done) => {
+
+        const fmt = 'HH:mm';
+        const schema = Joi.date().format(fmt);
+        const example = Felicity.example(schema);
+        const moment = new Moment(example, fmt, true);
+
+        expect(example).to.be.a.string();
+        expect(moment.isValid()).to.equal(true);
         ExpectValidation(example, schema, done);
     });
 
