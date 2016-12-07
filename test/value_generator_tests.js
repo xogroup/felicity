@@ -2,11 +2,12 @@
 
 const Code = require('code');
 const Hoek = require('hoek');
-const Joi = require('joi');
+const Joi = require('../lib/Joi');
 const Lab = require('lab');
 const Permutations = require('./test_helpers').permutations;
 const ExpectValidation = require('./test_helpers').expectValidation;
 const ValueGenerator = require('../lib/helpers').valueGenerator;
+const Moment = require('moment');
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
@@ -835,6 +836,18 @@ describe('Date', () => {
         const example = ValueGenerator.date(schema);
 
         expect(example).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a moment formatted date', (done) => {
+
+        const fmt = 'HH:mm';
+        const schema = Joi.date().format(fmt);
+        const example = ValueGenerator.date(schema);
+        const moment = new Moment(example, fmt, true);
+
+        expect(example).to.be.a.string();
+        expect(moment.isValid()).to.equal(true);
         ExpectValidation(example, schema, done);
     });
 });
