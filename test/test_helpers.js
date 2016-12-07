@@ -2,7 +2,7 @@
 
 const Code = require('code');
 const Hoek = require('hoek');
-const Joi = require('joi');
+const Joi = require('../lib/Joi');
 const expect = Code.expect;
 
 const permutations = function (requirements, exclusionSet) {
