@@ -2,7 +2,7 @@
 
 const Code = require('code');
 const Felicity = require('../lib');
-const Joi = require('../lib/Joi');
+const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
 const ExpectValidation = require('./test_helpers').expectValidation;
