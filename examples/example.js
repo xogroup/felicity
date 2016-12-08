@@ -1,6 +1,6 @@
 'use strict';
 
-const Joi = require('../lib/Joi');
+const Joi = require('../lib/joi');
 const Felicity = require('../lib/index');
 
 const exampleFromSchema = function (callback) {

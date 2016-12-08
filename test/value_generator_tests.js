@@ -2,7 +2,7 @@
 
 const Code = require('code');
 const Hoek = require('hoek');
-const Joi = require('../lib/Joi');
+const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Permutations = require('./test_helpers').permutations;
 const ExpectValidation = require('./test_helpers').expectValidation;

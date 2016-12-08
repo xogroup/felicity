@@ -1,7 +1,7 @@
 'use strict';
 
 const Code = require('code');
-const Joi = require('../lib/Joi');
+const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
 const DescriptionCompiler = require('../lib/helpers').descriptionCompiler;
