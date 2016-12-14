@@ -166,7 +166,7 @@ Note: in most cases, there is no difference. The only known cases where this may
     const instance = new (Felicity.entityFor(schema)); // instance === { name: null }
     const mockInstance = instance.example(); // mockInstance === { name: 'abcd' }
 
-    const strictInstance = new (Felicity.entityFor(schema, { config: { strictExample: true } })); strictInstance === { name: null }
+    const strictInstance = new (Felicity.entityFor(schema, { config: { strictExample: true } })); // strictInstance === { name: null }
     const mockStrict = strictInstance.example(); // ValidationError
 ```
 
