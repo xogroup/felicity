@@ -682,7 +682,33 @@ describe('Felicity EntityFor', () => {
             done();
         });
 
-        it('should include valid and strip invalid/unknown input values', (done) => {
+        it('should include valid input with strictInput set to true', (done) => {
+
+            const schema = {
+                string: Joi.string().guid().required(),
+                number: Joi.number().multiple(13).min(26).required(),
+                object: Joi.object().keys({
+                    id: Joi.string().min(3).default('OKC').required(),
+                    code: Joi.number().required()
+                }).required()
+            };
+            const hydratedInput = {
+                string: Uuid.v4(),
+                number: 39,
+                object: {
+                    id: 'ATX',
+                    code: 200
+                }
+            };
+            const felicityInstance = new (Felicity.entityFor(schema, { config: { strictInput: true } }))(hydratedInput);
+
+            expect(felicityInstance.string).to.equal(hydratedInput.string);
+            expect(felicityInstance.number).to.equal(hydratedInput.number);
+            expect(felicityInstance.object).to.equal(hydratedInput.object);
+            done();
+        });
+
+        it('should strip unknown input values', (done) => {
 
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
@@ -712,6 +738,51 @@ describe('Felicity EntityFor', () => {
                 conditional: true
             };
             const felicityInstance = new (Felicity.entityFor(schema))(hydrationData);
+
+            expect(felicityInstance.innerObject).to.be.an.object();
+            expect(felicityInstance.innerObject.innerArray).to.equal([]);
+            expect(felicityInstance.innerObject.innerString).to.equal(hydrationData.innerObject.innerString);
+            expect(felicityInstance.innerObject.number).to.equal(3);
+            expect(felicityInstance.string).to.equal(hydrationData.string);
+            expect(felicityInstance.date).to.equal(hydrationData.date);
+            expect(felicityInstance.binary).to.equal(hydrationData.binary);
+            expect(felicityInstance.fake).to.be.undefined();
+            expect(felicityInstance.bool).to.equal(hydrationData.bool);
+            expect(felicityInstance.conditional).to.equal(hydrationData.conditional);
+            expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+
+        it('should strip unknown and invalid input values with strictInput set to true', (done) => {
+
+            const schema = Joi.object().keys({
+                innerObject: Joi.object().keys({
+                    innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
+                    number    : Joi.number().required().default(3),
+                    innerString: Joi.string().required()
+                }),
+                string     : Joi.string().email().required(),
+                date       : Joi.date().raw().required(),
+                binary     : Joi.binary().required(),
+                bool       : Joi.boolean().required(),
+                conditional: Joi.when('bool', {
+                    is       : true,
+                    then     : Joi.object().keys().required(),
+                    otherwise: Joi.boolean().required()
+                })
+            });
+            const hydrationData = {
+                innerObject: {
+                    innerString: false
+                },
+                string: 'example@email.com',
+                date  : 'not a date',
+                binary: 74,
+                fake  : true,
+                bool  : false,
+                conditional: true
+            };
+            const felicityInstance = new (Felicity.entityFor(schema, { config: { strictInput: true } }))(hydrationData);
 
             expect(felicityInstance.innerObject).to.be.an.object();
             expect(felicityInstance.innerObject.innerArray).to.equal([]);
