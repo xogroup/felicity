@@ -152,6 +152,25 @@ All options parameters must be an object with property `config`. Properties on t
 
 ####`entityFor` Options
 
+- `strictInput` - default `false`. Default behavior is to not run known properties through Joi validation upon object instantiation.
+
+If set to `true`, all input will be validated, and only properties that pass validation will be utilized on the returned object.
+All others will be returned in nulled/emptied form as if there was no input for that field.
+
+```Javascript
+const schema = Joi.object().keys({
+    id: Joi.string().guid()
+});
+const input = {
+    id: '12345678' // not a valid GUID
+};
+const Document = Felicity.entityFor(schema);
+const document = new Document(input); // { id: '12345678' }
+
+const StrictDocument = Felicity.entityFor(schema, { config: { strictInput: true } });
+const strictDocument = new StrictDocument(input); // { id: null }
+```
+
 - `strictExample` - default `false`. Default behavior is to not run examples through Joi validation before returning.
 
 If set to `true`, example will be validated prior to returning. 
