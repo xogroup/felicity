@@ -283,6 +283,55 @@ describe('Felicity EntityFor', () => {
         done();
     });
 
+    describe('Constructor instances', () => {
+
+        it('should return a validation object', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().required()
+            });
+            const Thing = Felicity.entityFor(schema);
+            const thing = new Thing();
+
+            expect(thing.validate().success).to.exist().and.equal(false);
+            expect(thing.validate().errors).to.exist().and.be.an.array();
+            expect(thing.validate().value).to.exist().and.equal({
+                name: null
+            });
+            done();
+        });
+
+        it('should follow the standard Node callback signature for .validate', (done) => {
+
+            const schema = Joi.object().keys({
+                name: Joi.string().required()
+            });
+            const Thing = Felicity.entityFor(schema);
+            const thing = new Thing();
+
+            thing.validate((err, result) => {
+
+                expect(err).to.exist();
+                expect(err).to.exist().and.be.an.array();
+                expect(result).to.be.null();
+
+                const validThing = new Thing({
+                    name: 'pass'
+                });
+
+                validThing.validate((err, validationResult) => {
+
+                    expect(err).to.be.null();
+                    expect(validationResult).to.be.an.object();
+                    expect(validationResult.success).to.exist().and.equal(true);
+                    expect(validationResult.value).to.exist().and.be.an.object();
+                    expect(validationResult.errors).to.be.null();
+                    done();
+                });
+            });
+        });
+    });
+
     describe('"Action" schema options', () => {
 
         it('should not interfere with String.truncate', (done) => {
