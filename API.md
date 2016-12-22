@@ -68,7 +68,7 @@ The Constructor function returned by `entityFor` has the following properties/me
     */
     ```
 - `validate(input, [callback])` - Joi-validates the provided input against the Constructor's `prototype.schema`.
-  Returns the below validationObject unless `callback` is provided, in which case `callback(validationObject)` is called.
+  Returns the below validationObject unless `callback` is provided, in which case `callback(errors, validationObject)` is called.
   - `validationObject` - the result of Joi validation has properties:
     - `success` - boolean. `true` if Joi validation is successful, `false` if input fails Joi validation.
     - `errors` - null if successful validation, array of all Joi validation error details if unsuccessful validation
@@ -104,7 +104,7 @@ The `new` instances of the Constructor function returned by `entityFor` have the
 
   Does not modify the instance.
 - `validate([callback])` - Joi-validates the instance against the instance's `schema` property.
-  Returns the same validationObject as the [`Constructor.validate`](#constructor-methods) method unless `callback` is provided, in which case `callback(validationObject)` is called.
+  Returns the same validationObject as the [`Constructor.validate`](#constructor-methods) method unless `callback` is provided, in which case `callback(errors, validationObject)` is called.
 
 ```Javascript
 const schema = Joi.object().keys({
