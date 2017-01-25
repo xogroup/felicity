@@ -440,6 +440,15 @@ describe('Number', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a number which has equal .min and .max requirements', (done) => {
+
+        const schema = Joi.number().min(1).max(1);
+        const example = ValueGenerator.number(schema);
+
+        expect(example).to.equal(1);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return a number which adheres to .greater requirement', (done) => {
 
         const schema = Joi.number().greater(20);
