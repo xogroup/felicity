@@ -283,6 +283,18 @@ describe('Felicity EntityFor', () => {
         done();
     });
 
+    it('should error on non-object schema', (done) => {
+
+        const numberSchema = Joi.number().max(1);
+        const entityFor = function () {
+
+            return Felicity.entityFor(numberSchema);
+        };
+
+        expect(entityFor).to.throw(Error, 'Joi schema must describe an object for constructor functions');
+        done();
+    });
+
     describe('Constructor instances', () => {
 
         it('should return a validation object', (done) => {

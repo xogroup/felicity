@@ -15,6 +15,8 @@
 
 Creates a Constructor function based on the provided Joi schema. Accepts an optional [`[options]`](#entityfor-options) parameter.
 
+*Please note that JavaScript constructor functions only return objects. Therefore, the Joi schema provided must describe an object.*
+
 Instances created by `new Constructor()` are "empty skeletons" of the provided Joi schema, and have sugary prototypal [methods](#instance-methods).
 
 The returned Constructor function accepts an optional `input` parameter. Any input provided that passes Joi validation against the schema provided to entityFor will be used to hydrate the `new` object.
@@ -44,6 +46,11 @@ partialInstance
     keys: []
 }
 */
+```
+
+```Javascript
+const nonObjectSchema = Joi.number();
+const NeverGonnaHappen = Felicity.entityFor(nonObjectSchema); // throws Error 'Joi schema must describe an object for constructor functions'
 ```
 
 ####Constructor methods
