@@ -468,7 +468,8 @@ describe('Felicity EntityFor', () => {
                     otherwise: Joi.number().required()
                 })
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.myConditional).to.equal(null);
             expect(felicityInstance.validate).to.be.a.function();
@@ -481,7 +482,8 @@ describe('Felicity EntityFor', () => {
         it('should return an object with no keys', (done) => {
 
             const schema = Joi.object().keys();
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance).to.be.an.object();
             expect(felicityInstance.validate).to.be.a.function();
@@ -493,7 +495,8 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 key1: Joi.object().keys().required()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.key1).to.equal({});
             expect(felicityInstance.validate).to.be.a.function();
@@ -519,7 +522,8 @@ describe('Felicity EntityFor', () => {
                 anyStrip   : Joi.any().strip(),
                 anyForbid  : Joi.any().forbidden()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.innerObject).to.be.an.object();
             expect(felicityInstance.innerObject.innerArray).to.equal([]);
@@ -560,7 +564,8 @@ describe('Felicity EntityFor', () => {
                     otherwise: Joi.boolean().required()
                 })
             };
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.innerObject).to.be.an.object();
             expect(felicityInstance.innerObject.innerArray).to.equal([]);
@@ -582,7 +587,8 @@ describe('Felicity EntityFor', () => {
                 key2: Joi.string(),
                 key3: Joi.string().optional()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.key1).to.equal(null);
             expect(felicityInstance.key2).to.equal(null);
@@ -603,7 +609,8 @@ describe('Felicity EntityFor', () => {
                     includeOptional: true
                 }
             };
-            const felicityInstance = new (Felicity.entityFor(schema, options));
+            const Entity = Felicity.entityFor(schema, options);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.key1).to.equal(null);
             expect(felicityInstance.key2).to.equal(null);
@@ -626,7 +633,8 @@ describe('Felicity EntityFor', () => {
                     otherwise: Joi.number()
                 })
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.version).to.equal('1.0.0');
             expect(felicityInstance.number).to.equal(10);
@@ -654,7 +662,8 @@ describe('Felicity EntityFor', () => {
                     ignoreDefaults: true
                 }
             };
-            const felicityInstance = new (Felicity.entityFor(schema, options));
+            const Entity = Felicity.entityFor(schema, options);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.version).to.equal(null);
             expect(felicityInstance.number).to.equal(0);
@@ -677,7 +686,8 @@ describe('Felicity EntityFor', () => {
                     otherwise: Joi.number()
                 })
             };
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.version).to.equal('1.0.0');
             expect(felicityInstance.number).to.equal(10);
@@ -705,7 +715,8 @@ describe('Felicity EntityFor', () => {
                     ignoreDefaults: true
                 }
             };
-            const felicityInstance = new (Felicity.entityFor(schema, options));
+            const Entity = Felicity.entityFor(schema, options);
+            const felicityInstance = new Entity();
 
             expect(felicityInstance.version).to.equal(null);
             expect(felicityInstance.number).to.equal(0);
@@ -869,7 +880,8 @@ describe('Felicity EntityFor', () => {
                 key2: Joi.number(),
                 key3: Joi.array().min(4)
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
             const instanceValidity = felicityInstance.validate();
 
             expect(instanceValidity).to.be.an.object();
@@ -884,7 +896,8 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 key1: Joi.string()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             felicityInstance.key1 = 'A string';
 
@@ -902,7 +915,8 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 key1: Joi.string()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
             const validationCallback = function (err, result) {
 
                 expect(err).to.be.an.array();
@@ -918,7 +932,8 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 key1: Joi.string()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
 
             felicityInstance.key1 = 'A string.';
 
@@ -939,7 +954,8 @@ describe('Felicity EntityFor', () => {
         it('should return an empty instance', (done) => {
 
             const schema = Joi.object();
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
             const felicityExample = felicityInstance.example();
 
             expect(felicityExample).to.be.an.object();
@@ -954,7 +970,8 @@ describe('Felicity EntityFor', () => {
                 key2: Joi.number().integer(),
                 key3: Joi.boolean()
             });
-            const felicityInstance = new (Felicity.entityFor(schema));
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
             const felicityExample = felicityInstance.example();
 
             expect(felicityExample.key1).to.be.a.string();
