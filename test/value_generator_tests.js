@@ -1222,6 +1222,18 @@ describe('Object', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object with keys that match the given pattern', (done) => {
+
+        const schema = Joi.object().pattern(/^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/, Joi.object().keys({
+            id  : Joi.string().guid().required(),
+            tags: Joi.array().items(Joi.string()).required()
+        })).min(2);
+        const example = ValueGenerator.object(schema);
+
+        expect(Object.keys(example).length).to.be.at.least(1);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an object with one of two "nand" keys', (done) => {
 
         const schema = Joi.object()
