@@ -342,6 +342,15 @@ describe('Felicity EntityFor', () => {
                 });
             });
         });
+
+        it('should not trigger V8 JSON.stringify bug in Node v4.x', (done) => {
+
+            const schema = Joi.object();
+            const Thing = Felicity.entityFor(schema);
+            const thing = new Thing();
+            expect(JSON.stringify(thing, null, null)).to.equal('{}');
+            done();
+        });
     });
 
     describe('"Action" schema options', () => {
