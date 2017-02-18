@@ -859,6 +859,31 @@ describe('Date', () => {
         expect(moment.isValid()).to.equal(true);
         ExpectValidation(example, schema, done);
     });
+
+    it('should return a moment formatted date with Joi version <= 10.2.1', (done) => {
+
+        const fmt = 'HH:mm';
+        const schema = Joi.date().format(fmt);
+        schema._flags.momentFormat = fmt;
+        const example = ValueGenerator.date(schema);
+        const moment = new Moment(example, fmt, true);
+
+        expect(example).to.be.a.string();
+        expect(moment.isValid()).to.equal(true);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return one of the allowed moment formatted dates', (done) => {
+
+        const fmt = ['HH:mm', 'YYYY/MM/DD'];
+        const schema = Joi.date().format(fmt);
+        const example = ValueGenerator.date(schema);
+        const moment = new Moment(example, fmt, true);
+
+        expect(example).to.be.a.string();
+        expect(moment.isValid()).to.equal(true);
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Function', () => {
