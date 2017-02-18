@@ -53,6 +53,21 @@ const nonObjectSchema = Joi.number();
 const NeverGonnaHappen = Felicity.entityFor(nonObjectSchema); // throws Error 'Joi schema must describe an object for constructor functions'
 ```
 
+The returned Constructor is also registered within the runtime with the exact name of *Constructor*.  This can be corrected using the ES6 class `extend` expression.
+
+```Javascript
+const schema = Joi.object().keys({
+    id  : Joi.number().required(),
+    name: Joi.string().required()
+});
+
+const User = Felicity.entityFor(schema);
+new User()  // constructor will be of name Constructor
+
+const User = class User extends Felicity.entityFor(schema);
+new User()  // constructor will be of name User
+```
+
 ####Constructor methods
 
 The Constructor function returned by `entityFor` has the following properties/methods available for use without instantiation of `new` objects.
