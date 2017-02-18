@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "lab -t 100 -a code -L",
-    "test-cover": "lab -a code -L -r html > test/test.html && open test/test.html"
+    "test-cover": "lab -a code -L -r html > test/test.html && open test/test.html",
+    "doctoc": "doctoc API.md"
   },
   "repository": "git://github.com/xogroup/felicity",
   "keywords": [
@@ -21,6 +22,7 @@
   "homepage": "https://github.com/xogroup/felicity#readme",
   "dependencies": {
     "buffer-alloc": "0.1.1",
+    "doctoc": "^1.2.0",
     "hoek": "4.x",
     "joi": "10.x",
     "joi-date-extensions": "1.x",

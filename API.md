@@ -1,17 +1,23 @@
 # 1.0.0 API Reference
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
 - [Felicity](#felicity)
   - [`entityFor(schema, [options])`](#entityforschema-options)
     - [Constructor methods](#constructor-methods)
     - [Instance methods](#instance-methods)
   - [`example(schema, [options])`](#exampleschema-options)
   - [Options](#options)
-    - [EntityFor](#entityfor-options)
-    - [Example](#example-options)
+    - [`entityFor` Options](#entityfor-options)
+    - [`example` Options](#example-options)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
   
 ## Felicity
 
-###`entityFor(schema, [options])`
+### `entityFor(schema, [options])`
 
 Creates a Constructor function based on the provided Joi schema. Accepts an optional [`[options]`](#entityfor-options) parameter.
 
@@ -68,7 +74,7 @@ const User = class User extends Felicity.entityFor(schema);
 new User()  // constructor will be of name User
 ```
 
-####Constructor methods
+#### Constructor methods
 
 The Constructor function returned by `entityFor` has the following properties/methods available for use without instantiation of `new` objects.
 - `prototype.schema` - The Joi validation schema provided to `entityFor`.
@@ -117,7 +123,7 @@ The Constructor function returned by `entityFor` has the following properties/me
     }
     ```
     
-####Instance methods
+#### Instance methods
 
 The `new` instances of the Constructor function returned by `entityFor` have the following properties/methods available.
 - `schema` - The Joi schema provided to `entityFor`. Non-enumerable, inherited from the Constructor.
@@ -144,7 +150,7 @@ instance.id = 'e7db5468-2551-4e42-98ea-47cc57606258';
 const retryValidation = instance.validate(); // retryValidation === { success: true, errors: null, value: {name: 'Felicity', id: 'e7db5468-2551-4e42-98ea-47cc57606258'}}
 ```
 
-###`example(schema, [options])`
+### `example(schema, [options])`
 
 Returns a valid pseudo-randomly generated example Javascript Object based on the provided Joi schema.
 
@@ -168,11 +174,11 @@ exampleDoc
 */
 ```
 
-###Options
+### Options
 
 All options parameters must be an object with property `config`. Properties on the `config` object are detailed by method below.
 
-####`entityFor` Options
+#### `entityFor` Options
 
 - `strictInput` - default `false`. Default behavior is to not run known properties through Joi validation upon object instantiation.
 
@@ -242,7 +248,7 @@ If set to `true`, then Joi properties with `.optional()` set will be included on
     const withOptionalInstance = new WithOptional(); // withOptionalInstance === { name: null, nickname: null }
 ```
 
-####`example` Options
+#### `example` Options
 
 - `strictExample` - default `false`. Default behavior is to not run examples through Joi validation before returning.
 
