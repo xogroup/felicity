@@ -1255,7 +1255,7 @@ describe('Object', () => {
         })).min(2);
         const example = ValueGenerator.object(schema);
 
-        expect(Object.keys(example).length).to.be.at.least(1);
+        expect(Object.keys(example).length).to.be.at.least(2);
         ExpectValidation(example, schema, done);
     });
 
