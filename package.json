@@ -35,6 +35,6 @@
   "devDependencies": {
     "code": "4.x.x",
     "lab": "11.x.x",
-    "doctoc": "^1.2.0"
+    "doctoc": "1.x.x"
   }
 }
