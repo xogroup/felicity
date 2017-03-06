@@ -733,6 +733,18 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.condition).to.equal(null);
             done();
         });
+
+        it('should return an object with alternatives keys', (done) => {
+
+            const schema = Joi.object({
+                id: Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required()
+            });
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.id).to.equal(0);
+            done();
+        });
     });
 
     describe('Input', () => {
