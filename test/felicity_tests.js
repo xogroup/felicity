@@ -13,9 +13,6 @@ const describe = lab.describe;
 const it = lab.it;
 const expect = Code.expect;
 
-// Set description for use as dynamic default
-Uuid.v4.description = 'Generates UUIDs';
-
 describe('Felicity Example', () => {
 
     it('should return a string', (done) => {
@@ -786,7 +783,7 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(Uuid.v4)
+                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
                 }),
                 condition: Joi.alternatives().when('version', {
                     is       : Joi.string(),
@@ -810,7 +807,7 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(Uuid.v4)
+                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
                 }),
                 condition: Joi.alternatives().when('version', {
                     is       : Joi.string(),
@@ -839,7 +836,7 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(Uuid.v4)
+                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
                 }),
                 condition: Joi.alternatives().when('version', {
                     is       : Joi.string(),
@@ -863,7 +860,7 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(Uuid.v4)
+                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
                 }),
                 condition: Joi.alternatives().when('version', {
                     is       : Joi.string(),
@@ -1040,6 +1037,18 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.bool).to.equal(hydrationData.bool);
             expect(felicityInstance.conditional).to.equal(hydrationData.conditional);
             expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+
+        it('should utilize dynamic defaults for missing input', (done) => {
+
+            const generateUuid = () => Uuid.v4();
+            const schema = Joi.object().keys({
+                id: Joi.string().guid().required().default(generateUuid, 'generate uuids')
+            });
+            const felicityInstance = new (Felicity.entityFor(schema))({});
+
+            expect(felicityInstance.id).to.be.a.string();
             done();
         });
     });
