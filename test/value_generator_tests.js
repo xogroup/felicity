@@ -6,7 +6,7 @@ const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Permutations = require('./test_helpers').permutations;
 const ExpectValidation = require('./test_helpers').expectValidation;
-const ValueGenerator = require('../lib/helpers').valueGenerator;
+const ValueGenerator = require('../lib/exampleGenerator');
 const Moment = require('moment');
 
 const lab = exports.lab = Lab.script();
@@ -19,7 +19,7 @@ describe('Any', () => {
     it('should default to string', (done) => {
 
         const schema = Joi.any();
-        const example = ValueGenerator.any(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -27,19 +27,19 @@ describe('Any', () => {
     it('should return an "allow"ed value', (done) => {
 
         let schema = Joi.any().allow('allowed');
-        let example = ValueGenerator.any(schema);
+        let example = ValueGenerator(schema);
 
         expect(example).to.equal('allowed');
         ExpectValidation(example, schema);
 
         schema =  Joi.any().allow('allowed1', 'allowed2');
-        example = ValueGenerator.any(schema);
+        example = ValueGenerator(schema);
 
         expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
         ExpectValidation(example, schema);
 
         schema = Joi.any().allow(['first', 'second', true, 10]);
-        example = ValueGenerator.any(schema);
+        example = ValueGenerator(schema);
 
         expect(['first', 'second', true, 10].indexOf(example)).to.not.equal(-1);
         ExpectValidation(example, schema, done);
@@ -48,19 +48,19 @@ describe('Any', () => {
     it('should return a "valid" value', (done) => {
 
         let schema = Joi.any().valid('allowed');
-        let example = ValueGenerator.any(schema);
+        let example = ValueGenerator(schema);
 
         expect(example).to.equal('allowed');
         ExpectValidation(example, schema);
 
         schema =  Joi.any().valid('allowed1', 'allowed2');
-        example = ValueGenerator.any(schema);
+        example = ValueGenerator(schema);
 
         expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
         ExpectValidation(example, schema);
 
         schema = Joi.any().valid([true, 10]);
-        example = ValueGenerator.any(schema);
+        example = ValueGenerator(schema);
 
         expect([true, 10].indexOf(example)).to.not.equal(-1);
         ExpectValidation(example, schema, done);
@@ -69,9 +69,32 @@ describe('Any', () => {
     it('should return an "example" value', (done) => {
 
         const schema = Joi.any().example(123);
-        const example = ValueGenerator.any(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.equal(123);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a default value', (done) => {
+
+        const schema = Joi.any().default(123);
+        const example = ValueGenerator(schema);
+
+        expect(example).to.equal(123);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return a dynamic default value', (done) => {
+
+        const generateDefault = function () {
+
+            return true;
+        };
+        generateDefault.description = 'generates default';
+        const schema = Joi.any().default(generateDefault);
+        const example = ValueGenerator(schema);
+
+        expect(example).to.equal(true);
         ExpectValidation(example, schema, done);
     });
 });
@@ -81,7 +104,7 @@ describe('String', () => {
     it('should return a basic string', (done) => {
 
         const schema = Joi.string();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         ExpectValidation(example, schema, done);
@@ -90,7 +113,7 @@ describe('String', () => {
     it('should return a string with valid value', (done) => {
 
         const schema = Joi.string().valid('a');
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -98,7 +121,7 @@ describe('String', () => {
     it('should return a GUID', (done) => {
 
         const schema = Joi.string().guid();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         ExpectValidation(example, schema, done);
@@ -107,7 +130,7 @@ describe('String', () => {
     it('should return a GUID with UUID syntax', (done) => {
 
         const schema = Joi.string().uuid();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -115,7 +138,7 @@ describe('String', () => {
     it('should return an email', (done) => {
 
         const schema = Joi.string().email();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         ExpectValidation(example, schema, done);
@@ -124,7 +147,21 @@ describe('String', () => {
     it('should return default value', (done) => {
 
         const schema = Joi.string().default('fallback');
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
+
+        expect(example).to.equal('fallback');
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should utilize dynamic default function', (done) => {
+
+        const defaultGenerator = function () {
+
+            return 'fallback';
+        };
+        defaultGenerator.description = 'generates a default';
+        const schema = Joi.string().default(defaultGenerator);
+        const example = ValueGenerator(schema);
 
         expect(example).to.equal('fallback');
         ExpectValidation(example, schema, done);
@@ -136,7 +173,7 @@ describe('String', () => {
 
             const min = Math.ceil((Math.random() + 1) * Math.pow(1 + i, i));
             const schema = Joi.string().min(min);
-            const example = ValueGenerator.string(schema);
+            const example = ValueGenerator(schema);
 
             expect(example.length).to.be.at.least(min);
             ExpectValidation(example, schema);
@@ -151,7 +188,7 @@ describe('String', () => {
 
             const max = Math.ceil((Math.random() + 1) * Math.pow(1 + i, i));
             const schema = Joi.string().max(max);
-            const example = ValueGenerator.string(schema);
+            const example = ValueGenerator(schema);
 
             expect(example.length).to.be.at.most(max);
             ExpectValidation(example, schema);
@@ -168,7 +205,7 @@ describe('String', () => {
             const possibleMin = max - Math.floor(Math.random() * i + 1);
             const min = possibleMin < 1 ? 1 : possibleMin;
             const schema = Joi.string().min(min).max(max);
-            const example = ValueGenerator.string(schema);
+            const example = ValueGenerator(schema);
 
             expect(example.length).to.be.at.most(max).and.at.least(min);
             ExpectValidation(example, schema);
@@ -177,7 +214,7 @@ describe('String', () => {
         const largeMax = 750;
         const largeMin = 500;
         const largeSchema = Joi.string().min(largeMin).max(largeMax);
-        const largeExample = ValueGenerator.string(largeSchema);
+        const largeExample = ValueGenerator(largeSchema);
 
         expect(largeExample.length).to.be.at.most(largeMax).and.at.least(largeMin);
         ExpectValidation(largeExample, largeSchema);
@@ -190,7 +227,7 @@ describe('String', () => {
 
             const length = Math.ceil((Math.random() + 1) * Math.pow(1 + i, i));
             const schema = Joi.string().length(length);
-            const example = ValueGenerator.string(schema);
+            const example = ValueGenerator(schema);
 
             expect(example.length).to.equal(length);
             ExpectValidation(example, schema);
@@ -202,7 +239,7 @@ describe('String', () => {
     it('should return a string which adheres to .isoDate requirement', (done) => {
 
         const schema = Joi.string().isoDate();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         expect((new Date(example)).toISOString()).to.equal(example);
         ExpectValidation(example, schema, done);
@@ -212,7 +249,7 @@ describe('String', () => {
 
         const regex = new RegExp(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
         const schema = Joi.string().regex(regex);
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.match(regex)).to.not.equal(null);
         ExpectValidation(example, schema, done);
@@ -222,7 +259,7 @@ describe('String', () => {
 
         const regex = new RegExp(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
         const schema = Joi.string().regex(regex, { invert: true });
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.match(regex)).to.equal(null);
         ExpectValidation(example, schema, done);
@@ -231,7 +268,7 @@ describe('String', () => {
     it('should return a case-insensitive string', (done) => {
 
         const schema = Joi.string().valid('A').insensitive();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -239,7 +276,7 @@ describe('String', () => {
     it('should return a Luhn-valid credit card number', (done) => {
 
         const schema = Joi.string().creditCard();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -247,7 +284,7 @@ describe('String', () => {
     it('should return a hexadecimal string', (done) => {
 
         const schema = Joi.string().hex();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -255,7 +292,7 @@ describe('String', () => {
     it('should return a token', (done) => {
 
         const schema = Joi.string().token();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -263,7 +300,7 @@ describe('String', () => {
     it('should return an alphanumeric string', (done) => {
 
         const schema = Joi.string().alphanum();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -271,7 +308,7 @@ describe('String', () => {
     it('should return a hostname', (done) => {
 
         const schema = Joi.string().hostname();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -279,7 +316,7 @@ describe('String', () => {
     it('should return a IPv4 when given no options', (done) => {
 
         const schema = Joi.string().ip();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -290,7 +327,7 @@ describe('String', () => {
             {
                 cidr : 'forbidden'
             });
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -301,7 +338,7 @@ describe('String', () => {
             {
                 version : ['ipv4']
             });
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -313,7 +350,7 @@ describe('String', () => {
                 version : ['ipv4'],
                 cidr : 'forbidden'
             });
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -324,7 +361,7 @@ describe('String', () => {
             {
                 version : ['ipv6']
             });
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -336,7 +373,7 @@ describe('String', () => {
                 version : ['ipv6'],
                 cidr : 'forbidden'
             });
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -344,7 +381,7 @@ describe('String', () => {
     it('should return uppercase value', (done) => {
 
         const schema = Joi.string().uppercase();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -352,7 +389,7 @@ describe('String', () => {
     it('should return uppercase value for guid to test chaining', (done) => {
 
         const schema = Joi.string().guid().uppercase();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -360,7 +397,7 @@ describe('String', () => {
     it('should return lowercase value', (done) => {
 
         const schema = Joi.string().lowercase();
-        const example = ValueGenerator.string(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -371,7 +408,7 @@ describe('Number', () => {
     it('should return a number', (done) => {
 
         const schema = Joi.number();
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.number();
         ExpectValidation(example, schema, done);
@@ -380,7 +417,7 @@ describe('Number', () => {
     it('should return a default value > 0', (done) => {
 
         const schema = Joi.number().default(9);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.equal(9);
         ExpectValidation(example, schema, done);
@@ -389,7 +426,7 @@ describe('Number', () => {
     it('should return a default value === 0', (done) => {
 
         const schema = Joi.number().default(0);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.equal(0);
         ExpectValidation(example, schema, done);
@@ -398,7 +435,7 @@ describe('Number', () => {
     it('should return a valid value instead of default', (done) => {
 
         const schema = Joi.number().valid(2).default(1);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.equal(2);
         ExpectValidation(example, schema, done);
@@ -407,7 +444,7 @@ describe('Number', () => {
     it('should return a negative number', (done) => {
 
         const schema = Joi.number().negative();
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.below(0);
         ExpectValidation(example, schema, done);
@@ -416,7 +453,7 @@ describe('Number', () => {
     it('should return an integer', (done) => {
 
         const schema = Joi.number().integer();
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example % 1).to.equal(0);
         ExpectValidation(example, schema, done);
@@ -425,7 +462,7 @@ describe('Number', () => {
     it('should return a number which adheres to .min requirement', (done) => {
 
         const schema = Joi.number().min(20);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.at.least(20);
         ExpectValidation(example, schema, done);
@@ -434,7 +471,7 @@ describe('Number', () => {
     it('should return a number which adheres to .max requirement', (done) => {
 
         const schema = Joi.number().max(2);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.at.most(2);
         ExpectValidation(example, schema, done);
@@ -443,7 +480,7 @@ describe('Number', () => {
     it('should return a number which has equal .min and .max requirements', (done) => {
 
         const schema = Joi.number().min(1).max(1);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.equal(1);
         ExpectValidation(example, schema, done);
@@ -452,7 +489,7 @@ describe('Number', () => {
     it('should return a number which adheres to .greater requirement', (done) => {
 
         const schema = Joi.number().greater(20);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.at.least(20);
         ExpectValidation(example, schema, done);
@@ -461,7 +498,7 @@ describe('Number', () => {
     it('should return a number which adheres to .less requirement', (done) => {
 
         const schema = Joi.number().less(2);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.at.most(2);
         ExpectValidation(example, schema, done);
@@ -471,7 +508,7 @@ describe('Number', () => {
 
         for (let i = 0; i < 500; ++i) {
             const schema = Joi.number().precision(2);
-            const example = ValueGenerator.number(schema);
+            const example = ValueGenerator(schema);
 
             expect(example.toString().split('.')[1].length).to.be.at.most(2);
             ExpectValidation(example, schema);
@@ -482,7 +519,7 @@ describe('Number', () => {
     it('should return a number which adheres to .multiple requirement', (done) => {
 
         const schema = Joi.number().multiple(4);
-        const example = ValueGenerator.number(schema);
+        const example = ValueGenerator(schema);
 
         expect(example % 4).to.equal(0);
         ExpectValidation(example, schema, done);
@@ -546,7 +583,7 @@ describe('Number', () => {
                 schema = schema[option](optionArgument);
             });
 
-            const example = ValueGenerator.number(schema);
+            const example = ValueGenerator(schema);
 
             ExpectValidation(example, schema);
         });
@@ -556,25 +593,25 @@ describe('Number', () => {
     it('should return NaN for impossible combinations', (done) => {
 
         const impossibleMinSchema = Joi.number().negative().min(1);
-        let example = ValueGenerator.number(impossibleMinSchema);
+        let example = ValueGenerator(impossibleMinSchema);
 
         expect(example).to.equal(NaN);
 
         example = 0;
         const impossibleMultipleSchema = Joi.number().max(10).multiple(12);
-        example = ValueGenerator.number(impossibleMultipleSchema);
+        example = ValueGenerator(impossibleMultipleSchema);
 
         expect(example).to.equal(NaN);
 
         example = 0;
         const impossibleMinMultipleSchema = Joi.number().negative().min(-10).multiple(12);
-        example = ValueGenerator.number(impossibleMinMultipleSchema);
+        example = ValueGenerator(impossibleMinMultipleSchema);
 
         expect(example).to.equal(NaN);
 
         example = 0;
         const impossibleMaxSchema = Joi.number().negative().max(10);
-        example = ValueGenerator.number(impossibleMaxSchema);
+        example = ValueGenerator(impossibleMaxSchema);
 
         expect(example).to.equal(NaN);
         done();
@@ -586,7 +623,7 @@ describe('Boolean', () => {
     it('should return a boolean', (done) => {
 
         const schema = Joi.boolean();
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.boolean();
         ExpectValidation(example, schema, done);
@@ -596,7 +633,7 @@ describe('Boolean', () => {
 
         for (let i = 0; i < 10; ++i) {
             const schema = Joi.boolean().default(true);
-            const example = ValueGenerator.boolean(schema);
+            const example = ValueGenerator(schema);
 
             expect(example).to.equal(true);
         }
@@ -607,9 +644,20 @@ describe('Boolean', () => {
 
         for (let i = 0; i < 10; ++i) {
             const schema = Joi.boolean().default(false);
-            const example = ValueGenerator.boolean(schema);
+            const example = ValueGenerator(schema);
 
             expect(example).to.equal(false);
+        }
+        done();
+    });
+
+    it('should return valid value', (done) => {
+
+        for (let i = 0; i < 10; ++i) {
+            const schema = Joi.boolean().valid(true).default(false);
+            const example = ValueGenerator(schema);
+
+            expect(example).to.equal(true);
         }
         done();
     });
@@ -617,7 +665,7 @@ describe('Boolean', () => {
     it('should return a truthy value when singlar number', (done) => {
 
         const schema = Joi.boolean().truthy(1);
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.number();
         expect(example).to.equal(1);
@@ -627,7 +675,7 @@ describe('Boolean', () => {
     it('should return a truthy value when singlar string', (done) => {
 
         const schema = Joi.boolean().truthy('y');
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         expect(example).to.equal('y');
@@ -637,7 +685,7 @@ describe('Boolean', () => {
     it('should return a truthy value when pluralized', (done) => {
 
         const schema = Joi.boolean().truthy([1, 'y']);
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -645,7 +693,7 @@ describe('Boolean', () => {
     it('should return a falsy value when singlar number', (done) => {
 
         const schema = Joi.boolean().falsy(0);
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.number();
         expect(example).to.equal(0);
@@ -655,7 +703,7 @@ describe('Boolean', () => {
     it('should return a falsy value when singlar string', (done) => {
 
         const schema = Joi.boolean().falsy('n');
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         expect(example).to.equal('n');
@@ -665,7 +713,7 @@ describe('Boolean', () => {
     it('should return a falsy value when pluralized', (done) => {
 
         const schema = Joi.boolean().falsy([0, 'n']);
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -673,7 +721,7 @@ describe('Boolean', () => {
     it('should validate when a mix of truthy and falsy is set', (done) => {
 
         const schema = Joi.boolean().truthy([1, 'y']).falsy([0, 'n']);
-        const example = ValueGenerator.boolean(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -684,7 +732,7 @@ describe('Binary', () => {
     it('should return a buffer', (done) => {
 
         const schema = Joi.binary();
-        const example = ValueGenerator.binary(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.buffer();
         ExpectValidation(example, schema, done);
@@ -704,7 +752,7 @@ describe('Binary', () => {
         supportedEncodings.forEach((encoding) => {
 
             const schema = Joi.binary().encoding(encoding);
-            const example = ValueGenerator.binary(schema);
+            const example = ValueGenerator(schema);
 
             expect(example).to.be.a.string();
             ExpectValidation(example, schema);
@@ -716,7 +764,7 @@ describe('Binary', () => {
     it('should return a buffer of minimum size', (done) => {
 
         const schema = Joi.binary().min(100);
-        const example = ValueGenerator.binary(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -724,7 +772,7 @@ describe('Binary', () => {
     it('should return a buffer of maximum size', (done) => {
 
         const schema = Joi.binary().max(100);
-        const example = ValueGenerator.binary(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -732,7 +780,7 @@ describe('Binary', () => {
     it('should return a buffer of specified size', (done) => {
 
         const schema = Joi.binary().length(75);
-        const example = ValueGenerator.binary(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(75);
         ExpectValidation(example, schema, done);
@@ -741,12 +789,24 @@ describe('Binary', () => {
     it('should return a buffer of size between min and max', (done) => {
 
         const schema = Joi.binary().min(27).max(35);
-        const example = ValueGenerator.binary(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.be.at.least(27).and.at.most(35);
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a dynamic default buffer', (done) => {
+
+        const defaultBuffer = Buffer.alloc(10);
+        const generateDefault = () => defaultBuffer;
+        generateDefault.description = 'generates default';
+        const schema = Joi.binary().default(generateDefault);
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.a.buffer();
+        expect(example).to.equal(defaultBuffer);
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Date', () => {
@@ -754,7 +814,7 @@ describe('Date', () => {
     it('should return a date', (done) => {
 
         const schema = Joi.date();
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.date();
         ExpectValidation(example, schema, done);
@@ -763,7 +823,7 @@ describe('Date', () => {
     it('should return a Date more recent than .min value', (done) => {
 
         const schema = Joi.date().min('1/01/3016');
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.above(new Date('1/01/3016'));
         ExpectValidation(example, schema, done);
@@ -773,7 +833,7 @@ describe('Date', () => {
 
         const schema = Joi.date().min('now');
         const now = new Date();
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.above(now);
         ExpectValidation(example, schema, done);
@@ -782,7 +842,7 @@ describe('Date', () => {
     it('should return a Date less recent than .max value', (done) => {
 
         const schema = Joi.date().max('1/01/1968');
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.below(new Date(0));
         ExpectValidation(example, schema, done);
@@ -792,7 +852,7 @@ describe('Date', () => {
 
         const schema = Joi.date().max('now');
         const now = new Date();
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.below(now);
         ExpectValidation(example, schema, done);
@@ -806,7 +866,7 @@ describe('Date', () => {
             const min = '1/01/' + minYear.toString();
             const max = '1/01/' + maxYear.toString();
             const schema = Joi.date().min(min).max(max);
-            const example = ValueGenerator.date(schema);
+            const example = ValueGenerator(schema);
 
             expect(example).to.be.above(new Date(min)).and.below(new Date(max));
             ExpectValidation(example, schema);
@@ -815,7 +875,7 @@ describe('Date', () => {
         const smallMin = '1/01/2016';
         const smallMax = '3/01/2016';
         const smallSchema = Joi.date().min(smallMin).max(smallMax);
-        const smallExample = ValueGenerator.date(smallSchema);
+        const smallExample = ValueGenerator(smallSchema);
 
         ExpectValidation(smallExample, smallSchema);
         done();
@@ -824,7 +884,7 @@ describe('Date', () => {
     it('should return a Date in ISO format', (done) => {
 
         const schema = Joi.date().iso();
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         ExpectValidation(example, schema, done);
@@ -833,7 +893,7 @@ describe('Date', () => {
     it('should return a timestamp', (done) => {
 
         const schema = Joi.date().timestamp();
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.number();
         ExpectValidation(example, schema, done);
@@ -842,7 +902,7 @@ describe('Date', () => {
     it('should return a unix timestamp', (done) => {
 
         const schema = Joi.date().timestamp('unix');
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.number();
         ExpectValidation(example, schema, done);
@@ -852,7 +912,7 @@ describe('Date', () => {
 
         const fmt = 'HH:mm';
         const schema = Joi.date().format(fmt);
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
         const moment = new Moment(example, fmt, true);
 
         expect(example).to.be.a.string();
@@ -865,7 +925,7 @@ describe('Date', () => {
         const fmt = 'HH:mm';
         const schema = Joi.date().format(fmt);
         schema._flags.momentFormat = fmt;
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
         const moment = new Moment(example, fmt, true);
 
         expect(example).to.be.a.string();
@@ -877,7 +937,7 @@ describe('Date', () => {
 
         const fmt = ['HH:mm', 'YYYY/MM/DD'];
         const schema = Joi.date().format(fmt);
-        const example = ValueGenerator.date(schema);
+        const example = ValueGenerator(schema);
         const moment = new Moment(example, fmt, true);
 
         expect(example).to.be.a.string();
@@ -891,7 +951,7 @@ describe('Function', () => {
     it('should return a function', (done) => {
 
         const schema = Joi.func();
-        const example = ValueGenerator.func(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
@@ -900,7 +960,7 @@ describe('Function', () => {
     it('should return a function with arity(1)', (done) => {
 
         const schema = Joi.func().arity(1);
-        const example = ValueGenerator.func(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
@@ -909,7 +969,7 @@ describe('Function', () => {
     it('should return a function with arity(10)', (done) => {
 
         const schema = Joi.func().arity(10);
-        const example = ValueGenerator.func(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
@@ -918,7 +978,7 @@ describe('Function', () => {
     it('should return a function with minArity(3)', (done) => {
 
         const schema = Joi.func().minArity(3);
-        const example = ValueGenerator.func(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
@@ -927,7 +987,7 @@ describe('Function', () => {
     it('should return a function with maxArity(4)', (done) => {
 
         const schema = Joi.func().maxArity(4);
-        const example = ValueGenerator.func(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
@@ -936,7 +996,7 @@ describe('Function', () => {
     it('should return a function with minArity(3) and maxArity(4)', (done) => {
 
         const schema = Joi.func().minArity(3).maxArity(4);
-        const example = ValueGenerator.func(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
@@ -948,7 +1008,7 @@ describe('Array', () => {
     it('should return an array', (done) => {
 
         const schema = Joi.array();
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.an.array();
         ExpectValidation(example, schema, done);
@@ -957,7 +1017,7 @@ describe('Array', () => {
     it('should return an array with valid items', (done) => {
 
         const schema = Joi.array().items(Joi.number().required(), Joi.string().guid().required(), Joi.array().items(Joi.number().integer().min(43).required()).required());
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -965,7 +1025,7 @@ describe('Array', () => {
     it('should return an array with valid items and without forbidden items', (done) => {
 
         const schema = Joi.array().items(Joi.string().forbidden(), Joi.number().multiple(3));
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         const stringItems = example.filter((item) => {
 
@@ -981,7 +1041,7 @@ describe('Array', () => {
         const schema = Joi.array()
             .items(Joi.number())
             .sparse();
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(0);
         ExpectValidation(example, schema, done);
@@ -990,7 +1050,7 @@ describe('Array', () => {
     it('should return an ordered array', (done) => {
 
         const schema = Joi.array().ordered(Joi.string().max(3).required(), Joi.number().negative().integer().required(), Joi.boolean().required());
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -998,7 +1058,7 @@ describe('Array', () => {
     it('should return an array with "length" random items', (done) => {
 
         const schema = Joi.array().length(4);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(4);
         ExpectValidation(example, schema, done);
@@ -1009,7 +1069,7 @@ describe('Array', () => {
         const schema = Joi.array()
             .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
             .length(10);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(10);
         ExpectValidation(example, schema, done);
@@ -1020,7 +1080,7 @@ describe('Array', () => {
         const schema = Joi.array()
             .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
             .length(2);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(2);
         ExpectValidation(example, schema, done);
@@ -1029,7 +1089,7 @@ describe('Array', () => {
     it('should return an array with "min" random items', (done) => {
 
         const schema = Joi.array().min(4);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(4);
         ExpectValidation(example, schema, done);
@@ -1040,7 +1100,7 @@ describe('Array', () => {
         const schema = Joi.array()
             .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
             .min(10);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.equal(10);
         ExpectValidation(example, schema, done);
@@ -1049,7 +1109,7 @@ describe('Array', () => {
     it('should return an array with "max" random items', (done) => {
 
         const schema = Joi.array().max(4);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.be.at.least(1);
         expect(example.length).to.be.at.most(4);
@@ -1061,7 +1121,7 @@ describe('Array', () => {
         const schema = Joi.array()
             .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
             .max(10);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.be.at.least(1);
         expect(example.length).to.be.at.most(10);
@@ -1073,7 +1133,7 @@ describe('Array', () => {
         const schema = Joi.array()
             .min(4)
             .max(5);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.be.at.least(4);
         expect(example.length).to.be.at.most(5);
@@ -1086,7 +1146,7 @@ describe('Array', () => {
             .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
             .min(10)
             .max(15);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.length).to.be.at.least(10);
         expect(example.length).to.be.at.most(15);
@@ -1099,7 +1159,7 @@ describe('Array', () => {
             .ordered(Joi.string(), Joi.number())
             .items(Joi.boolean().required(), Joi.array().items(Joi.boolean().required()).required())
             .min(6);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
 
         expect(example[0]).to.be.a.string();
         expect(example[1]).to.be.a.number();
@@ -1110,7 +1170,7 @@ describe('Array', () => {
     it('should return a single item array with a number', (done) => {
 
         const schema = Joi.array().items(Joi.number().required()).single();
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
         expect(example).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
@@ -1118,7 +1178,7 @@ describe('Array', () => {
     it('should return a single item with a number', (done) => {
 
         const schema = Joi.array().items(Joi.number().required()).single(false);
-        const example = ValueGenerator.array(schema);
+        const example = ValueGenerator(schema);
         expect(example[0]).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
@@ -1130,7 +1190,7 @@ describe('Alternatives', () => {
 
         const schema = Joi.alternatives()
             .try(Joi.string(), Joi.number());
-        const example = ValueGenerator.alternatives(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.not.be.undefined();
         ExpectValidation(example, schema, done);
@@ -1140,7 +1200,7 @@ describe('Alternatives', () => {
 
         const schema = Joi.alternatives()
             .try(Joi.string());
-        const example = ValueGenerator.alternatives(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.a.string();
         ExpectValidation(example, schema, done);
@@ -1157,7 +1217,7 @@ describe('Alternatives', () => {
                 driver: Joi.string()
             })
         });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.dependent).to.be.a.string();
         ExpectValidation(example, schema, done);
@@ -1175,7 +1235,7 @@ describe('Alternatives', () => {
                 driver: Joi.boolean()
             })
         });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.dependent).to.be.a.number();
         ExpectValidation(example, schema, done);
@@ -1187,7 +1247,7 @@ describe('Object', () => {
     it('should return an object', (done) => {
 
         const schema = Joi.object();
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.an.object();
         ExpectValidation(example, schema, done);
@@ -1206,7 +1266,7 @@ describe('Object', () => {
                 innerString: Joi.string().required()
             }).required()
         });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example).to.be.an.object();
         expect(example.string).to.be.a.string();
@@ -1223,7 +1283,7 @@ describe('Object', () => {
     it('should return an object with min number of keys', (done) => {
 
         const schema = Joi.object().min(5);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(Object.keys(example).length).to.be.at.least(5);
         ExpectValidation(example, schema, done);
@@ -1232,7 +1292,7 @@ describe('Object', () => {
     it('should return an object with max number of keys', (done) => {
 
         const schema = Joi.object().max(5);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(Object.keys(example).length).to.be.at.most(5).and.at.least(1);
         ExpectValidation(example, schema, done);
@@ -1241,7 +1301,7 @@ describe('Object', () => {
     it('should return an object with exact number of keys', (done) => {
 
         const schema = Joi.object().length(5);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(Object.keys(example).length).to.equal(5);
         ExpectValidation(example, schema, done);
@@ -1253,7 +1313,7 @@ describe('Object', () => {
             id  : Joi.string().guid().required(),
             tags: Joi.array().items(Joi.string()).required()
         })).min(2);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(Object.keys(example).length).to.be.at.least(2);
         ExpectValidation(example, schema, done);
@@ -1268,7 +1328,7 @@ describe('Object', () => {
                 c: Joi.string()
             })
             .nand('a', 'b');
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -1282,7 +1342,7 @@ describe('Object', () => {
                 c: Joi.string()
             })
             .xor('a', 'b');
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -1301,7 +1361,7 @@ describe('Object', () => {
                     driver   : Joi.boolean()
                 })
             });
-            const example = ValueGenerator.object(schema);
+            const example = ValueGenerator(schema);
 
             ExpectValidation(example, schema);
         }
@@ -1314,7 +1374,7 @@ describe('Object', () => {
             access_token: [Joi.string(), Joi.number()],
             birthyear   : Joi.number().integer().min(1900).max(2013)
         });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -1327,7 +1387,7 @@ describe('Object', () => {
             forbidStr: Joi.string().forbidden(),
             forbidNum: Joi.number().forbidden()
         });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.forbidden).to.be.undefined();
         expect(example.forbidStr).to.be.undefined();
@@ -1343,7 +1403,7 @@ describe('Object', () => {
             privateStr: Joi.string().strip(),
             privateNum: Joi.number().strip()
         });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.private).to.be.undefined();
         expect(example.privateStr).to.be.undefined();
@@ -1356,7 +1416,7 @@ describe('Object', () => {
         const schema = Joi.object().keys({
             b : Joi.number()
         }).rename('a','b');
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.a).to.be.a.number();
         ExpectValidation(example, schema, done);
@@ -1367,7 +1427,7 @@ describe('Object', () => {
         const schema = Joi.object().keys({
             b : Joi.number()
         }).rename('a','b').rename('c','b', { multiple: true });
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.a).to.be.a.number();
         ExpectValidation(example, schema, done);
@@ -1376,7 +1436,7 @@ describe('Object', () => {
     it('should return a schema object with schema() invocation', (done) => {
 
         const schema = Joi.object().schema();
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -1384,7 +1444,7 @@ describe('Object', () => {
     it('should return an object of type Regex', (done) => {
 
         const schema = Joi.object().type(RegExp);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -1392,7 +1452,7 @@ describe('Object', () => {
     it('should return an object of type Error', (done) => {
 
         const schema = Joi.object().type(Error);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema, done);
     });
@@ -1403,7 +1463,7 @@ describe('Object', () => {
         Class1.prototype.testFunc = function () {};
 
         const schema = Joi.object().type(Class1);
-        const example = ValueGenerator.object(schema);
+        const example = ValueGenerator(schema);
 
         expect(example.testFunc).to.be.a.function();
         ExpectValidation(example, schema, done);

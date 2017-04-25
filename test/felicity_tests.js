@@ -148,6 +148,49 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object with dynamic defaults', (done) => {
+
+        const generateDefaultString = () => {
+
+            return '-----';
+        };
+        generateDefaultString.description = 'generates default';
+        const generateDefaultNumber = () => {
+
+            return 4;
+        };
+        generateDefaultNumber.description = 'generates default';
+        const generateDefaultBool = () => {
+
+            return true;
+        };
+        generateDefaultBool.description = 'generates default';
+        const schema = Joi.object().keys({
+            string: Joi.string().required().default(generateDefaultString),
+            number: Joi.number().default(generateDefaultNumber),
+            bool  : Joi.boolean().default(generateDefaultBool)
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.string).to.equal('-----');
+        expect(example.number).to.equal(4);
+        expect(example.bool).to.equal(true);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should return an object with specified valid properties', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().required().valid('-----'),
+            number: Joi.number().valid(4)
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.string).to.equal('-----');
+        expect(example.number).to.equal(4);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an object with custom type', (done) => {
 
         const Class1 = function () {};
