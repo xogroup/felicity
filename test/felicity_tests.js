@@ -13,6 +13,9 @@ const describe = lab.describe;
 const it = lab.it;
 const expect = Code.expect;
 
+// Set description for use as dynamic default
+Uuid.v4.description = 'Generates UUIDs';
+
 describe('Felicity Example', () => {
 
     it('should return a string', (done) => {
@@ -755,6 +758,112 @@ describe('Felicity EntityFor', () => {
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
                     id: Joi.string().default('abcdefg')
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            };
+            const options = {
+                config: {
+                    ignoreDefaults: true
+                }
+            };
+            const Entity = Felicity.entityFor(schema, options);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.version).to.equal(null);
+            expect(felicityInstance.number).to.equal(0);
+            expect(felicityInstance.identity.id).to.equal(null);
+            expect(felicityInstance.condition).to.equal(null);
+            done();
+        });
+
+        it('should utilize dynamic default values', (done) => {
+
+            const schema = Joi.object().keys({
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().guid().default(Uuid.v4)
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            });
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.version).to.equal('1.0.0');
+            expect(felicityInstance.number).to.equal(10);
+            expect(felicityInstance.identity.id).to.be.a.string();
+            expect(felicityInstance.condition).to.equal('defaultValue');
+            done();
+        });
+
+        it('should not utilize dynamic default values when provided ignoreDefaults config', (done) => {
+
+            const schema = Joi.object().keys({
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().guid().default(Uuid.v4)
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            });
+            const options = {
+                config: {
+                    ignoreDefaults: true
+                }
+            };
+            const Entity = Felicity.entityFor(schema, options);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.version).to.equal(null);
+            expect(felicityInstance.number).to.equal(0);
+            expect(felicityInstance.identity.id).to.equal(null);
+            expect(felicityInstance.condition).to.equal(null);
+            done();
+        });
+
+        it('should utilize dynamic default values for non-compiled schema', (done) => {
+
+            const schema = {
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().guid().default(Uuid.v4)
+                }),
+                condition: Joi.alternatives().when('version', {
+                    is       : Joi.string(),
+                    then     : Joi.string().default('defaultValue'),
+                    otherwise: Joi.number()
+                })
+            };
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.version).to.equal('1.0.0');
+            expect(felicityInstance.number).to.equal(10);
+            expect(felicityInstance.identity.id).to.be.a.string();
+            expect(felicityInstance.condition).to.equal('defaultValue');
+            done();
+        });
+
+        it('should not utilize dynamic default values for non-compiled schema when provided ignoreDefaults config', (done) => {
+
+            const schema = {
+                version  : Joi.string().min(5).default('1.0.0'),
+                number   : Joi.number().default(10),
+                identity : Joi.object().keys({
+                    id: Joi.string().guid().default(Uuid.v4)
                 }),
                 condition: Joi.alternatives().when('version', {
                     is       : Joi.string(),
