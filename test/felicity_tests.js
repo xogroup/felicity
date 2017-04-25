@@ -338,6 +338,36 @@ describe('Felicity EntityFor', () => {
         done();
     });
 
+    it('should provide an example with dynamic defaults', (done) => {
+
+        const schema = Joi.object().keys({
+            version  : Joi.string().min(5).default('1.0.0'),
+            number   : Joi.number().default(10),
+            identity : Joi.object().keys({
+                id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+            }),
+            condition: Joi.alternatives().when('version', {
+                is       : Joi.string(),
+                then     : Joi.string().default('defaultValue'),
+                otherwise: Joi.number()
+            }),
+            dynamicCondition: Joi.alternatives().when('version', {
+                is       : Joi.string(),
+                then     : Joi.string().default(() => 'dynamic default', 'generates a default'),
+                otherwise: Joi.number()
+            })
+        });
+        const Entity = Felicity.entityFor(schema);
+        const example = Entity.example();
+
+        expect(example.version).to.equal('1.0.0');
+        expect(example.number).to.equal(10);
+        expect(example.identity.id).to.be.a.string();
+        expect(example.condition).to.equal('defaultValue');
+        expect(example.dynamicCondition).to.equal('dynamic default');
+        done();
+    });
+
     describe('Constructor instances', () => {
 
         it('should return a validation object', (done) => {
