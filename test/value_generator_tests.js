@@ -1,5 +1,6 @@
 'use strict';
 
+const Alloc = require('buffer-alloc');
 const Code = require('code');
 const Hoek = require('hoek');
 const Joi = require('../lib/joi');
@@ -797,7 +798,7 @@ describe('Binary', () => {
 
     it('should return a dynamic default buffer', (done) => {
 
-        const defaultBuffer = Buffer.alloc(10);
+        const defaultBuffer = Alloc(10);
         const generateDefault = () => defaultBuffer;
         generateDefault.description = 'generates default';
         const schema = Joi.binary().default(generateDefault);
