@@ -346,6 +346,9 @@ describe('Felicity EntityFor', () => {
             identity : Joi.object().keys({
                 id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
             }),
+            array    : Joi.array().items(Joi.object().keys({
+                id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+            })),
             condition: Joi.alternatives().when('version', {
                 is       : Joi.string(),
                 then     : Joi.string().default('defaultValue'),
@@ -362,6 +365,8 @@ describe('Felicity EntityFor', () => {
 
         expect(example.version).to.equal('1.0.0');
         expect(example.number).to.equal(10);
+        expect(example.array.length).to.be.above(0);
+        expect(example.array[0].id).to.be.a.string();
         expect(example.identity.id).to.be.a.string();
         expect(example.condition).to.equal('defaultValue');
         expect(example.dynamicCondition).to.equal('dynamic default');

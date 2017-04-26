@@ -1158,7 +1158,7 @@ describe('Array', () => {
 
         const schema = Joi.array()
             .ordered(Joi.string(), Joi.number())
-            .items(Joi.boolean().required(), Joi.array().items(Joi.boolean().required()).required())
+            .items(Joi.boolean().required())
             .min(6);
         const example = ValueGenerator(schema);
 
