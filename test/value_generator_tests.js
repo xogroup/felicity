@@ -1207,6 +1207,17 @@ describe('Alternatives', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return the single "try" object schema', (done) => {
+
+        const schema = Joi.alternatives()
+            .try(Joi.object().keys({ a: Joi.string() }));
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.an.object();
+        ExpectValidation(example, schema, done);
+    });
+
+
     it('should return "when" alternative', (done) => {
 
         const schema = Joi.object().keys({
