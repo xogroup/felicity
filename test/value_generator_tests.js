@@ -433,6 +433,15 @@ describe('Number', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return a dynamic default', (done) => {
+
+        const schema = Joi.number().default(() => 0, 'default description');
+        const example = ValueGenerator(schema);
+
+        expect(example).to.equal(0);
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return a valid value instead of default', (done) => {
 
         const schema = Joi.number().valid(2).default(1);
@@ -595,26 +604,13 @@ describe('Number', () => {
 
         const impossibleMinSchema = Joi.number().negative().min(1);
         let example = ValueGenerator(impossibleMinSchema);
-
-        expect(example).to.equal(NaN);
-
-        example = 0;
-        const impossibleMultipleSchema = Joi.number().max(10).multiple(12);
-        example = ValueGenerator(impossibleMultipleSchema);
-
         expect(example).to.equal(NaN);
 
         example = 0;
         const impossibleMinMultipleSchema = Joi.number().negative().min(-10).multiple(12);
         example = ValueGenerator(impossibleMinMultipleSchema);
-
         expect(example).to.equal(NaN);
 
-        example = 0;
-        const impossibleMaxSchema = Joi.number().negative().max(10);
-        example = ValueGenerator(impossibleMaxSchema);
-
-        expect(example).to.equal(NaN);
         done();
     });
 });
@@ -1216,7 +1212,6 @@ describe('Alternatives', () => {
         expect(example).to.be.an.object();
         ExpectValidation(example, schema, done);
     });
-
 
     it('should return "when" alternative', (done) => {
 
