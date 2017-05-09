@@ -1213,12 +1213,29 @@ describe('Alternatives', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return the single "try" object schema with additional key constraints', (done) => {
+
+        const schema = Joi.alternatives()
+            .try(Joi.object().keys({
+                a: Joi.string().lowercase(),
+                b: Joi.string().guid(),
+                c: Joi.string().regex(/a{3}b{3}c{3}/),
+                d: Joi.object().keys({
+                    e: Joi.string().alphanum().uppercase()
+                })
+            }));
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.an.object();
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return "when" alternative', (done) => {
 
         const schema = Joi.object().keys({
             dependent: Joi.alternatives().when('sibling.driver', {
                 is  : Joi.string(),
-                then: Joi.string()
+                then: Joi.string().lowercase()
             }),
             sibling  : Joi.object().keys({
                 driver: Joi.string()
@@ -1236,7 +1253,7 @@ describe('Alternatives', () => {
             dependent: Joi.alternatives().when('sibling.driver', {
                 is       : Joi.string(),
                 then     : Joi.string(),
-                otherwise: Joi.number()
+                otherwise: Joi.number().integer()
             }),
             sibling  : Joi.object().keys({
                 driver: Joi.boolean()
