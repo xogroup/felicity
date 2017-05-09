@@ -322,7 +322,7 @@ describe('Felicity EntityFor', () => {
         expect(() => {
 
             return Constructor();
-        }).to.throw('Class constructor Constructor cannot be invoked without \'new\'');
+        }).to.throw(TypeError);
         done();
     });
 
