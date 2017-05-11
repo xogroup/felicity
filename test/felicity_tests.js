@@ -322,7 +322,7 @@ describe('Felicity EntityFor', () => {
         expect(() => {
 
             return Constructor();
-        }).to.throw('Objects must be instantiated using new');
+        }).to.throw(TypeError);
         done();
     });
 
