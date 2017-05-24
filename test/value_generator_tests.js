@@ -25,25 +25,45 @@ describe('Any', () => {
         ExpectValidation(example, schema, done);
     });
 
-    it('should return an "allow"ed value', (done) => {
+    it('should sometimes return an "allow"ed value', (done) => {
 
         let schema = Joi.any().allow('allowed');
-        let example = ValueGenerator(schema);
+        let examples = {};
 
-        expect(example).to.equal('allowed');
-        ExpectValidation(example, schema);
+        for (let i = 0; i < 50; ++i) {
+            const example = ValueGenerator(schema);
+            examples[example] = true;
+            ExpectValidation(example, schema);
+        }
 
+        expect(examples.allowed).to.exist();
+        expect(Object.keys(examples).length).to.be.above(1);
+
+        examples = {};
         schema =  Joi.any().allow('allowed1', 'allowed2');
-        example = ValueGenerator(schema);
 
-        expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
-        ExpectValidation(example, schema);
+        for (let i = 0; i < 50; ++i) {
+            const example = ValueGenerator(schema);
+            examples[example] = true;
+            ExpectValidation(example, schema);
+        }
 
+        expect(examples.allowed1).to.exist();
+        expect(examples.allowed2).to.exist();
+        expect(Object.keys(examples).length).to.be.above(2);
+
+        examples = {};
         schema = Joi.any().allow(['first', 'second', true, 10]);
-        example = ValueGenerator(schema);
 
-        expect(['first', 'second', true, 10].indexOf(example)).to.not.equal(-1);
-        ExpectValidation(example, schema, done);
+        for (let i = 0; i < 50; ++i) {
+            const example = ValueGenerator(schema);
+            examples[example] = true;
+            ExpectValidation(example, schema);
+        }
+
+        expect(['first', 'second', 'true', '10'].filter((valid) => examples[valid] !== undefined).length).to.equal(4);
+        expect(Object.keys(examples).length).to.be.above(4);
+        done();
     });
 
     it('should return a "valid" value', (done) => {
