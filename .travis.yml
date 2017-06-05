@@ -3,6 +3,7 @@ node_js:
 - '4.4'
 - '4'
 - '6'
+- '8'
 - node
 sudo: required
 dist: precise
