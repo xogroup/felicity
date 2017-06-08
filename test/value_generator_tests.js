@@ -1513,3 +1513,75 @@ describe('Object', () => {
         ExpectValidation(example, schema, done);
     });
 });
+
+describe('Extensions', () => {
+
+    it('should fall back to baseType of string', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myType'
+        });
+
+        const schema = customJoi.myType();
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should fall back to baseType of number when possible', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myNumber',
+            base: Joi.number()
+        });
+
+        const schema = customJoi.myNumber();
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.a.number();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should fall back to baseType of boolean when possible', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myBoolean',
+            base: Joi.boolean()
+        });
+
+        const schema = customJoi.myBoolean();
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.a.boolean();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should fall back to baseType of array when possible', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myArray',
+            base: Joi.array()
+        });
+
+        const schema = customJoi.myArray();
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.an.array();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should fall back to baseType of func when possible', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myFunc',
+            base: Joi.func()
+        });
+
+        const schema = customJoi.myFunc();
+        const example = ValueGenerator(schema);
+
+        expect(example).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+});
