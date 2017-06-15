@@ -1584,4 +1584,49 @@ describe('Extensions', () => {
         expect(example).to.be.a.function();
         ExpectValidation(example, schema, done);
     });
+
+    it('should support child extensions', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myType'
+        });
+
+        const schema = Joi.object().keys({ custom: customJoi.myType() });
+        const example = ValueGenerator(schema);
+
+        expect(example.custom).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should support extensions in arrays', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myType'
+        });
+
+        const schema = Joi.array().items( customJoi.myType() );
+        const example = ValueGenerator(schema);
+
+        expect(example[0]).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should support extensions in alternatives', (done) => {
+
+        const customJoi = Joi.extend({
+            name: 'myType'
+        });
+
+        const schema = Joi.object().keys({
+            driver: Joi.any(),
+            child : Joi.alternatives().when('driver', {
+                is       : Joi.string(),
+                then     : customJoi.myType()
+            })
+        });
+        const example = ValueGenerator(schema);
+
+        expect(example.child).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
 });
