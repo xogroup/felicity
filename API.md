@@ -279,6 +279,20 @@ If set to `true`, then default values of Joi properties with `.default('value')`
     const noDefaultsExample = Felicity.example(schema, { config: { ignoreDefaults: true } }); // noDefaultsExample === { name: 'nq5yhu4ttq33di' }
 ```
 
+- `ignoreValids` - Default `false`. Default behavior is to pick values from `.allow()`ed and `.valid()` sets.
+
+If set to `true`, then the allowed/valid values will not be used but will be generated according to the Joi property rules.
+```Javascript
+    const schema = Joi.object().keys({
+        name: Joi.string().allow(null).required()
+    });
+
+    const example = Felicity.example(schema); // example === { name: null }
+
+    const noValidsExample = Felicity.example(schema, { config: { ignoreValids: true } }); // noValidsExample === { name: 'nq5yhu4ttq33di' }
+```
+
+
 - `includeOptional` - Default `false`. Default behavior is to ignore optional properties entirely.
 
 If set to `true`, then Joi properties with `.optional()` set will be included on examples.

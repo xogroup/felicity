@@ -191,6 +191,34 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object with "allowed" values', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().allow(null).required()
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.string).to.equal(null);
+        ExpectValidation(example, schema, done);
+    });
+
+    it('should ignore "allowed" values when provided "ignoreValids" config', (done) => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().allow(null).required()
+        });
+        const options = {
+            config: {
+                ignoreValids: true
+            }
+        };
+        const example = Felicity.example(schema, options);
+
+        expect(example.string).to.not.equal(null);
+        expect(example.string).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an object with custom type', (done) => {
 
         const Class1 = function () {};

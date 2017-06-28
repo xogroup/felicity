@@ -25,24 +25,15 @@ describe('Any', () => {
         ExpectValidation(example, schema, done);
     });
 
-    it('should sometimes return an "allow"ed value', (done) => {
+    it('should return an "allow"ed value', (done) => {
 
         let schema = Joi.any().allow('allowed');
+        ExpectValidation(ValueGenerator(schema), schema);
+
         let examples = {};
-
-        for (let i = 0; i < 50; ++i) {
-            const example = ValueGenerator(schema);
-            examples[example] = true;
-            ExpectValidation(example, schema);
-        }
-
-        expect(examples.allowed).to.exist();
-        expect(Object.keys(examples).length).to.be.above(1);
-
-        examples = {};
         schema =  Joi.any().allow('allowed1', 'allowed2');
 
-        for (let i = 0; i < 50; ++i) {
+        for (let i = 0; i < 10; ++i) {
             const example = ValueGenerator(schema);
             examples[example] = true;
             ExpectValidation(example, schema);
@@ -50,20 +41,27 @@ describe('Any', () => {
 
         expect(examples.allowed1).to.exist();
         expect(examples.allowed2).to.exist();
-        expect(Object.keys(examples).length).to.be.above(2);
 
         examples = {};
         schema = Joi.any().allow(['first', 'second', true, 10]);
 
-        for (let i = 0; i < 50; ++i) {
+        for (let i = 0; i < 25; ++i) {
             const example = ValueGenerator(schema);
             examples[example] = true;
             ExpectValidation(example, schema);
         }
 
         expect(['first', 'second', 'true', '10'].filter((valid) => examples[valid] !== undefined).length).to.equal(4);
-        expect(Object.keys(examples).length).to.be.above(4);
         done();
+    });
+
+    it('should ignore "allow"ed values when provided the "ignoreValids" option', (done) => {
+
+        const schema = Joi.any().allow(null);
+        const example = ValueGenerator(schema, { config: { ignoreValids: true } });
+
+        expect(example).to.be.a.string();
+        ExpectValidation(example, schema, done);
     });
 
     it('should return a "valid" value', (done) => {
