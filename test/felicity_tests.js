@@ -727,6 +727,27 @@ describe('Felicity EntityFor', () => {
             done();
         });
 
+        it('should not include keys with "optional" flag when using .options({ presence: "optional" }) syntax', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.string().required(),
+                key2: Joi.string(),
+                key3: Joi.string().optional(),
+                key4: Joi.object().keys({
+                    a: Joi.string()
+                })
+            }).options({ presence: 'optional' });
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.key1).to.equal(null);
+            expect(felicityInstance.key2).to.not.exist();
+            expect(felicityInstance.key3).to.not.exist();
+            expect(felicityInstance.key4).to.not.exist();
+            expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+
         it('should include keys with "optional" flag if provided includeOptional config', (done) => {
 
             const schema = Joi.object().keys({
