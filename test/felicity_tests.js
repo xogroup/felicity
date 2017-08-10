@@ -265,6 +265,21 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
+    it('should return an object without optional keys when using .options({ presence: "optional" }) syntax', (done) => {
+
+        const schema = Joi.object().keys({
+            required      : Joi.string().required(),
+            parentOptional: Joi.string(),
+            optional      : Joi.string().optional()
+        }).options({ presence: 'optional' });
+        const example = Felicity.example(schema);
+
+        expect(example.required).to.be.a.string();
+        expect(example.parentOptional).to.be.undefined();
+        expect(example.optional).to.be.undefined();
+        ExpectValidation(example, schema, done);
+    });
+
     it('should return an object with optional keys when given includeOptional config', (done) => {
 
         const schema = Joi.object().keys({
