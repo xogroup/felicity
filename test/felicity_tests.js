@@ -1301,5 +1301,31 @@ describe('Felicity EntityFor', () => {
             }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
             done();
         });
+
+        it('should respect "includeOptional" config for static example call', (done) => {
+
+            const schema = Joi.object().keys({
+                required        : Joi.string().required(),
+                optional        : Joi.string().optional(),
+                implicitOptional: Joi.string()
+            }).options({ presence: 'optional' });
+            const options = {
+                config: {
+                    includeOptional: true
+                }
+            };
+            const Constructor = Felicity.entityFor(schema);
+            const example = Constructor.example(options);
+
+            expect(example.required).to.be.a.string();
+            expect(example.optional).to.be.a.string();
+            expect(example.implicitOptional).to.be.a.string();
+
+            const exampleWithoutOptions = Constructor.example();
+            expect(exampleWithoutOptions.required).to.be.a.string();
+            expect(exampleWithoutOptions.optional).to.be.undefined();
+            expect(exampleWithoutOptions.implicitOptional).to.be.undefined();
+            done();
+        });
     });
 });
