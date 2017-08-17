@@ -1457,10 +1457,10 @@ describe('Object', () => {
 
         const schema = Joi.object().keys({
             b : Joi.number()
-        }).rename('a','b');
+        }).rename('a','b', { ignoreUndefined: true });
         const example = ValueGenerator(schema);
 
-        expect(example.a).to.be.a.number();
+        expect(example.b).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
 
@@ -1468,10 +1468,10 @@ describe('Object', () => {
 
         const schema = Joi.object().keys({
             b : Joi.number()
-        }).rename('a','b').rename('c','b', { multiple: true });
+        }).rename('a','b', { ignoreUndefined: true }).rename('c','b', { multiple: true, ignoreUndefined: true });
         const example = ValueGenerator(schema);
 
-        expect(example.a).to.be.a.number();
+        expect(example.b).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
 
