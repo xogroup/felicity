@@ -1282,6 +1282,21 @@ describe('Alternatives', () => {
         expect(example.dependent).to.be.a.number();
         ExpectValidation(example, schema, done);
     });
+
+    it('should return the base value when "when.otherwise" is undefined', (done) => {
+
+        const schema = Joi.object().keys({
+            dependent: Joi.string().when('sibling.driver', {
+                is       : Joi.exist(),
+                then     : Joi.string().guid()
+            }),
+            sibling  : Joi.object()
+        });
+        const example = ValueGenerator(schema);
+
+        expect(example.dependent).to.be.a.string();
+        ExpectValidation(example, schema, done);
+    });
 });
 
 describe('Object', () => {
