@@ -1,9 +1,7 @@
 'use strict';
 
-const Code = require('code');
 const Hoek = require('hoek');
 const Joi = require('../lib/joi');
-const expect = Code.expect;
 
 const permutations = function (requirements, exclusionSet) {
 
@@ -36,7 +34,7 @@ const permutations = function (requirements, exclusionSet) {
     });
 };
 
-const expectValidation = function (value, schema, done) {
+const expectValidation = function (expect, value, schema, done) {
 
     const validationResult = Joi.validate(value, schema);
 

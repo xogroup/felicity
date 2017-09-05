@@ -6,7 +6,6 @@ node_js:
 - '8'
 - node
 sudo: required
-dist: precise
 deploy:
   provider: npm
   email: xo-npmjs.group@xogrp.com

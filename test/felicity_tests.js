@@ -1,17 +1,16 @@
 'use strict';
 
-const Code = require('code');
 const Felicity = require('../lib');
 const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
-const ExpectValidation = require('./test_helpers').expectValidation;
 const Moment = require('moment');
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
 const it = lab.it;
-const expect = Code.expect;
+const expect = lab.expect;
+const ExpectValidation = require('./test_helpers').expectValidation.bind({}, expect);
 
 describe('Felicity Example', () => {
 

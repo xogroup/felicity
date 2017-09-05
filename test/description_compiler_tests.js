@@ -1,6 +1,5 @@
 'use strict';
 
-const Code = require('code');
 const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Uuid = require('uuid');
@@ -9,7 +8,7 @@ const DescriptionCompiler = require('../lib/helpers').descriptionCompiler;
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
 const it = lab.it;
-const expect = Code.expect;
+const expect = lab.expect;
 
 describe('String', () => {
 

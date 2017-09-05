@@ -1,19 +1,18 @@
 'use strict';
 
 const Alloc = require('buffer-alloc');
-const Code = require('code');
 const Hoek = require('hoek');
 const Joi = require('../lib/joi');
 const Lab = require('lab');
 const Permutations = require('./test_helpers').permutations;
-const ExpectValidation = require('./test_helpers').expectValidation;
 const ValueGenerator = require('../lib/exampleGenerator');
 const Moment = require('moment');
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
 const it = lab.it;
-const expect = Code.expect;
+const expect = lab.expect;
+const ExpectValidation = require('./test_helpers').expectValidation.bind({}, expect);
 
 describe('Any', () => {
 
