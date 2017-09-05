@@ -14,7 +14,7 @@ deploy:
   on:
     tags: true
     repo: xogroup/felicity
-before_install: npm install -g npm@'>=2.13.5'
+before_install: npm install -g npm@'>=2.13.5 <5.2.0'
 notifications:
   slack:
     secure: TBDxUfHiPNvuzFqFNWfqU4k2uVvhM5GtJzzQNpeezuOY5w3IJzcofA9a9wK/swXejzgtBbqXgwbt2AZJS/YJpsvcJsZa/VaVMUExx1dzHo/m26fTOHpBcV2vOHK2ThkUAIYwA3sdKhJa7h8rn2cKV18ttKBStb+4kJ3FoIus8miAihdiikOGKTdMFx+GPSksi7XtEpPNRyFZTPmTWhuidWSyhLFNKr7hUBJqzlEpJ/fZNXr+mboVOTlWcDyQ+Sul/fdiLiqsABVuA2t7Mn2Tp3JtVwZBUHPk6m4blviW2xYdRjTU4b7dxoRMXvXkYzTofcxY3j9VuP+N/ceqM0I0zx4lFrArZA8k+d0hXQmcrDU5kIPOznY/gtWkXeVElcpFPA9W2JkQw1icbHKpKly09Q4cWGmrEjXx/fwFA5cW4DXRFo71T3crlYBLtFFTCmKT+4ckUugUXL2MYZAuwbk8VqwTKGMNeL1FwhQxu9G/RtCXO5aH3HmQm51vS734f5O0Wukp+wvo4G9H1L7GbHLUs9gi0qVxOE4Wd3ploSUkevj6R58U34Qxft6u6+MyvcEYwQRX1/CvbtanIFWFynwXEJFCcFNqXMBeiV+jJG93qdHwz0TcJuIiNl7KXDvKsXZEOPIdV46YQ9GLtF8J3Pr2fFhfJ0f2ffYROLnFS+eL8Dg=
