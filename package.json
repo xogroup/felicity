@@ -23,14 +23,14 @@
   "dependencies": {
     "buffer-alloc": "0.1.1",
     "hoek": "4.x",
-    "joi": "10.x",
+    "joi": "11.x",
     "joi-date-extensions": "1.x",
     "moment": "2.18.x",
     "randexp": "0.4.x",
     "uuid": "3.0.x"
   },
   "peerDependencies": {
-    "joi": "10.x"
+    "joi": "11.x"
   },
   "devDependencies": {
     "lab": "14.x.x",
