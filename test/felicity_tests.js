@@ -417,6 +417,24 @@ describe('Felicity EntityFor', () => {
 
     describe('Constructor instances', () => {
 
+        it('should accept override options when validating', (done) => {
+
+            const schema = Joi.object().keys({
+                a: Joi.string()
+            });
+            const options = { stripUnknown: true };
+
+            const Subject = Felicity.entityFor(schema);
+            const subject = new Subject({ a: 'a' });
+            subject.b = 'b';
+
+            subject.validate((err) => {
+
+                expect(err).to.be.null();
+            }, options);
+            done();
+        });
+
         it('should return a validation object', (done) => {
 
             const schema = Joi.object().keys({
