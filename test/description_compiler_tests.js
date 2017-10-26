@@ -5,14 +5,11 @@ const Lab = require('lab');
 const Uuid = require('uuid');
 const DescriptionCompiler = require('../lib/helpers').descriptionCompiler;
 
-const lab = exports.lab = Lab.script();
-const describe = lab.describe;
-const it = lab.it;
-const expect = lab.expect;
+const { describe, expect, it } = exports.lab = Lab.script();
 
 describe('String', () => {
 
-    it('should return the compiled string schema', (done) => {
+    it('should return the compiled string schema', () => {
 
         const invalidExample = 'abcd';
         const validExample = Uuid.v4();
@@ -27,10 +24,9 @@ describe('String', () => {
 
             expect(err.details[0].message).to.equal('"value" length must be at least 5 characters long');
         });
-        done();
     });
 
-    it('should return the compiled object schema', (done) => {
+    it('should return the compiled object schema', () => {
 
         const invalidExample = {
             string: '1243'
@@ -53,6 +49,5 @@ describe('String', () => {
             expect(err).to.not.equal(null);
             expect(err.details[0].message).to.equal('"string" length must be at least 5 characters long');
         });
-        done();
     });
 });

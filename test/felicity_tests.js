@@ -6,24 +6,21 @@ const Lab = require('lab');
 const Uuid = require('uuid');
 const Moment = require('moment');
 
-const lab = exports.lab = Lab.script();
-const describe = lab.describe;
-const it = lab.it;
-const expect = lab.expect;
+const { describe, expect, it } = exports.lab = Lab.script();
 const ExpectValidation = require('./test_helpers').expectValidation.bind({}, expect);
 
 describe('Felicity Example', () => {
 
-    it('should return a string', (done) => {
+    it('should return a string', () => {
 
         const schema = Joi.string();
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.string();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return a string that ignores regex lookarounds', (done) => {
+    it('should return a string that ignores regex lookarounds', () => {
 
         const lookAheadPattern = /abcd(?=efg)/;
         const schema = Joi.string().regex(lookAheadPattern);
@@ -31,10 +28,9 @@ describe('Felicity Example', () => {
 
         expect(example).to.equal('abcd');
         expect(example.match(lookAheadPattern)).to.equal(null);
-        done();
     });
 
-    it('should throw validation error on regex lookarounds when provided strictExample config', (done) => {
+    it('should throw validation error on regex lookarounds when provided strictExample config', () => {
 
         const schema = Joi.string().regex(/abcd(?=efg)/);
         const options = {
@@ -48,10 +44,9 @@ describe('Felicity Example', () => {
         };
 
         expect(callExample).to.throw('\"value\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/');
-        done();
     });
 
-    it('should not throw validation error on supported regex when provided strictExample config', (done) => {
+    it('should not throw validation error on supported regex when provided strictExample config', () => {
 
         const schema = Joi.string().regex(/abcd/);
         const options = {
@@ -65,46 +60,46 @@ describe('Felicity Example', () => {
         };
 
         expect(callExample).to.not.throw();
-        ExpectValidation(callExample(), schema, done);
+        ExpectValidation(callExample(), schema);
     });
 
-    it('should return a number', (done) => {
+    it('should return a number', () => {
 
         const schema = Joi.number();
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.number();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return a boolean', (done) => {
+    it('should return a boolean', () => {
 
         const schema = Joi.boolean();
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.boolean();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return a buffer', (done) => {
+    it('should return a buffer', () => {
 
         const schema = Joi.binary();
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.buffer();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return a date', (done) => {
+    it('should return a date', () => {
 
         const schema = Joi.date();
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.date();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return a moment formatted date', (done) => {
+    it('should return a moment formatted date', () => {
 
         const fmt = 'HH:mm';
         const schema = Joi.date().format(fmt);
@@ -113,28 +108,28 @@ describe('Felicity Example', () => {
 
         expect(example).to.be.a.string();
         expect(moment.isValid()).to.equal(true);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return a function', (done) => {
+    it('should return a function', () => {
 
         const schema = Joi.func();
         const example = Felicity.example(schema);
 
         expect(example).to.be.a.function();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an array', (done) => {
+    it('should return an array', () => {
 
         const schema = Joi.array();
         const example = Felicity.example(schema);
 
         expect(example).to.be.an.array();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object with default values', (done) => {
+    it('should return an object with default values', () => {
 
         const schema = Joi.object().keys({
             string: Joi.string().required().default('-----'),
@@ -144,10 +139,10 @@ describe('Felicity Example', () => {
 
         expect(example.string).to.equal('-----');
         expect(example.number).to.equal(4);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object with dynamic defaults', (done) => {
+    it('should return an object with dynamic defaults', () => {
 
         const generateDefaultString = () => {
 
@@ -174,10 +169,10 @@ describe('Felicity Example', () => {
         expect(example.string).to.equal('-----');
         expect(example.number).to.equal(4);
         expect(example.bool).to.equal(true);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object with specified valid properties', (done) => {
+    it('should return an object with specified valid properties', () => {
 
         const schema = Joi.object().keys({
             string: Joi.string().required().valid('-----'),
@@ -187,10 +182,10 @@ describe('Felicity Example', () => {
 
         expect(example.string).to.equal('-----');
         expect(example.number).to.equal(4);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object with "allowed" values', (done) => {
+    it('should return an object with "allowed" values', () => {
 
         const schema = Joi.object().keys({
             string: Joi.string().allow(null).required()
@@ -198,10 +193,10 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example.string).to.equal(null);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should ignore "allowed" values when provided "ignoreValids" config', (done) => {
+    it('should ignore "allowed" values when provided "ignoreValids" config', () => {
 
         const schema = Joi.object().keys({
             string: Joi.string().allow(null).required()
@@ -215,10 +210,10 @@ describe('Felicity Example', () => {
 
         expect(example.string).to.not.equal(null);
         expect(example.string).to.be.a.string();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object with custom type', (done) => {
+    it('should return an object with custom type', () => {
 
         const Class1 = function () {};
         Class1.prototype.testFunc = function () {};
@@ -228,10 +223,10 @@ describe('Felicity Example', () => {
 
         expect(example).to.be.an.instanceof(Class1);
         expect(example.testFunc).to.be.a.function();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should not return an object with default values when provided ignoreDefaults config', (done) => {
+    it('should not return an object with default values when provided ignoreDefaults config', () => {
 
         const schema = Joi.object().keys({
             string: Joi.string().alphanum().required().default('-----'),
@@ -246,10 +241,10 @@ describe('Felicity Example', () => {
 
         expect(example.string).to.not.equal('-----');
         expect(example.number).to.not.equal(4);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object without optional keys', (done) => {
+    it('should return an object without optional keys', () => {
 
         const schema = Joi.object().keys({
             required: Joi.string().required(),
@@ -261,10 +256,10 @@ describe('Felicity Example', () => {
         expect(example.required).to.be.a.string();
         expect(example.present).to.be.a.string();
         expect(example.optional).to.be.undefined();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object without optional keys when using .options({ presence: "optional" }) syntax', (done) => {
+    it('should return an object without optional keys when using .options({ presence: "optional" }) syntax', () => {
 
         const schema = Joi.object().keys({
             required      : Joi.string().required(),
@@ -276,10 +271,10 @@ describe('Felicity Example', () => {
         expect(example.required).to.be.a.string();
         expect(example.parentOptional).to.be.undefined();
         expect(example.optional).to.be.undefined();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return an object with optional keys when given includeOptional config', (done) => {
+    it('should return an object with optional keys when given includeOptional config', () => {
 
         const schema = Joi.object().keys({
             required: Joi.string().required(),
@@ -296,10 +291,10 @@ describe('Felicity Example', () => {
         expect(example.required).to.be.a.string();
         expect(example.present).to.be.a.string();
         expect(example.optional).to.be.a.string();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return the Joi facebook example', (done) => {
+    it('should return the Joi facebook example', () => {
 
         const passwordPattern = /^[a-zA-Z0-9]{3,30}$/;
         const schema = Joi.object().keys({
@@ -312,10 +307,10 @@ describe('Felicity Example', () => {
         const example = Felicity.example(schema);
 
         expect(example.password.match(passwordPattern)).to.not.equal(null);
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 
-    it('should return the Joi facebook example with an optional key', (done) => {
+    it('should return the Joi facebook example with an optional key', () => {
 
         const passwordPattern = /^[a-zA-Z0-9]{3,30}$/;
         const schema = Joi.object().keys({
@@ -329,19 +324,18 @@ describe('Felicity Example', () => {
 
         expect(example.password.match(passwordPattern)).to.not.equal(null);
         expect(example.birthyear).to.be.a.number();
-        ExpectValidation(example, schema, done);
+        ExpectValidation(example, schema);
     });
 });
 
 describe('Felicity EntityFor', () => {
 
-    it('should fail when calling without proper schema', (done) => {
+    it('should fail when calling without proper schema', () => {
 
         expect(Felicity.entityFor).to.throw(Error, 'You must provide a Joi schema');
-        done();
     });
 
-    it('should return a constructor function', (done) => {
+    it('should return a constructor function', () => {
 
         const schema = {};
         const Constructor = Felicity.entityFor(schema);
@@ -351,10 +345,9 @@ describe('Felicity EntityFor', () => {
         const skeleton = new Constructor();
 
         expect(skeleton).to.be.an.object();
-        done();
     });
 
-    it('should enforce "new" instantiation on returned Constructor', (done) => {
+    it('should enforce "new" instantiation on returned Constructor', () => {
 
         const schema = {};
         const Constructor = Felicity.entityFor(schema);
@@ -365,10 +358,9 @@ describe('Felicity EntityFor', () => {
 
             return Constructor();
         }).to.throw(TypeError);
-        done();
     });
 
-    it('should error on non-object schema', (done) => {
+    it('should error on non-object schema', () => {
 
         const numberSchema = Joi.number().max(1);
         const entityFor = function () {
@@ -377,10 +369,9 @@ describe('Felicity EntityFor', () => {
         };
 
         expect(entityFor).to.throw(Error, 'Joi schema must describe an object for constructor functions');
-        done();
     });
 
-    it('should provide an example with dynamic defaults', (done) => {
+    it('should provide an example with dynamic defaults', () => {
 
         const schema = Joi.object().keys({
             version  : Joi.string().min(5).default('1.0.0'),
@@ -412,12 +403,11 @@ describe('Felicity EntityFor', () => {
         expect(example.identity.id).to.be.a.string();
         expect(example.condition).to.equal('defaultValue');
         expect(example.dynamicCondition).to.equal('dynamic default');
-        done();
     });
 
     describe('Constructor instances', () => {
 
-        it('should accept override options when validating', (done) => {
+        it('should accept override options when validating', () => {
 
             const schema = Joi.object().keys({
                 a: Joi.string()
@@ -432,10 +422,9 @@ describe('Felicity EntityFor', () => {
 
                 expect(err).to.be.null();
             }, options);
-            done();
         });
 
-        it('should return a validation object', (done) => {
+        it('should return a validation object', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().required()
@@ -448,10 +437,9 @@ describe('Felicity EntityFor', () => {
             expect(thing.validate().value).to.exist().and.equal({
                 name: null
             });
-            done();
         });
 
-        it('should follow the standard Node callback signature for .validate', (done) => {
+        it('should follow the standard Node callback signature for .validate', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().required()
@@ -476,24 +464,22 @@ describe('Felicity EntityFor', () => {
                     expect(validationResult.success).to.exist().and.equal(true);
                     expect(validationResult.value).to.exist().and.be.an.object();
                     expect(validationResult.errors).to.be.null();
-                    done();
                 });
             });
         });
 
-        it('should not trigger V8 JSON.stringify bug in Node v4.x', (done) => {
+        it('should not trigger V8 JSON.stringify bug in Node v4.x', () => {
 
             const schema = Joi.object();
             const Thing = Felicity.entityFor(schema);
             const thing = new Thing();
             expect(JSON.stringify(thing, null, null)).to.equal('{}');
-            done();
         });
     });
 
     describe('"Action" schema options', () => {
 
-        it('should not interfere with String.truncate', (done) => {
+        it('should not interfere with String.truncate', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().max(5).truncate()
@@ -509,10 +495,10 @@ describe('Felicity EntityFor', () => {
             expect(example.name.length).to.be.at.most(5);
             expect(validation.errors).to.equal(null);
             expect(validation.value).to.equal({ name: 'longe' });
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
 
-        it('should not interfere with String.replace', (done) => {
+        it('should not interfere with String.replace', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().replace(/b/gi, 'a')
@@ -525,10 +511,10 @@ describe('Felicity EntityFor', () => {
             expect(instance.name).to.equal(null);
             expect(validation.errors).to.equal(null);
             expect(validation.value).to.equal({ name: 'aaaaaaa' });
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
 
-        it('should not interfere with String.trim', (done) => {
+        it('should not interfere with String.trim', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().trim()
@@ -541,13 +527,13 @@ describe('Felicity EntityFor', () => {
             expect(instance.name).to.equal('abbabba');
             expect(validation.errors).to.equal(null);
             expect(validation.value).to.equal({ name: 'abbabba' });
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
     });
 
     describe('"Presence" object binary schema options', () => {
 
-        it('should not interfere with and', (done) => {
+        it('should not interfere with and', () => {
 
             const schema = Joi.object().keys({
                 a: Joi.string(),
@@ -557,10 +543,10 @@ describe('Felicity EntityFor', () => {
             const instance = new Constructor({ a:'abc', b:'xyz' });
             const example = instance.example();
 
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
 
-        it('should not interfere with or', (done) => {
+        it('should not interfere with or', () => {
 
             const schema = Joi.object().keys({
                 a: Joi.string(),
@@ -570,13 +556,13 @@ describe('Felicity EntityFor', () => {
             const instance = new Constructor({ a:'abc', b:'xyz' });
             const example = instance.example();
 
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
     });
 
     describe('"Presence" object property check schema options', () => {
 
-        it('should not interfere with unknown when set to true', (done) => {
+        it('should not interfere with unknown when set to true', () => {
 
             const schema = Joi.object().keys({
                 a: Joi.string(),
@@ -586,10 +572,10 @@ describe('Felicity EntityFor', () => {
             const instance = new Constructor({ a:'abc', b:'xyz' });
             const example = instance.example();
 
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
 
-        it('should not interfere with unknown when set to false', (done) => {
+        it('should not interfere with unknown when set to false', () => {
 
             const schema = Joi.object().keys({
                 a: Joi.string(),
@@ -599,13 +585,13 @@ describe('Felicity EntityFor', () => {
             const instance = new Constructor({ a:'abc', b:'xyz' });
             const example = instance.example();
 
-            ExpectValidation(example, schema, done);
+            ExpectValidation(example, schema);
         });
     });
 
     describe('Conditional', () => {
 
-        it('should default to the "true" driver', (done) => {
+        it('should default to the "true" driver', () => {
 
             const schema = Joi.object().keys({
                 driver       : true,
@@ -620,13 +606,12 @@ describe('Felicity EntityFor', () => {
 
             expect(felicityInstance.myConditional).to.equal(null);
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
     });
 
     describe('Object', () => {
 
-        it('should return an object with no keys', (done) => {
+        it('should return an object with no keys', () => {
 
             const schema = Joi.object().keys();
             const Entity = Felicity.entityFor(schema);
@@ -634,10 +619,9 @@ describe('Felicity EntityFor', () => {
 
             expect(felicityInstance).to.be.an.object();
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should return an object with keys', (done) => {
+        it('should return an object with keys', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.object().keys().required()
@@ -647,10 +631,9 @@ describe('Felicity EntityFor', () => {
 
             expect(felicityInstance.key1).to.equal({});
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should return an object with mixed-type keys', (done) => {
+        it('should return an object with mixed-type keys', () => {
 
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
@@ -686,10 +669,10 @@ describe('Felicity EntityFor', () => {
 
             const mockInstance = felicityInstance.example();
 
-            ExpectValidation(mockInstance, schema, done);
+            ExpectValidation(mockInstance, schema);
         });
 
-        it('should return an object with mixed-type keys for non-compiled schema', (done) => {
+        it('should return an object with mixed-type keys for non-compiled schema', () => {
 
             const schema = {
                 innerObject: Joi.object().keys({
@@ -724,10 +707,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.optional).to.be.undefined();
             expect(felicityInstance.otherCond).to.equal(null);
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should not include keys with "optional" flag', (done) => {
+        it('should not include keys with "optional" flag', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string().required(),
@@ -741,10 +723,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.key2).to.equal(null);
             expect(felicityInstance.key3).to.not.exist();
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should not include keys with "optional" flag when using .options({ presence: "optional" }) syntax', (done) => {
+        it('should not include keys with "optional" flag when using .options({ presence: "optional" }) syntax', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string().required(),
@@ -762,10 +743,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.key3).to.not.exist();
             expect(felicityInstance.key4).to.not.exist();
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should include keys with "optional" flag if provided includeOptional config', (done) => {
+        it('should include keys with "optional" flag if provided includeOptional config', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string().required(),
@@ -784,10 +764,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.key2).to.equal(null);
             expect(felicityInstance.key3).to.equal(null);
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should utilize default values', (done) => {
+        it('should utilize default values', () => {
 
             const schema = Joi.object().keys({
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -808,10 +787,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(10);
             expect(felicityInstance.identity.id).to.equal('abcdefg');
             expect(felicityInstance.condition).to.equal('defaultValue');
-            done();
         });
 
-        it('should not utilize default values when provided ignoreDefaults config', (done) => {
+        it('should not utilize default values when provided ignoreDefaults config', () => {
 
             const schema = Joi.object().keys({
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -837,10 +815,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(0);
             expect(felicityInstance.identity.id).to.equal(null);
             expect(felicityInstance.condition).to.equal(null);
-            done();
         });
 
-        it('should utilize default values for non-compiled schema', (done) => {
+        it('should utilize default values for non-compiled schema', () => {
 
             const schema = {
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -861,10 +838,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(10);
             expect(felicityInstance.identity.id).to.equal('abcdefg');
             expect(felicityInstance.condition).to.equal('defaultValue');
-            done();
         });
 
-        it('should not utilize default values for non-compiled schema when provided ignoreDefaults config', (done) => {
+        it('should not utilize default values for non-compiled schema when provided ignoreDefaults config', () => {
 
             const schema = {
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -890,10 +866,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(0);
             expect(felicityInstance.identity.id).to.equal(null);
             expect(felicityInstance.condition).to.equal(null);
-            done();
         });
 
-        it('should utilize dynamic default values', (done) => {
+        it('should utilize dynamic default values', () => {
 
             const schema = Joi.object().keys({
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -914,10 +889,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(10);
             expect(felicityInstance.identity.id).to.be.a.string();
             expect(felicityInstance.condition).to.equal('defaultValue');
-            done();
         });
 
-        it('should not utilize dynamic default values when provided ignoreDefaults config', (done) => {
+        it('should not utilize dynamic default values when provided ignoreDefaults config', () => {
 
             const schema = Joi.object().keys({
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -943,10 +917,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(0);
             expect(felicityInstance.identity.id).to.equal(null);
             expect(felicityInstance.condition).to.equal(null);
-            done();
         });
 
-        it('should utilize dynamic default values for non-compiled schema', (done) => {
+        it('should utilize dynamic default values for non-compiled schema', () => {
 
             const schema = {
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -967,10 +940,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(10);
             expect(felicityInstance.identity.id).to.be.a.string();
             expect(felicityInstance.condition).to.equal('defaultValue');
-            done();
         });
 
-        it('should not utilize dynamic default values for non-compiled schema when provided ignoreDefaults config', (done) => {
+        it('should not utilize dynamic default values for non-compiled schema when provided ignoreDefaults config', () => {
 
             const schema = {
                 version  : Joi.string().min(5).default('1.0.0'),
@@ -996,10 +968,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.number).to.equal(0);
             expect(felicityInstance.identity.id).to.equal(null);
             expect(felicityInstance.condition).to.equal(null);
-            done();
         });
 
-        it('should return an object with alternatives keys', (done) => {
+        it('should return an object with alternatives keys', () => {
 
             const schema = Joi.object({
                 id: Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required()
@@ -1008,13 +979,12 @@ describe('Felicity EntityFor', () => {
             const felicityInstance = new Entity();
 
             expect(felicityInstance.id).to.equal(0);
-            done();
         });
     });
 
     describe('Input', () => {
 
-        it('should include valid input', (done) => {
+        it('should include valid input', () => {
 
             const schema = {
                 string: Joi.string().guid().required(),
@@ -1037,10 +1007,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.string).to.equal(hydratedInput.string);
             expect(felicityInstance.number).to.equal(hydratedInput.number);
             expect(felicityInstance.object).to.equal(hydratedInput.object);
-            done();
         });
 
-        it('should include valid input with strictInput set to true', (done) => {
+        it('should include valid input with strictInput set to true', () => {
 
             const schema = {
                 string: Joi.string().guid().required(),
@@ -1063,10 +1032,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.string).to.equal(hydratedInput.string);
             expect(felicityInstance.number).to.equal(hydratedInput.number);
             expect(felicityInstance.object).to.equal(hydratedInput.object);
-            done();
         });
 
-        it('should strip unknown input values', (done) => {
+        it('should strip unknown input values', () => {
 
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
@@ -1108,10 +1076,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.bool).to.equal(hydrationData.bool);
             expect(felicityInstance.conditional).to.equal(hydrationData.conditional);
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should strip unknown and invalid input values with strictInput set to true', (done) => {
+        it('should strip unknown and invalid input values with strictInput set to true', () => {
 
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
@@ -1153,10 +1120,9 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.bool).to.equal(hydrationData.bool);
             expect(felicityInstance.conditional).to.equal(hydrationData.conditional);
             expect(felicityInstance.validate).to.be.a.function();
-            done();
         });
 
-        it('should utilize dynamic defaults for missing input', (done) => {
+        it('should utilize dynamic defaults for missing input', () => {
 
             const generateUuid = () => Uuid.v4();
             const schema = Joi.object().keys({
@@ -1165,13 +1131,12 @@ describe('Felicity EntityFor', () => {
             const felicityInstance = new (Felicity.entityFor(schema))({});
 
             expect(felicityInstance.id).to.be.a.string();
-            done();
         });
     });
 
     describe('Skeleton Validate', () => {
 
-        it('should return an object when no callback is provided', (done) => {
+        it('should return an object when no callback is provided', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string(),
@@ -1186,10 +1151,9 @@ describe('Felicity EntityFor', () => {
             expect(instanceValidity.errors).to.be.an.array();
             expect(instanceValidity.success).to.equal(false);
             expect(instanceValidity.value).to.be.an.object();
-            done();
         });
 
-        it('should set properties when validation is successful', (done) => {
+        it('should set properties when validation is successful', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string()
@@ -1205,10 +1169,9 @@ describe('Felicity EntityFor', () => {
             expect(instanceValidity.success).to.equal(true);
             expect(instanceValidity.value).to.be.an.object();
 
-            done();
         });
 
-        it('should accept a callback', (done) => {
+        it('should accept a callback', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string()
@@ -1219,13 +1182,12 @@ describe('Felicity EntityFor', () => {
 
                 expect(err).to.be.an.array();
                 expect(result).to.not.exist();
-                done();
             };
 
             felicityInstance.validate(validationCallback);
         });
 
-        it('should pass (err, success) to callback when validation is successful', (done) => {
+        it('should pass (err, success) to callback when validation is successful', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string()
@@ -1240,7 +1202,6 @@ describe('Felicity EntityFor', () => {
                 expect(err).to.equal(null);
                 expect(result.success).to.equal(true);
                 expect(result.value).to.be.an.object();
-                done();
             };
 
             felicityInstance.validate(validationCallback);
@@ -1249,7 +1210,7 @@ describe('Felicity EntityFor', () => {
 
     describe('Skeleton Example', () => {
 
-        it('should return an empty instance', (done) => {
+        it('should return an empty instance', () => {
 
             const schema = Joi.object();
             const Entity = Felicity.entityFor(schema);
@@ -1258,10 +1219,9 @@ describe('Felicity EntityFor', () => {
 
             expect(felicityExample).to.be.an.object();
             expect(Object.keys(felicityExample).length).to.equal(0);
-            done();
         });
 
-        it('should return an a hydrated valid instance', (done) => {
+        it('should return an a hydrated valid instance', () => {
 
             const schema = Joi.object().keys({
                 key1: Joi.string().creditCard(),
@@ -1275,10 +1235,10 @@ describe('Felicity EntityFor', () => {
             expect(felicityExample.key1).to.be.a.string();
             expect(felicityExample.key2).to.be.a.number();
             expect(felicityExample.key3).to.be.a.boolean();
-            ExpectValidation(felicityExample, felicityInstance.schema, done);
+            ExpectValidation(felicityExample, felicityInstance.schema);
         });
 
-        it('should respect "strictExample" config at Constructor declaration', (done) => {
+        it('should respect "strictExample" config at Constructor declaration', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().regex(/abcd(?=efg)/)
@@ -1295,10 +1255,9 @@ describe('Felicity EntityFor', () => {
 
                 return instance.example();
             }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
-            done();
         });
 
-        it('should respect "strictExample" config at instance example call', (done) => {
+        it('should respect "strictExample" config at instance example call', () => {
 
             const schema = Joi.object().keys({
                 name: Joi.string().regex(/abcd(?=efg)/)
@@ -1316,10 +1275,9 @@ describe('Felicity EntityFor', () => {
 
                 return instance.example(options);
             }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
-            done();
         });
 
-        it('should respect "includeOptional" config for static example call', (done) => {
+        it('should respect "includeOptional" config for static example call', () => {
 
             const schema = Joi.object().keys({
                 required        : Joi.string().required(),
@@ -1342,7 +1300,6 @@ describe('Felicity EntityFor', () => {
             expect(exampleWithoutOptions.required).to.be.a.string();
             expect(exampleWithoutOptions.optional).to.be.undefined();
             expect(exampleWithoutOptions.implicitOptional).to.be.undefined();
-            done();
         });
     });
 });
