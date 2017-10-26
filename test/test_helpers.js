@@ -34,15 +34,11 @@ const permutations = function (requirements, exclusionSet) {
     });
 };
 
-const expectValidation = function (expect, value, schema, done) {
+const expectValidation = function (expect, value, schema) {
 
     const validationResult = Joi.validate(value, schema);
 
     expect(validationResult.error).to.equal(null);
-
-    if (done) {
-        done();
-    }
 };
 
 module.exports = {
