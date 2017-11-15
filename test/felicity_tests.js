@@ -417,7 +417,7 @@ describe('Felicity EntityFor', () => {
 
     describe('Constructor functions', () => {
 
-        it('should accept override options', () => {
+        it('should accept override options', (done) => {
 
             const defaultOptions = {
                 includeOptional: false,
@@ -444,9 +444,10 @@ describe('Felicity EntityFor', () => {
 
             expect(instanceWithBothOptions.version).to.equal(null);
             expect(instanceWithBothOptions.name).to.equal('default value');
+            done();
         });
 
-        it('should accept options', () => {
+        it('should accept options', (done) => {
 
             const schema = Joi.object().keys({
                 version: Joi.string().optional(),
@@ -469,9 +470,10 @@ describe('Felicity EntityFor', () => {
 
             expect(instanceWithBothOptions.version).to.equal(null);
             expect(instanceWithBothOptions.name).to.equal(null);
+            done();
         });
 
-        it('should validate input when given validateInput: true', () => {
+        it('should validate input when given validateInput: true', (done) => {
 
             const subSchema = Joi.object().keys({
                 name : Joi.string(),
@@ -501,9 +503,10 @@ describe('Felicity EntityFor', () => {
             expect(instance.director).to.equal(input.director);
 
             expect(() => new Constructor(input, { validateInput: true })).to.throw('child "director" fails because ["director" must be a number]');
+            done();
         });
 
-        it('should not validate input when given validateInput: false', () => {
+        it('should not validate input when given validateInput: false', (done) => {
 
             const subSchema = Joi.object().keys({
                 name : Joi.string(),
@@ -533,6 +536,7 @@ describe('Felicity EntityFor', () => {
             expect(instance.title).to.equal(null);
             expect(instance.producers).to.equal(null);
             expect(instance.director).to.equal(input.director);
+            done();
         });
     });
 
