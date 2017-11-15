@@ -470,6 +470,70 @@ describe('Felicity EntityFor', () => {
             expect(instanceWithBothOptions.version).to.equal(null);
             expect(instanceWithBothOptions.name).to.equal(null);
         });
+
+        it('should validate input when given validateInput: true', () => {
+
+            const subSchema = Joi.object().keys({
+                name : Joi.string(),
+                title: Joi.string()
+            }).options({
+                presence: 'required'
+            });
+            const schema = Joi.object().keys({
+                title    : Joi.string(),
+                director : Joi.number(),
+                producers: Joi.array().items(subSchema).allow(null, '').optional().default(null)
+            });
+            const Constructor = Felicity.entityFor(schema);
+            const input = {
+                name     : 'Blade Runner',
+                director : 'Denis Villeneuve',
+                writers: [
+                    {
+                        name: 'Hampton Fancher'
+                    }
+                ]
+            };
+
+            const instance = new Constructor(input);
+            expect(instance.title).to.equal(null);
+            expect(instance.producers).to.equal(null);
+            expect(instance.director).to.equal(input.director);
+
+            expect(() => new Constructor(input, { validateInput: true })).to.throw('child "director" fails because ["director" must be a number]');
+        });
+
+        it('should not validate input when given validateInput: false', () => {
+
+            const subSchema = Joi.object().keys({
+                name : Joi.string(),
+                title: Joi.string()
+            }).options({
+                presence: 'required'
+            });
+            const schema = Joi.object().keys({
+                title    : Joi.string(),
+                director : Joi.number(),
+                producers: Joi.array().items(subSchema).allow(null, '').optional().default(null)
+            });
+            const Constructor = Felicity.entityFor(schema, { config: { validateInput: true } });
+            const input = {
+                name     : 'Blade Runner',
+                director : 'Denis Villeneuve',
+                writers: [
+                    {
+                        name: 'Hampton Fancher'
+                    }
+                ]
+            };
+
+            expect(() => new Constructor(input)).to.throw('child "director" fails because ["director" must be a number]');
+
+            const instance = new Constructor(input, { validateInput: false });
+            expect(instance.title).to.equal(null);
+            expect(instance.producers).to.equal(null);
+            expect(instance.director).to.equal(input.director);
+        });
     });
 
     describe('Constructor instances', () => {
