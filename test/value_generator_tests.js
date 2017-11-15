@@ -315,7 +315,7 @@ describe('String', () => {
         ExpectValidation(example, schema, done);
     });
 
-    it('should return a token', () => {
+    it('should return a token', (done) => {
 
         const schema = Joi.string().token();
         const example = ValueGenerator(schema);
