@@ -25,7 +25,7 @@ Creates a Constructor function based on the provided Joi schema. Accepts an opti
 
 Instances created by `new Constructor()` are "empty skeletons" of the provided Joi schema, and have sugary prototypal [methods](#instance-methods).
 
-The returned Constructor function accepts an optional `input` parameter. Any input provided that passes Joi validation against the schema provided to entityFor will be used to hydrate the `new` object.
+The returned Constructor function has the signature `([input], [options])`. Any input provided that passes Joi validation against the schema provided to entityFor will be used to hydrate the `new` object.
  
 ```Javascript
 const schema = Joi.object().keys({
@@ -184,6 +184,7 @@ All options parameters must be an object with property `config`. Properties on t
 
 If set to `true`, all input will be validated, and only properties that pass validation will be utilized on the returned object.
 All others will be returned in nulled/emptied form as if there was no input for that field.
+**Note**: this will **not** throw Joi `ValidationError`s. See `validateInput` for error throwing.
 
 ```Javascript
 const schema = Joi.object().keys({
@@ -246,6 +247,21 @@ If set to `true`, then Joi properties with `.optional()` set will be included on
 
     const WithOptional = Felicity.entityFor(schema, { config: { includeOptional: true } });
     const withOptionalInstance = new WithOptional(); // withOptionalInstance === { name: null, nickname: null }
+```
+
+- `validateInput` - Default `false`. Default behavior is to not throw errors if input is not valid.
+
+If set to `true`, then invalid input passed to the constructor function will result in a thrown `ValidationError`.
+```Javascript
+    const schema = Joi.object().keys({
+        name    : Joi.string()
+    });
+
+    const Constructor = Felicity.entityFor(schema);
+    const instance = new Constructor({ name: 12345 }); // instance === { name: 12345 }
+
+    const WithValidateInput = Felicity.entityFor(schema, { config: { validateInput: true } });
+    const withValidateInputInstance = new WithValidateInput({ name: 12345 }); // throws ValidationError: child "name" fails because ["name" must be a string]
 ```
 
 #### `example` Options
