@@ -298,6 +298,14 @@ describe('String', () => {
         ExpectValidation(example, schema);
     });
 
+    it('should return a hexadecimal string between min and max', () => {
+
+        const schema = Joi.string().hex().min(128).max(130);
+        const example = ValueGenerator(schema);
+
+        ExpectValidation(example, schema);
+    });
+
     it('should return a token', () => {
 
         const schema = Joi.string().token();
