@@ -405,6 +405,63 @@ describe('Felicity EntityFor', () => {
         expect(example.dynamicCondition).to.equal('dynamic default');
     });
 
+    describe('Constructor functions', () => {
+
+        it('should accept override options', () => {
+
+            const defaultOptions = {
+                includeOptional: false,
+                ignoreDefaults : true
+            };
+            const schema = Joi.object().keys({
+                version: Joi.string().optional(),
+                name: Joi.string().default('default value')
+            });
+            const Entity = Felicity.entityFor(schema, { config: defaultOptions });
+            const instance = new Entity();
+            const instanceWithOptional = new Entity(null, { includeOptional: true });
+            const instanceWithDefault = new Entity(null, { ignoreDefaults: false });
+            const instanceWithBothOptions = new Entity(null, { includeOptional: true, ignoreDefaults: false });
+
+            expect(instance.version).to.equal(undefined);
+            expect(instance.name).to.equal(null);
+
+            expect(instanceWithOptional.version).to.equal(null);
+            expect(instanceWithOptional.name).to.equal(null);
+
+            expect(instanceWithDefault.version).to.equal(undefined);
+            expect(instanceWithDefault.name).to.equal('default value');
+
+            expect(instanceWithBothOptions.version).to.equal(null);
+            expect(instanceWithBothOptions.name).to.equal('default value');
+        });
+
+        it('should accept options', () => {
+
+            const schema = Joi.object().keys({
+                version: Joi.string().optional(),
+                name: Joi.string().default('default value')
+            });
+            const Entity = Felicity.entityFor(schema);
+            const instance = new Entity();
+            const instanceWithOptional = new Entity(null, { includeOptional: true });
+            const instanceWithDefault = new Entity(null, { ignoreDefaults: true });
+            const instanceWithBothOptions = new Entity(null, { includeOptional: true, ignoreDefaults: true });
+
+            expect(instance.version).to.equal(undefined);
+            expect(instance.name).to.equal('default value');
+
+            expect(instanceWithOptional.version).to.equal(null);
+            expect(instanceWithOptional.name).to.equal('default value');
+
+            expect(instanceWithDefault.version).to.equal(undefined);
+            expect(instanceWithDefault.name).to.equal(null);
+
+            expect(instanceWithBothOptions.version).to.equal(null);
+            expect(instanceWithBothOptions.name).to.equal(null);
+        });
+    });
+
     describe('Constructor instances', () => {
 
         it('should accept override options when validating', () => {
