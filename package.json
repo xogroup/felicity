@@ -29,9 +29,6 @@
     "randexp": "0.4.x",
     "uuid": "3.0.x"
   },
-  "peerDependencies": {
-    "joi": "11.x"
-  },
   "devDependencies": {
     "lab": "14.x.x",
     "doctoc": "1.x.x"
