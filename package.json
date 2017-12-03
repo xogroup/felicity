@@ -24,7 +24,7 @@
     "hoek": "4.x",
     "joi": "13.x",
     "joi-date-extensions": "1.x",
-    "moment": "2.19.3",
+    "moment": "2.19.x",
     "randexp": "0.4.x",
     "uuid": "3.0.x"
   },
