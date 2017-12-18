@@ -125,13 +125,67 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema, done);
     });
 
-    it('should return an array', (done) => {
+    describe('Array', () => {
 
-        const schema = Joi.array();
-        const example = Felicity.example(schema);
+        it('should return an array', (done) => {
 
-        expect(example).to.be.an.array();
-        ExpectValidation(example, schema, done);
+            const schema = Joi.array();
+            const example = Felicity.example(schema);
+
+            expect(example).to.be.an.array();
+            ExpectValidation(example, schema, done);
+        });
+
+        describe('items', () => {
+
+            it('should return optional items when includeOptional is set to true', (done) => {
+
+                const schema = Joi.array().items(Joi.string().optional());
+                const example = Felicity.example(schema);
+
+                expect(example).to.be.an.array();
+                expect(example[0]).to.be.a.string();
+                ExpectValidation(example, schema, done);
+            });
+
+            it('should return objects with optional keys when includeOptional is set to true ', (done) => {
+
+                const schema = Joi.array().items(Joi.object().keys({
+                    key1: Joi.string(),
+                    key2: Joi.string().optional()
+                }));
+                const options = {
+                    config: {
+                        includeOptional: true
+                    }
+                };
+                const example = Felicity.example(schema, options);
+
+                expect(example).to.be.an.array();
+                expect(example[0].key1).to.exist();
+                expect(example[0].key2).to.exist();
+                ExpectValidation(example, schema, done);
+            });
+
+            it('should return ordered object items with optional keys when includeOptional is set to true ', (done) => {
+
+                const schema = Joi.array().ordered(Joi.object().keys({
+                    key1: Joi.string(),
+                    key2: Joi.string().optional()
+                }));
+                const options = {
+                    config: {
+                        includeOptional: true
+                    }
+                };
+                const example = Felicity.example(schema, options);
+
+                expect(example).to.be.an.array();
+                expect(example[0].key1).to.exist();
+                expect(example[0].key2).to.exist();
+                ExpectValidation(example, schema, done);
+            });
+        });
     });
 
     it('should return an object with default values', (done) => {
