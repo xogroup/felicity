@@ -1195,6 +1195,14 @@ describe('Array', () => {
         expect(example[0]).to.be.a.number();
         ExpectValidation(example, schema);
     });
+
+    it('should return a default array', () => {
+
+        const schema = Joi.array().default([1, 2, 3]);
+        const example = ValueGenerator(schema);
+        expect(example[0]).to.be.a.number();
+        ExpectValidation(example, schema);
+    });
 });
 
 describe('Alternatives', () => {
@@ -1520,6 +1528,15 @@ describe('Object', () => {
         const example = ValueGenerator(schema);
 
         expect(example.testFunc).to.be.a.function();
+        ExpectValidation(example, schema);
+    });
+
+    it('should return a default object', () => {
+
+        const schema = Joi.object().default({ a: 1 });
+        const example = ValueGenerator(schema);
+
+        expect(example.a).to.be.a.number();
         ExpectValidation(example, schema);
     });
 });
