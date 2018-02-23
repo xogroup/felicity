@@ -166,6 +166,15 @@ describe('String', () => {
         ExpectValidation(example, schema);
     });
 
+    it('should return default value when valids are ignored', () => {
+
+        const schema = Joi.string().valid(['value1', 'value2', 'fallback']).default('fallback');
+        const example = ValueGenerator(schema, { config: { ignoreValids: true } });
+
+        expect(example).to.equal('fallback');
+        ExpectValidation(example, schema);
+    });
+
     it('should utilize dynamic default function', () => {
 
         const defaultGenerator = function () {
