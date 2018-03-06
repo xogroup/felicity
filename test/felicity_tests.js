@@ -829,6 +829,21 @@ describe('Felicity EntityFor', () => {
             done();
         });
 
+        it('should return an object without .strip\'ed keys', (done) => {
+
+            const schema = Joi.object().keys({
+                key1: Joi.object().keys().required(),
+                key2: Joi.any().strip()
+            });
+            const Entity = Felicity.entityFor(schema);
+            const felicityInstance = new Entity();
+
+            expect(felicityInstance.key1).to.equal({});
+            expect(felicityInstance.key2).to.equal(undefined);
+            expect(felicityInstance.validate).to.be.a.function();
+            done();
+        });
+
         it('should return an object with mixed-type keys', (done) => {
 
             const schema = Joi.object().keys({
@@ -859,7 +874,7 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.bool).to.equal(false);
             expect(felicityInstance.conditional).to.equal({});
             expect(felicityInstance.any).to.equal(null);
-            expect(felicityInstance.anyStrip).to.equal(null);
+            expect(felicityInstance.anyStrip).to.equal(undefined);
             expect(felicityInstance.anyForbid).to.be.undefined();
             expect(felicityInstance.validate).to.be.a.function();
 
