@@ -120,6 +120,17 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema);
     });
 
+    it('should return function keys', (done) => {
+
+        const schema = Joi.object().keys({
+            func: Joi.func()
+        });
+        const example = Felicity.example(schema);
+
+        expect(example.func).to.be.a.function();
+        ExpectValidation(example, schema, done);
+    });
+
     describe('Array', () => {
 
         it('should return an array', () => {
@@ -835,6 +846,7 @@ describe('Felicity EntityFor', () => {
                 string     : Joi.string().email().required(),
                 date       : Joi.date().raw().required(),
                 bool       : Joi.boolean().required(),
+                func       : Joi.func().required(),
                 conditional: Joi.when('bool', {
                     is       : true,
                     then     : Joi.object().keys().required(),
@@ -853,6 +865,7 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.string).to.equal(null);
             expect(felicityInstance.date).to.equal(null);
             expect(felicityInstance.bool).to.equal(false);
+            expect(felicityInstance.func).to.equal(null);
             expect(felicityInstance.conditional).to.equal({});
             expect(felicityInstance.any).to.equal(null);
             expect(felicityInstance.anyStrip).to.equal(undefined);
@@ -1165,12 +1178,14 @@ describe('Felicity EntityFor', () => {
         it('should return an object with alternatives keys', () => {
 
             const schema = Joi.object({
-                id: Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required()
+                id  : Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required(),
+                func: Joi.alternatives().when('id', { is: Joi.any(), then: Joi.func() })
             });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
 
             expect(felicityInstance.id).to.equal(0);
+            expect(felicityInstance.func).to.equal(null);
         });
     });
 
@@ -1418,7 +1433,8 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 key1: Joi.string().creditCard(),
                 key2: Joi.number().integer(),
-                key3: Joi.boolean()
+                key3: Joi.boolean(),
+                func: Joi.func()
             });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
@@ -1427,6 +1443,7 @@ describe('Felicity EntityFor', () => {
             expect(felicityExample.key1).to.be.a.string();
             expect(felicityExample.key2).to.be.a.number();
             expect(felicityExample.key3).to.be.a.boolean();
+            expect(felicityExample.func).to.be.a.function();
             ExpectValidation(felicityExample, felicityInstance.schema);
         });
 
