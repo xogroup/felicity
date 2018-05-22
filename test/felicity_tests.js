@@ -208,6 +208,17 @@ describe('Felicity Example', () => {
         ExpectValidation(example, schema);
     });
 
+    it('should return an object with null default', () => {
+
+        const schema = Joi.object().keys({
+            string: Joi.string().allow(null).default(null)
+        });
+        const example = Felicity.example(schema, { config: { ignoreValids: true } });
+
+        expect(example.string).to.equal(null);
+        ExpectValidation(example, schema);
+    });
+
     it('should return an object with dynamic defaults', () => {
 
         const generateDefaultString = () => {
