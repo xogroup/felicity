@@ -25,7 +25,7 @@ Creates a Constructor function based on the provided Joi schema. Accepts an opti
 
 Instances created by `new Constructor()` are "empty skeletons" of the provided Joi schema, and have sugary prototypal [methods](#instance-methods).
 
-The returned Constructor function has the signature `([input], [options])`. Any input provided that passes Joi validation against the schema provided to entityFor will be used to hydrate the `new` object.
+The returned Constructor function has the signature `([input], [options])`. Any input provided will be used to hydrate the `new` object.
  
 ```Javascript
 const schema = Joi.object().keys({
@@ -47,9 +47,10 @@ convoInstance
 
 partialInstance
 {
-    name: 'Felicity',
-    id  : null,
-    keys: []
+    name   : 'Felicity',
+    id     : null,
+    keys   : [],
+    fakeKey: 'invalid'
 }
 */
 ```

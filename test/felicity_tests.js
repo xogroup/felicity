@@ -567,7 +567,7 @@ describe('Felicity EntityFor', () => {
             expect(instance.producers).to.equal(null);
             expect(instance.director).to.equal(input.director);
 
-            expect(() => new Constructor(input, { validateInput: true })).to.throw('child "director" fails because ["director" must be a number]');
+            expect(() => new Constructor(input, { validateInput: true })).to.throw('child "director" fails because ["director" must be a number]. \"name\" is not allowed. \"writers\" is not allowed');
         });
 
         it('should not validate input when given validateInput: false', () => {
@@ -594,7 +594,7 @@ describe('Felicity EntityFor', () => {
                 ]
             };
 
-            expect(() => new Constructor(input)).to.throw('child "director" fails because ["director" must be a number]');
+            expect(() => new Constructor(input)).to.throw('child "director" fails because ["director" must be a number]. \"name\" is not allowed. \"writers\" is not allowed');
 
             const instance = new Constructor(input, { validateInput: false });
             expect(instance.title).to.equal(null);
@@ -1252,7 +1252,7 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.object).to.equal(hydratedInput.object);
         });
 
-        it('should strip unknown input values', () => {
+        it('should not strip unknown input values', () => {
 
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
@@ -1268,18 +1268,20 @@ describe('Felicity EntityFor', () => {
                     is       : true,
                     then     : Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
-                })
+                }),
+                array      : Joi.array().items(Joi.number())
             });
             const hydrationData = {
                 innerObject: {
                     innerString: false
                 },
-                string: 'example@email.com',
-                date  : 'not a date',
-                binary: 74,
-                fake  : true,
-                bool  : false,
-                conditional: true
+                string     : 'example@email.com',
+                date       : 'not a date',
+                binary     : 74,
+                fake       : true,
+                bool       : false,
+                conditional: true,
+                array      : ['a', 'b', 'c']
             };
             const felicityInstance = new (Felicity.entityFor(schema))(hydrationData);
 
@@ -1290,9 +1292,10 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.string).to.equal(hydrationData.string);
             expect(felicityInstance.date).to.equal(hydrationData.date);
             expect(felicityInstance.binary).to.equal(hydrationData.binary);
-            expect(felicityInstance.fake).to.be.undefined();
+            expect(felicityInstance.fake).to.equal(hydrationData.fake);
             expect(felicityInstance.bool).to.equal(hydrationData.bool);
             expect(felicityInstance.conditional).to.equal(hydrationData.conditional);
+            expect(felicityInstance.array).to.equal(hydrationData.array);
             expect(felicityInstance.validate).to.be.a.function();
         });
 
