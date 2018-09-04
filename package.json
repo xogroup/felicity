@@ -13,7 +13,10 @@
     "joi",
     "validation",
     "schema",
-    "constructor"
+    "constructor",
+    "test",
+    "example",
+    "mock"
   ],
   "license": "BSD-3-Clause",
   "bugs": {
