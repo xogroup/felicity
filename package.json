@@ -21,12 +21,12 @@
   },
   "homepage": "https://github.com/xogroup/felicity#readme",
   "dependencies": {
-    "hoek": "4.x",
+    "hoek": "5.x",
     "joi": "13.x",
     "joi-date-extensions": "1.x",
-    "moment": "2.19.x",
-    "randexp": "0.4.x",
-    "uuid": "3.0.x"
+    "moment": "2.x.x",
+    "randexp": "0.5.x",
+    "uuid": "3.x.x"
   },
   "peerDependencies": {
     "joi": "13.x"
