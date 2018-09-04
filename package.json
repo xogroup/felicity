@@ -22,7 +22,7 @@
   "homepage": "https://github.com/xogroup/felicity#readme",
   "dependencies": {
     "buffer-alloc": "0.1.1",
-    "hoek": "4.x",
+    "hoek": "5.x",
     "joi": "11.x",
     "joi-date-extensions": "1.x",
     "moment": "2.19.x",
