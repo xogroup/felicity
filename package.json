@@ -25,14 +25,14 @@
   "homepage": "https://github.com/xogroup/felicity#readme",
   "dependencies": {
     "hoek": "5.x",
-    "joi": "13.x",
+    "joi": "14.x",
     "joi-date-extensions": "1.x",
     "moment": "2.x.x",
     "randexp": "0.5.x",
     "uuid": "3.x.x"
   },
   "peerDependencies": {
-    "joi": "13.x"
+    "joi": "14.x"
   },
   "devDependencies": {
     "code": "5.x.x",
