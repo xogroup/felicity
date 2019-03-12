@@ -1,7 +1,8 @@
 language: node_js
 node_js:
 - '8'
-- node
+- '10'
+- 'lts/*'
 deploy:
   provider: npm
   email: xo-npmjs.group@xogrp.com
