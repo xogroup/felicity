@@ -2,7 +2,7 @@
 
 const Felicity = require('../lib');
 const Joi = require('../lib/joi');
-const Lab = require('lab');
+const Lab = require('@hapi/lab');
 const Uuid = require('uuid');
 const Moment = require('moment');
 
@@ -225,16 +225,19 @@ describe('Felicity Example', () => {
 
             return '-----';
         };
+
         generateDefaultString.description = 'generates default';
         const generateDefaultNumber = () => {
 
             return 4;
         };
+
         generateDefaultNumber.description = 'generates default';
         const generateDefaultBool = () => {
 
             return true;
         };
+
         generateDefaultBool.description = 'generates default';
         const schema = Joi.object().keys({
             string: Joi.string().required().default(generateDefaultString),
@@ -568,6 +571,24 @@ describe('Felicity EntityFor', () => {
             expect(instance.director).to.equal(input.director);
 
             expect(() => new Constructor(input, { validateInput: true })).to.throw('child "director" fails because ["director" must be a number]. \"name\" is not allowed. \"writers\" is not allowed');
+        });
+
+        it('should validate and assign input when validateInput is true and input passes validation', () => {
+
+            const schema = Joi.object().keys({
+                title    : Joi.string(),
+                director : Joi.string()
+            });
+            const Constructor = Felicity.entityFor(schema);
+            const input = {
+                title    : 'American Beauty',
+                director : 'Sam Mendes'
+            };
+
+            const instance = new Constructor(input, { validateInput: true });
+            expect(instance.title).to.equal(input.title);
+
+            expect(instance.director).to.equal(input.director);
         });
 
         it('should not validate input when given validateInput: false', () => {
