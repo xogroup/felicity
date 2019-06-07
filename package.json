@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/xogroup/felicity#readme",
   "dependencies": {
+    "@hapi/hoek": "7.x.x",
     "@hapi/joi": "15.x.x",
     "@hapi/joi-date": "1.x.x",
-    "hoek": "5.x",
     "moment": "2.x.x",
     "randexp": "0.5.x",
     "uuid": "3.x.x"

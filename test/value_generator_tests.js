@@ -1,6 +1,6 @@
 'use strict';
 
-const Hoek = require('hoek');
+const Hoek = require('@hapi/hoek');
 const Lab = require('@hapi/lab');
 const Moment = require('moment');
 const Joi = require('../lib/joi');

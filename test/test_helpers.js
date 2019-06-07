@@ -1,6 +1,6 @@
 'use strict';
 
-const Hoek = require('hoek');
+const Hoek = require('@hapi/hoek');
 const Joi = require('../lib/joi');
 
 const permutations = function (requirements, exclusionSet) {
