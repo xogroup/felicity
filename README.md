@@ -28,7 +28,7 @@ npm install felicity
 ## Usage
 Given a [joi](//www.github.com/hapijs/joi) schema, create an object Constructor and instantiate skeleton objects:
 ```JavaScript
-const Joi      = require('joi'),
+const Joi      = require('@hapi/joi'),
       Felicity = require('felicity');
 
 const joiSchema = Joi.object().keys({

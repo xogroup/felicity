@@ -1,14 +1,14 @@
 'use strict';
 
 const Hoek = require('hoek');
-const Joi = require('../lib/joi');
-const Lab = require('lab');
-const Permutations = require('./test_helpers').permutations;
-const ValueGenerator = require('../lib/exampleGenerator');
+const Lab = require('@hapi/lab');
 const Moment = require('moment');
+const Joi = require('../lib/joi');
+const { permutations, expectValidation } = require('./test_helpers');
+const ValueGenerator = require('../lib/exampleGenerator');
 
 const { describe, expect, it } = exports.lab = Lab.script();
-const ExpectValidation = require('./test_helpers').expectValidation.bind({}, expect);
+const ExpectValidation = expectValidation(expect);
 
 describe('Any', () => {
 
@@ -79,12 +79,43 @@ describe('Any', () => {
         ExpectValidation(example, schema);
     });
 
-    it('should return an "example" value', () => {
+    it('should return an "example" value from a single argument', () => {
 
         const schema = Joi.any().example(123);
         const example = ValueGenerator(schema);
 
         expect(example).to.equal(123);
+        ExpectValidation(example, schema);
+    });
+
+    it('should return an "example" value from multiple arguments', () => {
+
+        const examples = [123, 321];
+        const schema = Joi.any().example(...examples);
+        const example = ValueGenerator(schema);
+        const foundExample = examples.find((ex) => ex === example);
+
+        expect(foundExample).to.equal(example);
+        ExpectValidation(example, schema);
+    });
+
+    it('should return an "example" value from a single array argument', () => {
+
+        const schema = Joi.any().example([123]);
+        const example = ValueGenerator(schema);
+
+        expect(example).to.equal(123);
+        ExpectValidation(example, schema);
+    });
+
+    it('should return an "example" value from multiple single array arguments', () => {
+
+        const examples = [[123], [321]];
+        const schema = Joi.any().example(...examples);
+        const example = ValueGenerator(schema);
+        const [foundExample] = examples.find(([ex]) => ex === example);
+
+        expect(foundExample).to.equal(example);
         ExpectValidation(example, schema);
     });
 
@@ -103,6 +134,7 @@ describe('Any', () => {
 
             return true;
         };
+
         generateDefault.description = 'generates default';
         const schema = Joi.any().default(generateDefault);
         const example = ValueGenerator(schema);
@@ -181,6 +213,7 @@ describe('String', () => {
 
             return 'fallback';
         };
+
         defaultGenerator.description = 'generates a default';
         const schema = Joi.string().default(defaultGenerator);
         const example = ValueGenerator(schema);
@@ -567,6 +600,15 @@ describe('Number', () => {
         ExpectValidation(example, schema);
     });
 
+    it('should return a number which adheres to .multiple requirement in conjunction with min and max', () => {
+
+        const schema = Joi.number().multiple(6).min(5).max(8);
+        const example = ValueGenerator(schema);
+
+        expect(example % 2).to.equal(0);
+        ExpectValidation(example, schema);
+    });
+
     it('should return numbers which adhere to any valid combination of requirements', () => {
 
         const requirements = [
@@ -600,7 +642,7 @@ describe('Number', () => {
             multiple : 8
         };
 
-        const numberOptions = Permutations(requirements, requirementExclusions);
+        const numberOptions = permutations(requirements, requirementExclusions);
 
         numberOptions.forEach((optionSet) => {
 
@@ -1086,6 +1128,17 @@ describe('Array', () => {
         ExpectValidation(example, schema);
     });
 
+    it('should return an array with examples that match item types and in the same order', () => {
+
+        const schema = Joi.array().length(2).items(Joi.string(), Joi.number().integer());
+        const example = ValueGenerator(schema);
+
+        expect(example.length).to.equal(2);
+        expect(example[0]).to.be.a.string();
+        expect(example[1]).to.be.a.number();
+        ExpectValidation(example, schema);
+    });
+
     it('should return an array with "length" specified items', () => {
 
         const schema = Joi.array()
@@ -1121,10 +1174,26 @@ describe('Array', () => {
 
         const schema = Joi.array()
             .items(Joi.number().integer(), Joi.string().guid(), Joi.boolean())
-            .min(10);
+            .min(3);
         const example = ValueGenerator(schema);
 
-        expect(example.length).to.equal(10);
+        expect(example.length).to.equal(3);
+        ExpectValidation(example, schema);
+    });
+
+    it('should return an array with "min" specified items that all match the provided types', () => {
+
+        const schema = Joi.array()
+            .items(Joi.number().integer(), Joi.string().guid())
+            .min(4);
+        const example = ValueGenerator(schema);
+        const eitherIntOrGuid = example.some((ex) => {
+
+            return typeof ex === 'string' || typeof ex === 'number';
+        });
+
+        expect(example.length).to.equal(4);
+        expect(eitherIntOrGuid).to.equal(true);
         ExpectValidation(example, schema);
     });
 
@@ -1354,10 +1423,10 @@ describe('Object', () => {
 
     it('should return an object with min number of keys', () => {
 
-        const schema = Joi.object().min(5);
+        const schema = Joi.object().keys({ prop: Joi.string() }).min(1);
         const example = ValueGenerator(schema);
 
-        expect(Object.keys(example).length).to.be.at.least(5);
+        expect(Object.keys(example).length).to.be.at.least(1);
         ExpectValidation(example, schema);
     });
 
@@ -1367,6 +1436,20 @@ describe('Object', () => {
         const example = ValueGenerator(schema);
 
         expect(Object.keys(example).length).to.be.at.most(5).and.at.least(1);
+        ExpectValidation(example, schema);
+    });
+
+    it('should return an object with max number of keys that are typed correctly', () => {
+
+        const schema = Joi.object().keys({
+            prop: Joi.string(),
+            prop2: Joi.number()
+        }).max(2);
+        const example = ValueGenerator(schema);
+
+        expect(Object.keys(example).length).to.be.at.most(2).and.at.least(1);
+        expect(example.prop).to.be.a.string();
+        expect(example.prop2).to.be.a.number();
         ExpectValidation(example, schema);
     });
 
@@ -1414,6 +1497,14 @@ describe('Object', () => {
                 c: Joi.string()
             })
             .xor('a', 'b');
+        const example = ValueGenerator(schema);
+
+        ExpectValidation(example, schema);
+    });
+
+    it('should return an ojbect with at least a key or peer', () => {
+
+        const schema = Joi.object().keys({ password: Joi.string() }).with('username', 'password');
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);

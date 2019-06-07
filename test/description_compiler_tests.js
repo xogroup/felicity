@@ -1,7 +1,7 @@
 'use strict';
 
 const Joi = require('../lib/joi');
-const Lab = require('lab');
+const Lab = require('@hapi/lab');
 const Uuid = require('uuid');
 const DescriptionCompiler = require('../lib/helpers').descriptionCompiler;
 
