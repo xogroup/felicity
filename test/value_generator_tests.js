@@ -1423,10 +1423,21 @@ describe('Object', () => {
 
     it('should return an object with min number of keys', () => {
 
-        const schema = Joi.object().keys({ prop: Joi.string() }).min(1);
+        const schema = Joi.object().keys({
+            child1: Joi.string()
+        }).min(1).options({ allowUnknown: true });
         const example = ValueGenerator(schema);
 
         expect(Object.keys(example).length).to.be.at.least(1);
+        ExpectValidation(example, schema);
+    });
+
+    it('should not get stuck on static key pattern generation', () => {
+
+        const schema = Joi.object().pattern(/abc/, Joi.string()).min(5).options({ allowUnknown: true });
+        const example = ValueGenerator(schema);
+
+        expect(Object.keys(example).length).to.be.at.least(5);
         ExpectValidation(example, schema);
     });
 
