@@ -1,8 +1,8 @@
 # felicity
 Felicity supports [Joi](https://www.github.com/hapijs/joi) schema management by providing 2 primary functions:
 
-  1. Testing support - Felicity will leverage your Joi schema to generate randomized data directly from the schema. This can be used for database seeding or fuzz testing.
-  2. Model management in source code - Felicity can additionally leverage your Joi schema to create constructor functions that contain immutable copies of the Joi schema as well as a simple `.validate()` method that will run Joi validation of the object instance values against the referenced Joi schema.
+  1. **Testing support** - Felicity will leverage your Joi schema to generate randomized data directly from the schema. This can be used for database seeding or fuzz testing.
+  2. **Model management in source code** - Felicity can additionally leverage your Joi schema to create constructor functions that contain immutable copies of the Joi schema as well as a simple `.validate()` method that will run Joi validation of the object instance values against the referenced Joi schema.
 
 [![npm version](https://badge.fury.io/js/felicity.svg)](https://badge.fury.io/js/felicity)
 [![Build Status](https://travis-ci.org/xogroup/felicity.svg?branch=master)](https://travis-ci.org/xogroup/felicity)
@@ -52,11 +52,11 @@ console.log(modelInstance);
 */
 ```
 
-if the instance is hydrated with data, it can self-validate against the schema it was built upon:
+These model instances can self-validate against the schema they were built upon:
 ```JavaScript
 modelInstance.key3.innerKey = 42;
 
-const validationResult = modelInstance.validate();
+const validationResult = modelInstance.validate(); // uses immutable copy of the Joi schema provided to `Felicity.entityFor()` above
 
 console.log(validationResult);
 /*
