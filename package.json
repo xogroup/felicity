@@ -1,6 +1,6 @@
 {
   "name": "felicity",
-  "version": "3.0.0",
+  "version": "5.0.0",
   "description": "Javascript object instantiation from Joi schema",
   "main": "lib/index.js",
   "scripts": {
