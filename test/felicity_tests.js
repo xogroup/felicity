@@ -25,7 +25,6 @@ describe('Felicity Example', () => {
         const lookAheadPattern = /abcd(?=efg)/;
         const schema = Joi.string().regex(lookAheadPattern);
         const example = Felicity.example(schema);
-
         expect(example).to.equal('abcd');
         expect(example.match(lookAheadPattern)).to.equal(null);
     });
@@ -202,7 +201,6 @@ describe('Felicity Example', () => {
             number: Joi.number().default(4)
         });
         const example = Felicity.example(schema);
-
         expect(example.string).to.equal('-----');
         expect(example.number).to.equal(4);
         ExpectValidation(example, schema);
@@ -297,8 +295,7 @@ describe('Felicity Example', () => {
 
         const Class1 = function () {};
         Class1.prototype.testFunc = function () {};
-
-        const schema = Joi.object().type(Class1);
+        const schema = Joi.object().schema(Class1);
         const example = Felicity.example(schema);
 
         expect(example).to.be.an.instanceof(Class1);

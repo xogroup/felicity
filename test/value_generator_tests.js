@@ -38,7 +38,7 @@ describe('Any', () => {
         expect(examples.allowed2).to.exist();
 
         examples = {};
-        schema = Joi.any().allow(['first', 'second', true, 10]);
+        schema = Joi.any().allow(...['first', 'second', true, 10]);
 
         for (let i = 0; i < 25; ++i) {
             const example = ValueGenerator(schema);
@@ -72,7 +72,7 @@ describe('Any', () => {
         expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
         ExpectValidation(example, schema);
 
-        schema = Joi.any().valid([true, 10]);
+        schema = Joi.any().valid(...[true, 10]);
         example = ValueGenerator(schema);
 
         expect([true, 10].indexOf(example)).to.not.equal(-1);
@@ -91,7 +91,7 @@ describe('Any', () => {
     it('should return an "example" value from multiple arguments', () => {
 
         const examples = [123, 321];
-        const schema = Joi.any().example(...examples);
+        const schema = Joi.any().example(examples);
         const example = ValueGenerator(schema);
         const foundExample = examples.find((ex) => ex === example);
 
@@ -111,7 +111,7 @@ describe('Any', () => {
     it('should return an "example" value from multiple single array arguments', () => {
 
         const examples = [[123], [321]];
-        const schema = Joi.any().example(...examples);
+        const schema = Joi.any().example(examples);
         const example = ValueGenerator(schema);
         const [foundExample] = examples.find(([ex]) => ex === example);
 
@@ -200,7 +200,7 @@ describe('String', () => {
 
     it('should return default value when valids are ignored', () => {
 
-        const schema = Joi.string().valid(['value1', 'value2', 'fallback']).default('fallback');
+        const schema = Joi.string().valid(...['value1', 'value2', 'fallback']).default('fallback');
         const example = ValueGenerator(schema, { config: { ignoreValids: true } });
 
         expect(example).to.equal('fallback');
@@ -309,7 +309,7 @@ describe('String', () => {
     it('should return a string that does not match the inverted regexp', () => {
 
         const regex = new RegExp(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
-        const schema = Joi.string().regex(regex, { invert: true });
+        const schema = Joi.string().pattern(regex, { invert: true });
         const example = ValueGenerator(schema);
 
         expect(example.match(regex)).to.equal(null);
@@ -1657,7 +1657,7 @@ describe('Extensions', () => {
     it('should fall back to baseType of string', () => {
 
         const customJoi = Joi.extend({
-            name: 'myType'
+            type: 'myType'
         });
 
         const schema = customJoi.myType();
@@ -1670,7 +1670,7 @@ describe('Extensions', () => {
     it('should fall back to baseType of number when possible', () => {
 
         const customJoi = Joi.extend({
-            name: 'myNumber',
+            type: 'myNumber',
             base: Joi.number()
         });
 
@@ -1684,7 +1684,7 @@ describe('Extensions', () => {
     it('should fall back to baseType of boolean when possible', () => {
 
         const customJoi = Joi.extend({
-            name: 'myBoolean',
+            type: 'myBoolean',
             base: Joi.boolean()
         });
 
@@ -1698,7 +1698,7 @@ describe('Extensions', () => {
     it('should fall back to baseType of array when possible', () => {
 
         const customJoi = Joi.extend({
-            name: 'myArray',
+            type: 'myArray',
             base: Joi.array()
         });
 
@@ -1712,7 +1712,7 @@ describe('Extensions', () => {
     it('should fall back to baseType of func when possible', () => {
 
         const customJoi = Joi.extend({
-            name: 'myFunc',
+            type: 'myFunc',
             base: Joi.func()
         });
 
@@ -1726,7 +1726,7 @@ describe('Extensions', () => {
     it('should support child extensions', () => {
 
         const customJoi = Joi.extend({
-            name: 'myType'
+            type: 'myType'
         });
 
         const schema = Joi.object().keys({ custom: customJoi.myType() });
@@ -1739,7 +1739,7 @@ describe('Extensions', () => {
     it('should support extensions in arrays', () => {
 
         const customJoi = Joi.extend({
-            name: 'myType'
+            type: 'myType'
         });
 
         const schema = Joi.array().items( customJoi.myType() );
@@ -1752,7 +1752,7 @@ describe('Extensions', () => {
     it('should support extensions in alternatives', () => {
 
         const customJoi = Joi.extend({
-            name: 'myType'
+            type: 'myType'
         });
 
         const schema = Joi.object().keys({

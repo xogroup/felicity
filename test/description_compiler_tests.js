@@ -16,11 +16,10 @@ describe('String', () => {
         const description = Joi.string().min(5).guid().required().default('default value').describe();
         const schema = DescriptionCompiler(description);
 
-        Joi.validate(validExample, schema, (err, value) => {
-
+        schema.validate(validExample, (err, value) => {
             expect(err).to.equal(null);
         });
-        Joi.validate(invalidExample, schema, (err, value) => {
+        schema.validate(invalidExample, (err, value) => {
 
             expect(err.details[0].message).to.equal('"value" length must be at least 5 characters long');
         });
@@ -40,11 +39,11 @@ describe('String', () => {
         const description = originSchema.describe();
         const schema = DescriptionCompiler(description);
 
-        Joi.validate(validExample, schema, (err) => {
+        schema.validate(validExample, (err) => {
 
             expect(err).to.equal(null);
         });
-        Joi.validate(invalidExample, schema, (err) => {
+        schema.validate(invalidExample, (err) => {
 
             expect(err).to.not.equal(null);
             expect(err.details[0].message).to.equal('"string" length must be at least 5 characters long');
