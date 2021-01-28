@@ -470,7 +470,7 @@ describe('String', () => {
     });
 });
 
-describe('Number', () => {
+describe.only('Number', () => {
 
     it('should return a number', () => {
 
@@ -500,8 +500,9 @@ describe('Number', () => {
     });
 
     it('should return a dynamic default', () => {
-
-        const schema = Joi.number().default(() => 0, 'default description');
+        const generateNumber = () => 0;
+        generateNumber.description = 'default description';
+        const schema = Joi.number().default(generateNumber);
         const example = ValueGenerator(schema);
 
         expect(example).to.equal(0);
