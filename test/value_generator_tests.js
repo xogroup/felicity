@@ -470,7 +470,7 @@ describe('String', () => {
     });
 });
 
-describe.only('Number', () => {
+describe('Number', () => {
 
     it('should return a number', () => {
 
@@ -751,7 +751,7 @@ describe('Boolean', () => {
 
     it('should return a truthy value when pluralized', () => {
 
-        const schema = Joi.boolean().truthy([1, 'y']);
+        const schema = Joi.boolean().truthy(...[1, 'y']);
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -779,7 +779,7 @@ describe('Boolean', () => {
 
     it('should return a falsy value when pluralized', () => {
 
-        const schema = Joi.boolean().falsy([0, 'n']);
+        const schema = Joi.boolean().falsy(...[0, 'n']);
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -787,7 +787,7 @@ describe('Boolean', () => {
 
     it('should validate when a mix of truthy and falsy is set', () => {
 
-        const schema = Joi.boolean().truthy([1, 'y']).falsy([0, 'n']);
+        const schema = Joi.boolean().truthy(...[1, 'y']).falsy(...[0, 'n']);
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
