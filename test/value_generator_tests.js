@@ -1384,7 +1384,7 @@ describe('Alternatives', () => {
     });
 });
 
-describe('Object', () => {
+describe.only('Object', () => {
 
     it('should return an object', () => {
 
@@ -1617,7 +1617,7 @@ describe('Object', () => {
 
     it('should return an object of type Regex', () => {
 
-        const schema = Joi.object().type(RegExp);
+        const schema = Joi.object().instance(RegExp);
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -1625,7 +1625,7 @@ describe('Object', () => {
 
     it('should return an object of type Error', () => {
 
-        const schema = Joi.object().type(Error);
+        const schema = Joi.object().instance(Error);
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -1636,7 +1636,7 @@ describe('Object', () => {
         const Class1 = function () {};
         Class1.prototype.testFunc = function () {};
 
-        const schema = Joi.object().type(Class1);
+        const schema = Joi.object().instance(Class1);
         const example = ValueGenerator(schema);
 
         expect(example.testFunc).to.be.a.function();

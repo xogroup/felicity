@@ -295,7 +295,7 @@ describe('Felicity Example', () => {
 
         const Class1 = function () {};
         Class1.prototype.testFunc = function () {};
-        const schema = Joi.object().schema(Class1);
+        const schema = Joi.object().instance(Class1);
         const example = Felicity.example(schema);
 
         expect(example).to.be.an.instanceof(Class1);
