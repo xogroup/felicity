@@ -1336,7 +1336,7 @@ describe('Alternatives', () => {
     it('should return "when" alternative', () => {
 
         const schema = Joi.object().keys({
-            dependent: Joi.alternatives().when('sibling.driver', {
+            dependent: Joi.alternatives().conditional('sibling.driver', {
                 is  : Joi.string(),
                 then: Joi.string().lowercase()
             }),
@@ -1353,7 +1353,7 @@ describe('Alternatives', () => {
     it('should return "when.otherwise" alternative', () => {
 
         const schema = Joi.object().keys({
-            dependent: Joi.alternatives().when('sibling.driver', {
+            dependent: Joi.alternatives().conditional('sibling.driver', {
                 is       : Joi.string(),
                 then     : Joi.string(),
                 otherwise: Joi.number().integer()
@@ -1384,7 +1384,7 @@ describe('Alternatives', () => {
     });
 });
 
-describe.only('Object', () => {
+describe('Object', () => {
 
     it('should return an object', () => {
 
@@ -1526,7 +1526,7 @@ describe.only('Object', () => {
 
         for (let i = 0; i < 10; ++i) {
             const schema = Joi.object().keys({
-                dependent: Joi.alternatives().when('sibling.driver', {
+                dependent: Joi.alternatives().conditional('sibling.driver', {
                     is       : true,
                     then     : Joi.string().guid(),
                     otherwise: Joi.number().multiple(4).min(16)
@@ -1672,7 +1672,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myNumber',
-            base: Joi.number()
+            base: Joi.number().meta({baseType:'number'})
         });
 
         const schema = customJoi.myNumber();
@@ -1686,7 +1686,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myBoolean',
-            base: Joi.boolean()
+            base: Joi.boolean().meta({baseType:'boolean'})
         });
 
         const schema = customJoi.myBoolean();
@@ -1700,7 +1700,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myArray',
-            base: Joi.array()
+            base: Joi.array().meta({baseType:'array'})
         });
 
         const schema = customJoi.myArray();
@@ -1714,7 +1714,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myFunc',
-            base: Joi.func()
+            base: Joi.func().meta({baseType:'func'})
         });
 
         const schema = customJoi.myFunc();
@@ -1758,7 +1758,7 @@ describe('Extensions', () => {
 
         const schema = Joi.object().keys({
             driver: Joi.any(),
-            child : Joi.alternatives().when('driver', {
+            child : Joi.alternatives().conditional('driver', {
                 is       : Joi.string(),
                 then     : customJoi.myType()
             })

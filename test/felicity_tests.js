@@ -9,6 +9,9 @@ const Moment = require('moment');
 const { describe, expect, it } = exports.lab = Lab.script();
 const ExpectValidation = require('./test_helpers').expectValidation.bind({}, expect);
 
+const generateUuid = (parent, helpers) => Uuid.v4();
+generateUuid.description = 'Generates UUIDs';
+
 describe('Felicity Example', () => {
 
     it('should return a string', () => {
@@ -449,24 +452,25 @@ describe('Felicity EntityFor', () => {
     });
 
     it('should provide an example with dynamic defaults', () => {
-
+        const generateDynamic = () => 'dynamic default';
+        generateDynamic.description = 'generates a default';
         const schema = Joi.object().keys({
             version  : Joi.string().min(5).default('1.0.0'),
             number   : Joi.number().default(10),
             identity : Joi.object().keys({
-                id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+                id: Joi.string().guid().default(generateUuid)
             }),
             array    : Joi.array().items(Joi.object().keys({
-                id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+                id: Joi.string().guid().default(generateUuid)
             })),
-            condition: Joi.alternatives().when('version', {
+            condition: Joi.alternatives().conditional('version', {
                 is       : Joi.string(),
                 then     : Joi.string().default('defaultValue'),
                 otherwise: Joi.number()
             }),
-            dynamicCondition: Joi.alternatives().when('version', {
+            dynamicCondition: Joi.alternatives().conditional('version', {
                 is       : Joi.string(),
-                then     : Joi.string().default(() => 'dynamic default', 'generates a default'),
+                then     : Joi.string().default(generateDynamic),
                 otherwise: Joi.number()
             })
         });
@@ -541,20 +545,20 @@ describe('Felicity EntityFor', () => {
         it('should validate input when given validateInput: true', () => {
 
             const subSchema = Joi.object().keys({
-                name : Joi.string(),
+                name: Joi.string(),
                 title: Joi.string()
             }).options({
                 presence: 'required'
             });
             const schema = Joi.object().keys({
-                title    : Joi.string(),
-                director : Joi.number(),
+                title: Joi.string(),
+                director: Joi.number(),
                 producers: Joi.array().items(subSchema).allow(null, '').optional().default(null)
             });
             const Constructor = Felicity.entityFor(schema);
             const input = {
-                name     : 'Blade Runner',
-                director : 'Denis Villeneuve',
+                name: 'Blade Runner',
+                director: 'Denis Villeneuve',
                 writers: [
                     {
                         name: 'Hampton Fancher'
@@ -566,8 +570,7 @@ describe('Felicity EntityFor', () => {
             expect(instance.title).to.equal(null);
             expect(instance.producers).to.equal(null);
             expect(instance.director).to.equal(input.director);
-
-            expect(() => new Constructor(input, { validateInput: true })).to.throw('child "director" fails because ["director" must be a number]. \"name\" is not allowed. \"writers\" is not allowed');
+            expect(() => new Constructor(input, { validateInput: true })).to.throw(`"director" must be a number. "name" is not allowed. "writers" is not allowed`);
         });
 
         it('should validate and assign input when validateInput is true and input passes validation', () => {
@@ -612,7 +615,7 @@ describe('Felicity EntityFor', () => {
                 ]
             };
 
-            expect(() => new Constructor(input)).to.throw('child "director" fails because ["director" must be a number]. \"name\" is not allowed. \"writers\" is not allowed');
+            expect(() => new Constructor(input)).to.throw(`"director" must be a number. "name" is not allowed. "writers" is not allowed`);
 
             const instance = new Constructor(input, { validateInput: false });
             expect(instance.title).to.equal(null);
@@ -679,7 +682,7 @@ describe('Felicity EntityFor', () => {
                     expect(validationResult).to.be.an.object();
                     expect(validationResult.success).to.exist().and.equal(true);
                     expect(validationResult.value).to.exist().and.be.an.object();
-                    expect(validationResult.errors).to.be.null();
+                    expect(validationResult.errors).to.be.undefined();
                 });
             });
         });
@@ -709,7 +712,7 @@ describe('Felicity EntityFor', () => {
 
             expect(instance.name).to.equal(null);
             expect(example.name.length).to.be.at.most(5);
-            expect(validation.errors).to.equal(null);
+            expect(validation.errors).to.equal(undefined);
             expect(validation.value).to.equal({ name: 'longe' });
             ExpectValidation(example, schema);
         });
@@ -725,7 +728,7 @@ describe('Felicity EntityFor', () => {
             const validation = Constructor.validate({ name: 'abbabba' });
 
             expect(instance.name).to.equal(null);
-            expect(validation.errors).to.equal(null);
+            expect(validation.errors).to.equal(undefined);
             expect(validation.value).to.equal({ name: 'aaaaaaa' });
             ExpectValidation(example, schema);
         });
@@ -741,7 +744,7 @@ describe('Felicity EntityFor', () => {
             const validation = instance.validate();
 
             expect(instance.name).to.equal('abbabba');
-            expect(validation.errors).to.equal(null);
+            expect(validation.errors).to.equal(undefined);
             expect(validation.value).to.equal({ name: 'abbabba' });
             ExpectValidation(example, schema);
         });
@@ -825,7 +828,7 @@ describe('Felicity EntityFor', () => {
         });
     });
 
-    describe('Object', () => {
+    describe.only('Object', () => {
 
         it('should return an object with no keys', () => {
 
@@ -876,7 +879,7 @@ describe('Felicity EntityFor', () => {
                 date       : Joi.date().raw().required(),
                 bool       : Joi.boolean().required(),
                 func       : Joi.func().required(),
-                conditional: Joi.when('bool', {
+                conditional: Joi.alternatives().conditional('bool', {
                     is       : true,
                     then     : Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
@@ -908,7 +911,7 @@ describe('Felicity EntityFor', () => {
 
         it('should return an object with mixed-type keys for non-compiled schema', () => {
 
-            const schema = {
+            const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
                     innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
                     number    : Joi.number()
@@ -916,18 +919,18 @@ describe('Felicity EntityFor', () => {
                 string     : Joi.string().email().required(),
                 date       : Joi.date().raw().required(),
                 bool       : Joi.boolean().required(),
-                conditional: Joi.when('bool', {
+                conditional: Joi.alternatives().conditional('bool', {
                     is       : true,
                     then     : Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
                 }),
                 optional   : Joi.string().optional(),
-                otherCond  : Joi.alternatives().when('bool', {
+                otherCond  : Joi.alternatives().conditional('bool', {
                     is       : true,
                     then     : Joi.string().required(),
                     otherwise: Joi.boolean().required()
                 })
-            };
+            });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
 
@@ -967,7 +970,7 @@ describe('Felicity EntityFor', () => {
                 key3: Joi.string().optional(),
                 key4: Joi.object().keys({
                     a: Joi.string()
-                })
+                }).options({ presence: 'optional' })
             }).options({ presence: 'optional' });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
@@ -1008,7 +1011,7 @@ describe('Felicity EntityFor', () => {
                 identity : Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1031,7 +1034,7 @@ describe('Felicity EntityFor', () => {
                 identity : Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1059,7 +1062,7 @@ describe('Felicity EntityFor', () => {
                 identity : Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1082,7 +1085,7 @@ describe('Felicity EntityFor', () => {
                 identity : Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1108,9 +1111,9 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+                    id: Joi.string().guid().default(generateUuid)
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1131,9 +1134,9 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+                    id: Joi.string().guid().default(generateUuid)
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1159,9 +1162,9 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+                    id: Joi.string().guid().default(generateUuid)
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1182,9 +1185,9 @@ describe('Felicity EntityFor', () => {
                 version  : Joi.string().min(5).default('1.0.0'),
                 number   : Joi.number().default(10),
                 identity : Joi.object().keys({
-                    id: Joi.string().guid().default(() => Uuid.v4(), 'Generates UUIDs')
+                    id: Joi.string().guid().default(generateUuid)
                 }),
-                condition: Joi.alternatives().when('version', {
+                condition: Joi.alternatives().conditional('version', {
                     is       : Joi.string(),
                     then     : Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
@@ -1204,15 +1207,15 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.condition).to.equal(null);
         });
 
-        it('should return an object with alternatives keys', () => {
+        it.only('should return an object with alternatives keys', () => {
 
             const schema = Joi.object({
                 id  : Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required(),
-                func: Joi.alternatives().when('id', { is: Joi.any(), then: Joi.func() })
+                func: Joi.alternatives().conditional('id', { is: Joi.any(), then: Joi.func() })
             });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
-
+            console.log(felicityInstance)
             expect(felicityInstance.id).to.equal(0);
             expect(felicityInstance.func).to.equal(null);
         });
@@ -1282,7 +1285,7 @@ describe('Felicity EntityFor', () => {
                 date       : Joi.date().raw().required(),
                 binary     : Joi.binary().required(),
                 bool       : Joi.boolean().required(),
-                conditional: Joi.when('bool', {
+                conditional: Joi.alternatives().conditional('bool', {
                     is       : true,
                     then     : Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
@@ -1329,7 +1332,7 @@ describe('Felicity EntityFor', () => {
                 date       : Joi.date().raw().required(),
                 binary     : Joi.binary().required(),
                 bool       : Joi.boolean().required(),
-                conditional: Joi.when('bool', {
+                conditional: Joi.alternatives().conditional('bool', {
                     is       : true,
                     then     : Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
@@ -1363,9 +1366,8 @@ describe('Felicity EntityFor', () => {
 
         it('should utilize dynamic defaults for missing input', () => {
 
-            const generateUuid = () => Uuid.v4();
             const schema = Joi.object().keys({
-                id: Joi.string().guid().required().default(generateUuid, 'generate uuids')
+                id: Joi.string().guid().required().default(generateUuid)
             });
             const felicityInstance = new (Felicity.entityFor(schema))({});
 
