@@ -17,6 +17,7 @@ describe('String', () => {
         const schema = DescriptionCompiler(description);
 
         schema.validate(validExample, (err, value) => {
+
             expect(err).to.equal(null);
         });
         schema.validate(invalidExample, (err, value) => {

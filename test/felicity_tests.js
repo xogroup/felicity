@@ -298,6 +298,7 @@ describe('Felicity Example', () => {
 
         const Class1 = function () {};
         Class1.prototype.testFunc = function () {};
+
         const schema = Joi.object().instance(Class1);
         const example = Felicity.example(schema);
 
@@ -452,6 +453,7 @@ describe('Felicity EntityFor', () => {
     });
 
     it('should provide an example with dynamic defaults', () => {
+
         const generateDynamic = () => 'dynamic default';
         generateDynamic.description = 'generates a default';
         const schema = Joi.object().keys({
@@ -545,19 +547,19 @@ describe('Felicity EntityFor', () => {
         it('should validate input when given validateInput: true', () => {
 
             const subSchema = Joi.object().keys({
-                name: Joi.string(),
+                name : Joi.string(),
                 title: Joi.string()
             }).options({
                 presence: 'required'
             });
             const schema = Joi.object().keys({
-                title: Joi.string(),
-                director: Joi.number(),
+                title    : Joi.string(),
+                director : Joi.number(),
                 producers: Joi.array().items(subSchema).allow(null, '').optional().default(null)
             });
             const Constructor = Felicity.entityFor(schema);
             const input = {
-                name: 'Blade Runner',
+                name    : 'Blade Runner',
                 director: 'Denis Villeneuve',
                 writers: [
                     {
@@ -759,7 +761,7 @@ describe('Felicity EntityFor', () => {
                 b: Joi.string()
             }).and('a', 'b');
             const Constructor = Felicity.entityFor(schema);
-            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const instance = new Constructor({ a: 'abc', b: 'xyz' });
             const example = instance.example();
 
             ExpectValidation(example, schema);
@@ -772,7 +774,7 @@ describe('Felicity EntityFor', () => {
                 b: Joi.string()
             }).or('a', 'b');
             const Constructor = Felicity.entityFor(schema);
-            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const instance = new Constructor({ a: 'abc', b: 'xyz' });
             const example = instance.example();
 
             ExpectValidation(example, schema);
@@ -788,7 +790,7 @@ describe('Felicity EntityFor', () => {
                 b: Joi.string()
             }).unknown(true);
             const Constructor = Felicity.entityFor(schema);
-            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const instance = new Constructor({ a: 'abc', b: 'xyz' });
             const example = instance.example();
 
             ExpectValidation(example, schema);
@@ -801,7 +803,7 @@ describe('Felicity EntityFor', () => {
                 b: Joi.string()
             }).unknown(false);
             const Constructor = Felicity.entityFor(schema);
-            const instance = new Constructor({ a:'abc', b:'xyz' });
+            const instance = new Constructor({ a: 'abc', b: 'xyz' });
             const example = instance.example();
 
             ExpectValidation(example, schema);
@@ -828,7 +830,7 @@ describe('Felicity EntityFor', () => {
         });
     });
 
-    describe.only('Object', () => {
+    describe('Object', () => {
 
         it('should return an object with no keys', () => {
 
@@ -1207,7 +1209,7 @@ describe('Felicity EntityFor', () => {
             expect(felicityInstance.condition).to.equal(null);
         });
 
-        it.only('should return an object with alternatives keys', () => {
+        it('should return an object with alternatives keys', () => {
 
             const schema = Joi.object({
                 id  : Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required(),
@@ -1215,7 +1217,7 @@ describe('Felicity EntityFor', () => {
             });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
-            console.log(felicityInstance)
+
             expect(felicityInstance.id).to.equal(0);
             expect(felicityInstance.func).to.equal(null);
         });
@@ -1406,7 +1408,7 @@ describe('Felicity EntityFor', () => {
 
             const instanceValidity = felicityInstance.validate();
 
-            expect(instanceValidity.errors).to.equal(null);
+            expect(instanceValidity.errors).to.equal(undefined);
             expect(instanceValidity.success).to.equal(true);
             expect(instanceValidity.value).to.be.an.object();
 
@@ -1497,7 +1499,7 @@ describe('Felicity EntityFor', () => {
             expect(() => {
 
                 return instance.example();
-            }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
+            }).to.throw(`"name" with value "abcd" fails to match the required pattern: /abcd(?=efg)/`);
         });
 
         it('should respect "strictExample" config at instance example call', () => {
@@ -1517,7 +1519,7 @@ describe('Felicity EntityFor', () => {
             expect(() => {
 
                 return instance.example(options);
-            }).to.throw('child \"name\" fails because [\"name\" with value \"abcd\" fails to match the required pattern: /abcd(?=efg)/]');
+            }).to.throw(`"name" with value "abcd" fails to match the required pattern: /abcd(?=efg)/`);
         });
 
         it('should respect "includeOptional" config for static example call', () => {

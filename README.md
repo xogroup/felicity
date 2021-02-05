@@ -97,7 +97,7 @@ const randomModelValue = FelicityModelConstructor.example(); // built in by `Fel
 */
 
 // directly from Joi schemas:
-const stringSchema = Joi.string().regex(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
+const stringSchema = Joi.string().pattern(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
 const sampleString = Felicity.example(stringSchema);
 // sampleString === 'caa-eff-5144'
 

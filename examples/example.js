@@ -6,11 +6,11 @@ const Felicity = require('../lib/index');
 const exampleFromSchema = function (callback) {
 
     const schema = Joi.object().keys({
-        id: Joi.string().guid().required(),
+        id  : Joi.string().guid().required(),
         meta: Joi.object().keys({
             timestamp: Joi.date().raw().required(),
-            name: Joi.string().required(),
-            sequence: Joi.number().integer().required()
+            name     : Joi.string().required(),
+            sequence : Joi.number().integer().required()
         }).required()
     });
     const example = Felicity.example(schema);

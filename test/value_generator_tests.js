@@ -38,7 +38,7 @@ describe('Any', () => {
         expect(examples.allowed2).to.exist();
 
         examples = {};
-        schema = Joi.any().allow(...['first', 'second', true, 10]);
+        schema = Joi.any().allow('first', 'second', true, 10);
 
         for (let i = 0; i < 25; ++i) {
             const example = ValueGenerator(schema);
@@ -72,7 +72,7 @@ describe('Any', () => {
         expect(['allowed1', 'allowed2'].indexOf(example)).to.not.equal(-1);
         ExpectValidation(example, schema);
 
-        schema = Joi.any().valid(...[true, 10]);
+        schema = Joi.any().valid(true, 10);
         example = ValueGenerator(schema);
 
         expect([true, 10].indexOf(example)).to.not.equal(-1);
@@ -113,6 +113,7 @@ describe('Any', () => {
         const examples = [[123], [321]];
         const schema = Joi.any().example(examples);
         const example = ValueGenerator(schema);
+
         const [foundExample] = examples.find(([ex]) => ex === example);
 
         expect(foundExample).to.equal(example);
@@ -200,7 +201,7 @@ describe('String', () => {
 
     it('should return default value when valids are ignored', () => {
 
-        const schema = Joi.string().valid(...['value1', 'value2', 'fallback']).default('fallback');
+        const schema = Joi.string().valid('value1', 'value2', 'fallback').default('fallback');
         const example = ValueGenerator(schema, { config: { ignoreValids: true } });
 
         expect(example).to.equal('fallback');
@@ -309,7 +310,7 @@ describe('String', () => {
     it('should return a string that does not match the inverted regexp', () => {
 
         const regex = new RegExp(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
-        const schema = Joi.string().pattern(regex, { invert: true });
+        const schema = Joi.string().regex(regex, { invert: true });
         const example = ValueGenerator(schema);
 
         expect(example.match(regex)).to.equal(null);
@@ -500,6 +501,7 @@ describe('Number', () => {
     });
 
     it('should return a dynamic default', () => {
+
         const generateNumber = () => 0;
         generateNumber.description = 'default description';
         const schema = Joi.number().default(generateNumber);
@@ -751,7 +753,7 @@ describe('Boolean', () => {
 
     it('should return a truthy value when pluralized', () => {
 
-        const schema = Joi.boolean().truthy(...[1, 'y']);
+        const schema = Joi.boolean().truthy(1, 'y');
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -779,7 +781,7 @@ describe('Boolean', () => {
 
     it('should return a falsy value when pluralized', () => {
 
-        const schema = Joi.boolean().falsy(...[0, 'n']);
+        const schema = Joi.boolean().falsy(0, 'n');
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -787,7 +789,7 @@ describe('Boolean', () => {
 
     it('should validate when a mix of truthy and falsy is set', () => {
 
-        const schema = Joi.boolean().truthy(...[1, 'y']).falsy(...[0, 'n']);
+        const schema = Joi.boolean().truthy(1, 'y').falsy(0, 'n');
         const example = ValueGenerator(schema);
 
         ExpectValidation(example, schema);
@@ -1333,7 +1335,7 @@ describe('Alternatives', () => {
         ExpectValidation(example, schema);
     });
 
-    it('should return "when" alternative', () => {
+    it('should return "conditional" alternative', () => {
 
         const schema = Joi.object().keys({
             dependent: Joi.alternatives().conditional('sibling.driver', {
@@ -1358,7 +1360,7 @@ describe('Alternatives', () => {
                 then     : Joi.string(),
                 otherwise: Joi.number().integer()
             }),
-            sibling  : Joi.object().keys({
+            sibling: Joi.object().keys({
                 driver: Joi.boolean()
             })
         });
@@ -1672,7 +1674,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myNumber',
-            base: Joi.number().meta({baseType:'number'})
+            base: Joi.number()
         });
 
         const schema = customJoi.myNumber();
@@ -1686,7 +1688,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myBoolean',
-            base: Joi.boolean().meta({baseType:'boolean'})
+            base: Joi.boolean()
         });
 
         const schema = customJoi.myBoolean();
@@ -1700,7 +1702,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myArray',
-            base: Joi.array().meta({baseType:'array'})
+            base: Joi.array()
         });
 
         const schema = customJoi.myArray();
@@ -1714,7 +1716,7 @@ describe('Extensions', () => {
 
         const customJoi = Joi.extend({
             type: 'myFunc',
-            base: Joi.func().meta({baseType:'func'})
+            base: Joi.func()
         });
 
         const schema = customJoi.myFunc();
