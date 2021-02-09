@@ -26,7 +26,6 @@
   "dependencies": {
     "@hapi/hoek": "9.x.x",
     "@hapi/joi-date": "2.x.x",
-    "flat": "5.x.x",
     "joi": "17.x.x",
     "moment": "2.x.x",
     "randexp": "0.5.x",

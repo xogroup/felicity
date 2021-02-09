@@ -243,7 +243,7 @@ describe('Felicity Example', () => {
         const schema = Joi.object().keys({
             string: Joi.string().required().default(generateDefaultString),
             number: Joi.number().default(generateDefaultNumber),
-            bool  : Joi.boolean().default(generateDefaultBool)
+            bool: Joi.boolean().default(generateDefaultBool)
         });
         const example = Felicity.example(schema);
 
@@ -329,7 +329,7 @@ describe('Felicity Example', () => {
 
         const schema = Joi.object().keys({
             required: Joi.string().required(),
-            present : Joi.string(),
+            present: Joi.string(),
             optional: Joi.string().optional()
         });
         const example = Felicity.example(schema);
@@ -343,9 +343,9 @@ describe('Felicity Example', () => {
     it('should return an object without optional keys when using .options({ presence: "optional" }) syntax', () => {
 
         const schema = Joi.object().keys({
-            required      : Joi.string().required(),
+            required: Joi.string().required(),
             parentOptional: Joi.string(),
-            optional      : Joi.string().optional()
+            optional: Joi.string().optional()
         }).options({ presence: 'optional' });
         const example = Felicity.example(schema);
 
@@ -359,7 +359,7 @@ describe('Felicity Example', () => {
 
         const schema = Joi.object().keys({
             required: Joi.string().required(),
-            present : Joi.string(),
+            present: Joi.string(),
             optional: Joi.string().optional()
         });
         const options = {
@@ -457,22 +457,22 @@ describe('Felicity EntityFor', () => {
         const generateDynamic = () => 'dynamic default';
         generateDynamic.description = 'generates a default';
         const schema = Joi.object().keys({
-            version  : Joi.string().min(5).default('1.0.0'),
-            number   : Joi.number().default(10),
-            identity : Joi.object().keys({
+            version: Joi.string().min(5).default('1.0.0'),
+            number: Joi.number().default(10),
+            identity: Joi.object().keys({
                 id: Joi.string().guid().default(generateUuid)
             }),
-            array    : Joi.array().items(Joi.object().keys({
+            array: Joi.array().items(Joi.object().keys({
                 id: Joi.string().guid().default(generateUuid)
             })),
             condition: Joi.alternatives().conditional('version', {
-                is       : Joi.string(),
-                then     : Joi.string().default('defaultValue'),
+                is: Joi.string(),
+                then: Joi.string().default('defaultValue'),
                 otherwise: Joi.number()
             }),
             dynamicCondition: Joi.alternatives().conditional('version', {
-                is       : Joi.string(),
-                then     : Joi.string().default(generateDynamic),
+                is: Joi.string(),
+                then: Joi.string().default(generateDynamic),
                 otherwise: Joi.number()
             })
         });
@@ -494,7 +494,7 @@ describe('Felicity EntityFor', () => {
 
             const defaultOptions = {
                 includeOptional: false,
-                ignoreDefaults : true
+                ignoreDefaults: true
             };
             const schema = Joi.object().keys({
                 version: Joi.string().optional(),
@@ -547,19 +547,19 @@ describe('Felicity EntityFor', () => {
         it('should validate input when given validateInput: true', () => {
 
             const subSchema = Joi.object().keys({
-                name : Joi.string(),
+                name: Joi.string(),
                 title: Joi.string()
             }).options({
                 presence: 'required'
             });
             const schema = Joi.object().keys({
-                title    : Joi.string(),
-                director : Joi.number(),
+                title: Joi.string(),
+                director: Joi.number(),
                 producers: Joi.array().items(subSchema).allow(null, '').optional().default(null)
             });
             const Constructor = Felicity.entityFor(schema);
             const input = {
-                name    : 'Blade Runner',
+                name: 'Blade Runner',
                 director: 'Denis Villeneuve',
                 writers: [
                     {
@@ -578,13 +578,13 @@ describe('Felicity EntityFor', () => {
         it('should validate and assign input when validateInput is true and input passes validation', () => {
 
             const schema = Joi.object().keys({
-                title    : Joi.string(),
-                director : Joi.string()
+                title: Joi.string(),
+                director: Joi.string()
             });
             const Constructor = Felicity.entityFor(schema);
             const input = {
-                title    : 'American Beauty',
-                director : 'Sam Mendes'
+                title: 'American Beauty',
+                director: 'Sam Mendes'
             };
 
             const instance = new Constructor(input, { validateInput: true });
@@ -596,20 +596,20 @@ describe('Felicity EntityFor', () => {
         it('should not validate input when given validateInput: false', () => {
 
             const subSchema = Joi.object().keys({
-                name : Joi.string(),
+                name: Joi.string(),
                 title: Joi.string()
             }).options({
                 presence: 'required'
             });
             const schema = Joi.object().keys({
-                title    : Joi.string(),
-                director : Joi.number(),
+                title: Joi.string(),
+                director: Joi.number(),
                 producers: Joi.array().items(subSchema).allow(null, '').optional().default(null)
             });
             const Constructor = Felicity.entityFor(schema, { config: { validateInput: true } });
             const input = {
-                name     : 'Blade Runner',
-                director : 'Denis Villeneuve',
+                name: 'Blade Runner',
+                director: 'Denis Villeneuve',
                 writers: [
                     {
                         name: 'Hampton Fancher'
@@ -815,10 +815,10 @@ describe('Felicity EntityFor', () => {
         it('should default to the "true" driver', () => {
 
             const schema = Joi.object().keys({
-                driver       : true,
+                driver: true,
                 myConditional: Joi.when('driver', {
-                    is       : true,
-                    then     : Joi.string().required(),
+                    is: true,
+                    then: Joi.string().required(),
                     otherwise: Joi.number().required()
                 })
             });
@@ -875,20 +875,20 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
                     innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
-                    number    : Joi.number()
+                    number: Joi.number()
                 }),
-                string     : Joi.string().email().required(),
-                date       : Joi.date().raw().required(),
-                bool       : Joi.boolean().required(),
-                func       : Joi.func().required(),
+                string: Joi.string().email().required(),
+                date: Joi.date().raw().required(),
+                bool: Joi.boolean().required(),
+                func: Joi.func().required(),
                 conditional: Joi.alternatives().conditional('bool', {
-                    is       : true,
-                    then     : Joi.object().keys().required(),
+                    is: true,
+                    then: Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
                 }),
-                any        : Joi.any(),
-                anyStrip   : Joi.any().strip(),
-                anyForbid  : Joi.any().forbidden()
+                any: Joi.any(),
+                anyStrip: Joi.any().strip(),
+                anyForbid: Joi.any().forbidden()
             });
             const Entity = Felicity.entityFor(schema);
             const felicityInstance = new Entity();
@@ -916,20 +916,20 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
                     innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
-                    number    : Joi.number()
+                    number: Joi.number()
                 }),
-                string     : Joi.string().email().required(),
-                date       : Joi.date().raw().required(),
-                bool       : Joi.boolean().required(),
+                string: Joi.string().email().required(),
+                date: Joi.date().raw().required(),
+                bool: Joi.boolean().required(),
                 conditional: Joi.alternatives().conditional('bool', {
-                    is       : true,
-                    then     : Joi.object().keys().required(),
+                    is: true,
+                    then: Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
                 }),
-                optional   : Joi.string().optional(),
-                otherCond  : Joi.alternatives().conditional('bool', {
-                    is       : true,
-                    then     : Joi.string().required(),
+                optional: Joi.string().optional(),
+                otherCond: Joi.alternatives().conditional('bool', {
+                    is: true,
+                    then: Joi.string().required(),
                     otherwise: Joi.boolean().required()
                 })
             });
@@ -1008,14 +1008,14 @@ describe('Felicity EntityFor', () => {
         it('should utilize default values', () => {
 
             const schema = Joi.object().keys({
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             });
@@ -1031,14 +1031,14 @@ describe('Felicity EntityFor', () => {
         it('should not utilize default values when provided ignoreDefaults config', () => {
 
             const schema = Joi.object().keys({
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             });
@@ -1059,14 +1059,14 @@ describe('Felicity EntityFor', () => {
         it('should utilize default values for non-compiled schema', () => {
 
             const schema = {
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             };
@@ -1082,14 +1082,14 @@ describe('Felicity EntityFor', () => {
         it('should not utilize default values for non-compiled schema when provided ignoreDefaults config', () => {
 
             const schema = {
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().default('abcdefg')
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             };
@@ -1110,14 +1110,14 @@ describe('Felicity EntityFor', () => {
         it('should utilize dynamic default values', () => {
 
             const schema = Joi.object().keys({
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().guid().default(generateUuid)
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             });
@@ -1133,14 +1133,14 @@ describe('Felicity EntityFor', () => {
         it('should not utilize dynamic default values when provided ignoreDefaults config', () => {
 
             const schema = Joi.object().keys({
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().guid().default(generateUuid)
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             });
@@ -1161,14 +1161,14 @@ describe('Felicity EntityFor', () => {
         it('should utilize dynamic default values for non-compiled schema', () => {
 
             const schema = {
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().guid().default(generateUuid)
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             };
@@ -1184,14 +1184,14 @@ describe('Felicity EntityFor', () => {
         it('should not utilize dynamic default values for non-compiled schema when provided ignoreDefaults config', () => {
 
             const schema = {
-                version  : Joi.string().min(5).default('1.0.0'),
-                number   : Joi.number().default(10),
-                identity : Joi.object().keys({
+                version: Joi.string().min(5).default('1.0.0'),
+                number: Joi.number().default(10),
+                identity: Joi.object().keys({
                     id: Joi.string().guid().default(generateUuid)
                 }),
                 condition: Joi.alternatives().conditional('version', {
-                    is       : Joi.string(),
-                    then     : Joi.string().default('defaultValue'),
+                    is: Joi.string(),
+                    then: Joi.string().default('defaultValue'),
                     otherwise: Joi.number()
                 })
             };
@@ -1212,7 +1212,7 @@ describe('Felicity EntityFor', () => {
         it('should return an object with alternatives keys', () => {
 
             const schema = Joi.object({
-                id  : Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required(),
+                id: Joi.alternatives().try(Joi.number().integer().min(1), Joi.string().guid().lowercase()).required(),
                 func: Joi.alternatives().conditional('id', { is: Joi.any(), then: Joi.func() })
             });
             const Entity = Felicity.entityFor(schema);
@@ -1280,31 +1280,31 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
                     innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
-                    number    : Joi.number().required().default(3),
+                    number: Joi.number().required().default(3),
                     innerString: Joi.string().required()
                 }),
-                string     : Joi.string().email().required(),
-                date       : Joi.date().raw().required(),
-                binary     : Joi.binary().required(),
-                bool       : Joi.boolean().required(),
+                string: Joi.string().email().required(),
+                date: Joi.date().raw().required(),
+                binary: Joi.binary().required(),
+                bool: Joi.boolean().required(),
                 conditional: Joi.alternatives().conditional('bool', {
-                    is       : true,
-                    then     : Joi.object().keys().required(),
+                    is: true,
+                    then: Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
                 }),
-                array      : Joi.array().items(Joi.number())
+                array: Joi.array().items(Joi.number())
             });
             const hydrationData = {
                 innerObject: {
                     innerString: false
                 },
-                string     : 'example@email.com',
-                date       : 'not a date',
-                binary     : 74,
-                fake       : true,
-                bool       : false,
+                string: 'example@email.com',
+                date: 'not a date',
+                binary: 74,
+                fake: true,
+                bool: false,
                 conditional: true,
-                array      : ['a', 'b', 'c']
+                array: ['a', 'b', 'c']
             };
             const felicityInstance = new (Felicity.entityFor(schema))(hydrationData);
 
@@ -1327,16 +1327,16 @@ describe('Felicity EntityFor', () => {
             const schema = Joi.object().keys({
                 innerObject: Joi.object().keys({
                     innerArray: Joi.array().items(Joi.number()).min(3).max(6).required(),
-                    number    : Joi.number().required().default(3),
+                    number: Joi.number().required().default(3),
                     innerString: Joi.string().required()
                 }),
-                string     : Joi.string().email().required(),
-                date       : Joi.date().raw().required(),
-                binary     : Joi.binary().required(),
-                bool       : Joi.boolean().required(),
+                string: Joi.string().email().required(),
+                date: Joi.date().raw().required(),
+                binary: Joi.binary().required(),
+                bool: Joi.boolean().required(),
                 conditional: Joi.alternatives().conditional('bool', {
-                    is       : true,
-                    then     : Joi.object().keys().required(),
+                    is: true,
+                    then: Joi.object().keys().required(),
                     otherwise: Joi.boolean().required()
                 })
             });
@@ -1345,10 +1345,10 @@ describe('Felicity EntityFor', () => {
                     innerString: false
                 },
                 string: 'example@email.com',
-                date  : 'not a date',
+                date: 'not a date',
                 binary: 74,
-                fake  : true,
-                bool  : false,
+                fake: true,
+                bool: false,
                 conditional: true
             };
             const felicityInstance = new (Felicity.entityFor(schema, { config: { strictInput: true } }))(hydrationData);
@@ -1525,8 +1525,8 @@ describe('Felicity EntityFor', () => {
         it('should respect "includeOptional" config for static example call', () => {
 
             const schema = Joi.object().keys({
-                required        : Joi.string().required(),
-                optional        : Joi.string().optional(),
+                required: Joi.string().required(),
+                optional: Joi.string().optional(),
                 implicitOptional: Joi.string()
             }).options({ presence: 'optional' });
             const options = {

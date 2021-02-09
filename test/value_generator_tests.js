@@ -385,7 +385,7 @@ describe('String', () => {
 
         const schema = Joi.string().ip(
             {
-                cidr : 'forbidden'
+                cidr: 'forbidden'
             });
         const example = ValueGenerator(schema);
 
@@ -396,7 +396,7 @@ describe('String', () => {
 
         const schema = Joi.string().ip(
             {
-                version : ['ipv4']
+                version: ['ipv4']
             });
         const example = ValueGenerator(schema);
 
@@ -407,8 +407,8 @@ describe('String', () => {
 
         const schema = Joi.string().ip(
             {
-                version : ['ipv4'],
-                cidr : 'forbidden'
+                version: ['ipv4'],
+                cidr: 'forbidden'
             });
         const example = ValueGenerator(schema);
 
@@ -419,7 +419,7 @@ describe('String', () => {
 
         const schema = Joi.string().ip(
             {
-                version : ['ipv6']
+                version: ['ipv6']
             });
         const example = ValueGenerator(schema);
 
@@ -430,8 +430,8 @@ describe('String', () => {
 
         const schema = Joi.string().ip(
             {
-                version : ['ipv6'],
-                cidr : 'forbidden'
+                version: ['ipv6'],
+                cidr: 'forbidden'
             });
         const example = ValueGenerator(schema);
 
@@ -626,23 +626,23 @@ describe('Number', () => {
             'multiple'
         ];
         const requirementExclusions = {
-            positive : ['positive','negative'],
-            negative : ['negative','positive'],
+            positive: ['positive','negative'],
+            negative: ['negative','positive'],
             precision: ['precision','integer', 'multiple'],
-            integer  : ['integer','precision'],
-            multiple : ['multiple','precision'],
-            max      : ['max','less'],
-            less     : ['less','max'],
-            min      : ['min','greater'],
-            greater  : ['greater','min']
+            integer: ['integer','precision'],
+            multiple: ['multiple','precision'],
+            max: ['max','less'],
+            less: ['less','max'],
+            min: ['min','greater'],
+            greater: ['greater','min']
         };
         const optionArguments = {
-            min      : 16,
-            max      : 56,
-            greater  : 35,
-            less     : 45,
+            min: 16,
+            max: 56,
+            greater: 35,
+            less: 45,
             precision: 3,
-            multiple : 8
+            multiple: 8
         };
 
         const numberOptions = permutations(requirements, requirementExclusions);
@@ -1339,10 +1339,10 @@ describe('Alternatives', () => {
 
         const schema = Joi.object().keys({
             dependent: Joi.alternatives().conditional('sibling.driver', {
-                is  : Joi.string(),
+                is: Joi.string(),
                 then: Joi.string().lowercase()
             }),
-            sibling  : Joi.object().keys({
+            sibling: Joi.object().keys({
                 driver: Joi.string()
             })
         });
@@ -1356,8 +1356,8 @@ describe('Alternatives', () => {
 
         const schema = Joi.object().keys({
             dependent: Joi.alternatives().conditional('sibling.driver', {
-                is       : Joi.string(),
-                then     : Joi.string(),
+                is: Joi.string(),
+                then: Joi.string(),
                 otherwise: Joi.number().integer()
             }),
             sibling: Joi.object().keys({
@@ -1374,10 +1374,10 @@ describe('Alternatives', () => {
 
         const schema = Joi.object().keys({
             dependent: Joi.string().when('sibling.driver', {
-                is       : Joi.exist(),
-                then     : Joi.string().guid()
+                is: Joi.exist(),
+                then: Joi.string().guid()
             }),
-            sibling  : Joi.object()
+            sibling: Joi.object()
         });
         const example = ValueGenerator(schema);
 
@@ -1400,12 +1400,12 @@ describe('Object', () => {
     it('should return an object with specified keys', () => {
 
         const schema = Joi.object().keys({
-            string : Joi.string().required(),
-            number : Joi.number().required(),
+            string: Joi.string().required(),
+            number: Joi.number().required(),
             boolean: Joi.bool().required(),
-            time   : Joi.date().required(),
-            buffer : Joi.binary().required(),
-            array  : Joi.array().items(Joi.string().required()).required(),
+            time: Joi.date().required(),
+            buffer: Joi.binary().required(),
+            array: Joi.array().items(Joi.string().required()).required(),
             innerObj: Joi.object().keys({
                 innerString: Joi.string().required()
             }).required()
@@ -1479,7 +1479,7 @@ describe('Object', () => {
     it('should return an object with keys that match the given pattern', () => {
 
         const schema = Joi.object().pattern(/^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/, Joi.object().keys({
-            id  : Joi.string().guid().required(),
+            id: Joi.string().guid().required(),
             tags: Joi.array().items(Joi.string()).required()
         })).min(2);
         const example = ValueGenerator(schema);
@@ -1529,13 +1529,13 @@ describe('Object', () => {
         for (let i = 0; i < 10; ++i) {
             const schema = Joi.object().keys({
                 dependent: Joi.alternatives().conditional('sibling.driver', {
-                    is       : true,
-                    then     : Joi.string().guid(),
+                    is: true,
+                    then: Joi.string().guid(),
                     otherwise: Joi.number().multiple(4).min(16)
                 }),
                 unrelated: Joi.number(),
-                sibling  : Joi.object().keys({
-                    driver   : Joi.boolean()
+                sibling: Joi.object().keys({
+                    driver: Joi.boolean()
                 })
             });
             const example = ValueGenerator(schema);
@@ -1548,7 +1548,7 @@ describe('Object', () => {
 
         const schema = Joi.object().keys({
             access_token: [Joi.string(), Joi.number()],
-            birthyear   : Joi.number().integer().min(1900).max(2013)
+            birthyear: Joi.number().integer().min(1900).max(2013)
         });
         const example = ValueGenerator(schema);
 
@@ -1558,7 +1558,7 @@ describe('Object', () => {
     it('should return an object without key set as Any.forbidden()', () => {
 
         const schema = Joi.object().keys({
-            allowed  : Joi.any(),
+            allowed: Joi.any(),
             forbidden: Joi.any().forbidden(),
             forbidStr: Joi.string().forbidden(),
             forbidNum: Joi.number().forbidden()
@@ -1574,8 +1574,8 @@ describe('Object', () => {
     it('should return an object without key set as Any.strip()', () => {
 
         const schema = Joi.object().keys({
-            allowed   : Joi.any(),
-            private   : Joi.any().strip(),
+            allowed: Joi.any(),
+            private: Joi.any().strip(),
             privateStr: Joi.string().strip(),
             privateNum: Joi.number().strip()
         });
@@ -1590,7 +1590,7 @@ describe('Object', () => {
     it('should return an object with single rename() invocation', () => {
 
         const schema = Joi.object().keys({
-            b : Joi.number()
+            b: Joi.number()
         }).rename('a','b', { ignoreUndefined: true });
         const example = ValueGenerator(schema);
 
@@ -1601,7 +1601,7 @@ describe('Object', () => {
     it('should return an object with double rename() invocation', () => {
 
         const schema = Joi.object().keys({
-            b : Joi.number()
+            b: Joi.number()
         }).rename('a','b', { ignoreUndefined: true }).rename('c','b', { multiple: true, ignoreUndefined: true });
         const example = ValueGenerator(schema);
 
@@ -1760,9 +1760,9 @@ describe('Extensions', () => {
 
         const schema = Joi.object().keys({
             driver: Joi.any(),
-            child : Joi.alternatives().conditional('driver', {
-                is       : Joi.string(),
-                then     : customJoi.myType()
+            child: Joi.alternatives().conditional('driver', {
+                is: Joi.string(),
+                then: customJoi.myType()
             })
         });
         const example = ValueGenerator(schema);
