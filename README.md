@@ -116,6 +116,10 @@ sampleObject
 }
 */
 ```
+### Node.js version compatibility
+Please note that Felicity follows [Node.js LTS support schedules](https://nodejs.org/en/about/releases/) as well as Joi Node.js version support.
+
+Beginning with Felicity@6.0.0, only Node.js versions 12 and above will be supported.
 
 ## API
 
