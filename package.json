@@ -24,19 +24,19 @@
   },
   "homepage": "https://github.com/xogroup/felicity#readme",
   "dependencies": {
-    "@hapi/hoek": "7.x.x",
-    "@hapi/joi": "15.x.x",
-    "@hapi/joi-date": "1.x.x",
+    "@hapi/hoek": "9.x.x",
+    "@hapi/joi-date": "2.x.x",
+    "joi": "17.x.x",
     "moment": "2.x.x",
     "randexp": "0.5.x",
-    "uuid": "3.x.x"
+    "uuid": "8.x.x"
   },
   "peerDependencies": {
-    "@hapi/joi": "15.x.x"
+    "joi": "17.x.x"
   },
   "devDependencies": {
-    "@hapi/code": "5.x.x",
-    "@hapi/lab": "19.x.x",
-    "doctoc": "1.x.x"
+    "@hapi/code": "8.x.x",
+    "@hapi/lab": "24.x.x",
+    "doctoc": "2.x.x"
   }
 }

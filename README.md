@@ -26,7 +26,7 @@ npm install felicity
 ### Model Management
 Given a [joi](https://www.github.com/hapijs/joi) schema, create an object Constructor and instantiate skeleton objects:
 ```JavaScript
-const Joi      = require('@hapi/joi');
+const Joi      = require('joi');
 const Felicity = require('felicity');
 
 const joiSchema = Joi.object().keys({
@@ -97,7 +97,7 @@ const randomModelValue = FelicityModelConstructor.example(); // built in by `Fel
 */
 
 // directly from Joi schemas:
-const stringSchema = Joi.string().regex(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
+const stringSchema = Joi.string().pattern(/[a-c]{3}-[d-f]{3}-[0-9]{4}/);
 const sampleString = Felicity.example(stringSchema);
 // sampleString === 'caa-eff-5144'
 
@@ -116,6 +116,10 @@ sampleObject
 }
 */
 ```
+### Node.js version compatibility
+Please note that Felicity follows [Node.js LTS support schedules](https://nodejs.org/en/about/releases/) as well as Joi Node.js version support.
+
+Beginning with Felicity@6.0.0, only Node.js versions 12 and above will be supported.
 
 ## API
 
